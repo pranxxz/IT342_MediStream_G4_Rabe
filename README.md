@@ -1,4 +1,4 @@
-MediStream
+## MediStream
 MediStream is a lightweight patient queue and consultation management system designed specifically for small clinics and barangay health centers. The project aims to digitize the traditionally manual process of managing patient registration, tracking live queues, and storing medical history, thereby reducing errors and improving the patient experience.
 
 ## Core Features
