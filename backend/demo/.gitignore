@@ -31,3 +31,25 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Environment/Sensitive Files ###
+.env
+.env.*
+application-local.properties
+application-local.yml
+application-dev.properties
+application-dev.yml
+secrets.properties
+
+### Logs ###
+*.log
+logs/
+
+### OS generated files ###
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

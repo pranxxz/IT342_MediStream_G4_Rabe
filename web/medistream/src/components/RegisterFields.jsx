@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, TextField, MenuItem, IconButton, Button } from '@mui/material';
+import { Box, Typography, TextField, MenuItem, IconButton, Button, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff, Lock, Email, Person, Badge } from '@mui/icons-material';
 
 // InputField Component
@@ -369,5 +369,77 @@ export const EmailField = ({
         </Box>
       )}
     </Box>
+  );
+};
+
+export const NumberField = ({
+  label,
+  value,
+  onChange,
+  onBlur,
+  error,
+  helperText,
+  touched = true,
+  disabled,
+  placeholder,
+  startAdornment,
+  fullWidth = true,
+  sx = {},
+  ...props
+}) => {
+  const isError = touched && !!error;
+  
+  return (
+    <TextField
+      label={label}
+      placeholder={placeholder}
+      fullWidth={fullWidth}
+      type="text"
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
+      error={isError}
+      helperText={touched ? helperText : ''}
+      disabled={disabled}
+      inputMode="numeric"
+      pattern="[0-9]*"
+      slotProps={{
+        input: {
+          startAdornment: startAdornment && (
+            <InputAdornment position="start">
+              {startAdornment}
+            </InputAdornment>
+          ),
+        },
+      }}
+      sx={{
+        mb: 3,
+        '& .MuiOutlinedInput-root': {
+          borderRadius: 2,
+          '& fieldset': {
+            borderColor: isError ? '#f44336' : '#44000d',
+          },
+          '&:hover fieldset': {
+            borderColor: isError ? '#f44336' : '#44000d',
+          },
+          '&.Mui-focused fieldset': {
+            borderColor: isError ? '#f44336' : '#44000d',
+          },
+        },
+        '& .MuiOutlinedInput-input': {
+          py: '12px',
+          px: '10px',
+          fontSize: '0.85rem',
+        },
+        '& .MuiInputLabel-root': {
+          color: isError ? '#f44336' : '#44000d',
+          '&.Mui-focused': {
+            color: isError ? '#f44336' : '#44000d',
+          },
+        },
+        ...sx,
+      }}
+      {...props}
+    />
   );
 };

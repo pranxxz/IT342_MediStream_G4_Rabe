@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Snackbar, Alert } from '@mui/material';
 import './App.css';
 import RegisterPage from './pages/Register.jsx';
 import LoginPage from './pages/Login.jsx';
@@ -20,6 +21,8 @@ function App() {
     localStorage.removeItem('oauthMode');
   };
 
+  const [showOauthSuccess, setShowOauthSuccess] = useState(false);
+
   // On first render check if we landed on oauth callback URL
   React.useEffect(() => {
     if (window.location.pathname === '/oauth/callback') {
@@ -30,6 +33,9 @@ function App() {
         localStorage.setItem('token', token);
         // call login handler
         handleLogin();
+        // show small success snackbar for oauth flows
+        setShowOauthSuccess(true);
+        setTimeout(() => setShowOauthSuccess(false), 1500);
         if (mode === 'register') {
           // maybe additional logic if needed
           setCurrentPage('landing');
@@ -44,6 +50,11 @@ function App() {
 
   return (
     <div>
+      <Snackbar open={showOauthSuccess} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+        <Alert severity="success" sx={{ minWidth: 300 }}>
+          ✅ OAuth sign-in successful! Redirecting...
+        </Alert>
+      </Snackbar>
       {isLoggedIn ? (
         <LandingPage onLogout={handleLogout} />
       ) : currentPage === 'login' ? (

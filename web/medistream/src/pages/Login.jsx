@@ -163,40 +163,6 @@ export default function LoginPage({ onNavigate, onLogin }) {
             Sign in to your MediStream account
           </Typography>
 
-          {/* Google Login Button */}
-          <Button
-            fullWidth
-            variant="outlined"
-            onClick={handleGoogleLogin}
-            disabled={googleLoading || loading}
-            startIcon={<GoogleIcon />}
-            sx={{
-              mb: 2,
-              py: 1.5,
-              borderRadius: 2,
-              textTransform: 'none',
-              borderColor: '#dadce0',
-              color: '#3c4043',
-              backgroundColor: '#fff',
-              '&:hover': {
-                backgroundColor: '#f8f9fa',
-                borderColor: '#dadce0',
-              },
-              '&.Mui-disabled': {
-                backgroundColor: '#f8f9fa',
-                opacity: 0.7,
-              }
-            }}
-          >
-            {googleLoading ? 'Connecting to Google...' : 'Continue with Google'}
-          </Button>
-
-          <Divider sx={{ my: 3 }}>
-            <Typography variant="body2" color="text.secondary">
-              OR
-            </Typography>
-          </Divider>
-
           <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
             <EmailField
               value={formData.email}
@@ -247,6 +213,39 @@ export default function LoginPage({ onNavigate, onLogin }) {
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
           </Box>
+
+           <Divider sx={{ my: 3 }} >
+            <Typography variant="body2" color="text.secondary">
+              OR
+            </Typography>
+          </Divider>
+
+           <Button
+            fullWidth
+            variant="outlined"
+            onClick={handleGoogleLogin}
+            disabled={googleLoading || loading}
+            startIcon={<GoogleIcon />}
+            sx={{
+              mb: 2,
+              py: 1.5,
+              borderRadius: 2,
+              textTransform: 'none',
+              borderColor: '#dadce0',
+              color: '#3c4043',
+              backgroundColor: '#fff',
+              '&:hover': {
+                backgroundColor: '#f8f9fa',
+                borderColor: '#dadce0',
+              },
+              '&.Mui-disabled': {
+                backgroundColor: '#f8f9fa',
+                opacity: 0.7,
+              }
+            }}
+          >
+            {googleLoading ? 'Connecting to Google...' : 'Continue with Google'}
+          </Button>
 
           <Box sx={{ mt: 3, pt: 3, borderTop: '1px solid #f3f4f6', textAlign: 'center' }}>
             <Typography variant="body2" color="text.secondary">

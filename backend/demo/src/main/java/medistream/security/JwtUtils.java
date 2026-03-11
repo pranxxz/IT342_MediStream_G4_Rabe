@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -15,11 +16,11 @@ import java.util.Map;
 @Component
 public class JwtUtils {
 
-    // ⚠️ IMPORTANT: In a real app, store this in application.properties
-    // This key must be at least 256 bits (32 characters) long
-    private static final String SECRET_KEY = "ClinicaFlowSuperSecretKeyForPatientQueueSystem2025";
+    @Value("${jwt.secret}")
+    private String secretKey;
 
-    private static final long EXPIRATION_TIME = 86400000; // 24 hours in milliseconds
+    @Value("${jwt.expiration:86400000}")
+    private long expirationTime;
 
     // Generate token for user
     public String generateToken(UserAccountEntity user) {
@@ -34,16 +35,16 @@ public class JwtUtils {
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(subject) // Usually the email/username
+                .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     // Get the signing key
     private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(java.util.Base64.getEncoder().encodeToString(SECRET_KEY.getBytes()));
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

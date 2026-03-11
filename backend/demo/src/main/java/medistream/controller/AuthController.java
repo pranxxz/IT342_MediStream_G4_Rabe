@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -169,6 +171,65 @@ public class AuthController {
         }
         
         return response;
+    }
+
+    // Simple redirect from frontend button to Spring's OAuth2 authorization endpoint.
+    // We accept an optional mode parameter so the UI can distinguish login vs register.
+    @GetMapping("/google")
+    public void googleRedirect(@RequestParam(value = "mode", required = false) String mode,
+                            @RequestParam(value = "prompt", required = false) String prompt,
+                            @RequestParam(value = "returnTo", required = false) String returnTo,
+                            HttpServletRequest request,     // ← This is automatically injected by Spring
+                            HttpServletResponse response) 
+                            throws java.io.IOException {
+        
+        System.out.println("🔍 /google endpoint called - mode: " + mode + ", prompt: " + prompt);
+        
+        String redirectUrl = "/oauth2/authorization/google";
+        
+        // Determine return URL (where to go back if user cancels)
+        String returnUrl = null;
+        if (returnTo != null && !returnTo.isEmpty()) {
+            returnUrl = returnTo;
+        } else {
+            String referer = request.getHeader("Referer");
+            if (referer != null && !referer.isEmpty()) {
+                returnUrl = referer;
+            }
+        }
+
+        // If we have a return URL, store it in a short-lived cookie so the failure handler can pick it up
+        if (returnUrl != null && !returnUrl.isEmpty()) {
+            String encoded = java.net.URLEncoder.encode(returnUrl, java.nio.charset.StandardCharsets.UTF_8);
+            jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie("oauth_return", encoded);              cookie.setPath("/");
+            cookie.setMaxAge(300); // 5 minutes
+            response.addCookie(cookie);
+        }
+
+        // Build query parameters
+        java.util.Map<String, String> params = new java.util.HashMap<>();
+        
+        // Force account selection - this is the key parameter
+        String promptValue = (prompt != null && !prompt.isEmpty()) ? prompt : "select_account";
+        params.put("prompt", promptValue);
+        System.out.println("✅ Using prompt: " + promptValue);
+        
+        if (mode != null) {
+            params.put("mode", mode);
+        }
+        
+        // Add anti-cache parameter
+        params.put("_", String.valueOf(System.currentTimeMillis()));
+        
+        // Build URL with parameters
+        if (!params.isEmpty()) {
+            redirectUrl += "?" + params.entrySet().stream()
+                .map(e -> e.getKey() + "=" + java.net.URLEncoder.encode(e.getValue(), java.nio.charset.StandardCharsets.UTF_8))
+                .collect(java.util.stream.Collectors.joining("&"));
+        }
+        
+        System.out.println("➡️ Redirecting to: " + redirectUrl);
+        response.sendRedirect(redirectUrl);
     }
 
     // Health check

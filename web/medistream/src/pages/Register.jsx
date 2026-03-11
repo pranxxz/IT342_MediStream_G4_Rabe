@@ -7,7 +7,8 @@ import {
   PasswordField, 
   NameFieldsRow, 
   EmailField, 
-  ErrorAlert 
+  ErrorAlert ,
+  NumberField
 } from '../components/RegisterFields'; 
 
 const basicValidation = (values) => {
@@ -40,8 +41,12 @@ const basicValidation = (values) => {
   if (roleLower && roleLower !== 'patient') {
     if (!values.idNumber) {
       errors.idNumber = 'ID number is required for staff';
-    } else if (!/^[A-Za-z0-9\-]+$/.test(values.idNumber)) {
-      errors.idNumber = 'ID number contains invalid characters';
+    } else if (!/^\d+$/.test(values.idNumber)) {
+      errors.idNumber = 'ID number must contain only numbers';
+    } else if (values.idNumber.length < 5) {
+      errors.idNumber = 'ID number must be at least 5 digits';
+    } else if (values.idNumber.length > 20) {
+      errors.idNumber = 'ID number must not exceed 20 digits';
     }
   }
 
@@ -93,8 +98,8 @@ export default function RegisterPage({ onNavigate }) {
       const lettersOnly = value.replace(/[^A-Za-z\s]/g, '');
       setFormData(prev => ({ ...prev, [field]: lettersOnly }));
     } else if (field === 'idNumber') {
-      const alphaNum = value.replace(/[^A-Za-z0-9]/g, '');
-      setFormData(prev => ({ ...prev, [field]: alphaNum }));
+      const numbersOnly = value.replace(/[^0-9]/g, '');
+      setFormData(prev => ({ ...prev, [field]: numbersOnly }));
     } else {
       setFormData(prev => ({ ...prev, [field]: value }));
     }
@@ -204,12 +209,13 @@ export default function RegisterPage({ onNavigate }) {
               helperText={formErrors.email}
               touched={formTouched.email}
               disabled={loading || googleLoading}
+              type="text"  // Add this to override email validation
+              inputMode="numeric"
             />
 
-            {/* id number */}
-            <EmailField
-              label="ID Number"
-              placeholder="Enter your ID number"
+            <NumberField
+              label="Staff ID Number"
+              placeholder="Enter your staff ID (numbers only)"
               startAdornment={
                 <Badge 
                   sx={{ 
@@ -226,7 +232,7 @@ export default function RegisterPage({ onNavigate }) {
               helperText={formErrors.idNumber}
               touched={formTouched.idNumber}
               disabled={loading || googleLoading}
-            />
+            /> 
 
             <PasswordField
               label="Password"
