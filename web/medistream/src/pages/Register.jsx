@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { Box, Button, Typography, Paper, Container } from '@mui/material';
+import React, { useState, useEffect } from "react";
+import { Box, Button, Typography, Paper, Container, Divider } from '@mui/material';
 import { Badge } from '@mui/icons-material';
+import GoogleIcon from '@mui/icons-material/Google';
 import { 
   InputField, 
   PasswordField, 
@@ -63,6 +64,7 @@ export default function RegisterPage({ onNavigate }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [formErrors, setFormErrors] = useState({});
   const [formTouched, setFormTouched] = useState({});
   const [formData, setFormData] = useState({
@@ -74,6 +76,16 @@ export default function RegisterPage({ onNavigate }) {
     password: '',
     confirmPassword: ''
   });
+
+  // handle oauth failure redirect back
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get('error');
+    if (error) {
+      onNavigate('register');
+      window.history.replaceState({}, document.title, '/');
+    }
+  }, [onNavigate]);
 
   const handleChange = (field) => (e) => {
     const value = e.target.value;
@@ -126,13 +138,21 @@ export default function RegisterPage({ onNavigate }) {
         alert('Registration successful! Please log in.');
         onNavigate('login');
       } else {
-        setFormErrors({ submit: 'Registration failed. Please try again.' });
+        const errorData = await response.json().catch(() => null);
+        setFormErrors({ submit: errorData?.message || 'Registration failed. Please try again.' });
       }
     } catch (error) {
       setFormErrors({ submit: 'Registration failed. Please try again.' });
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleRegister = () => {
+    setGoogleLoading(true);
+    localStorage.setItem('oauthMode', 'register');
+    // Redirect to backend helper which adds prompt
+    window.location.href = 'http://localhost:8080/api/auth/google?mode=register';
   };
 
   return (
@@ -143,14 +163,15 @@ export default function RegisterPage({ onNavigate }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell"'
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell"',
+        bgcolor: '#f5f5f5'
       }}
     >
       <Container maxWidth="sm">
         <Paper
           elevation={3}
           sx={{
-            p: 5,
+            p: { xs: 3, sm: 5 },
             borderRadius: 3,
             maxHeight: '80vh',
             overflowY: 'auto',
@@ -182,6 +203,7 @@ export default function RegisterPage({ onNavigate }) {
               error={formErrors.email}
               helperText={formErrors.email}
               touched={formTouched.email}
+              disabled={loading || googleLoading}
             />
 
             {/* id number */}
@@ -197,13 +219,13 @@ export default function RegisterPage({ onNavigate }) {
                   }}
                 />
               }
-
               value={formData.idNumber}
               onChange={handleChange('idNumber')}
               onBlur={() => handleBlur('idNumber')}
               error={formErrors.idNumber}
               helperText={formErrors.idNumber}
               touched={formTouched.idNumber}
+              disabled={loading || googleLoading}
             />
 
             <PasswordField
@@ -217,6 +239,7 @@ export default function RegisterPage({ onNavigate }) {
               showPassword={showPassword}
               onToggleVisibility={() => setShowPassword(!showPassword)}
               placeholder="Enter password (min 8 characters)"
+              disabled={loading || googleLoading}
             />
 
             <PasswordField
@@ -230,6 +253,7 @@ export default function RegisterPage({ onNavigate }) {
               showPassword={showConfirmPassword}
               onToggleVisibility={() => setShowConfirmPassword(!showConfirmPassword)}
               placeholder="Confirm password"
+              disabled={loading || googleLoading}
             />
 
             <ErrorAlert message={formErrors.submit} />
@@ -238,7 +262,7 @@ export default function RegisterPage({ onNavigate }) {
               type="submit"
               fullWidth
               variant="contained"
-              disabled={loading}
+              disabled={loading || googleLoading}
               sx={{
                 mt: 2,
                 py: 1.5,
@@ -257,6 +281,38 @@ export default function RegisterPage({ onNavigate }) {
               {loading ? 'Creating Account...' : 'Sign Up'}
             </Button>
           </Box>
+
+           <Divider sx={{ my: 3 }}>
+            <Typography variant="body2" color="text.secondary">
+              OR
+            </Typography>
+          </Divider>
+          
+          <Button
+            fullWidth
+            variant="outlined"
+            onClick={handleGoogleRegister}
+            disabled={googleLoading || loading}
+            startIcon={<GoogleIcon />}
+            sx={{
+              py: 1.5,
+              borderRadius: 2,
+              textTransform: 'none',
+              borderColor: '#dadce0',
+              color: '#3c4043',
+              backgroundColor: '#fff',
+              '&:hover': {
+                backgroundColor: '#f8f9fa',
+                borderColor: '#dadce0',
+              },
+              '&.Mui-disabled': {
+                backgroundColor: '#f8f9fa',
+                opacity: 0.7,
+              }
+            }}
+          >
+            {googleLoading ? 'Connecting to Google...' : 'Continue with Google'}
+          </Button>
 
           <Box sx={{ mt: 3, pt: 3, borderTop: '1px solid #f3f4f6', textAlign: 'center' }}>
             <Typography variant="body2" color="text.secondary">
@@ -280,6 +336,7 @@ export default function RegisterPage({ onNavigate }) {
               </Button>
             </Typography>
           </Box>
+          
         </Paper>
       </Container>
     </Box>

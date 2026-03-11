@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { Box, Button, Typography, Paper, Container } from '@mui/material';
+import React, { useState, useEffect } from "react";
+import { Box, Button, Typography, Paper, Container, Divider, Snackbar, Alert } from '@mui/material';
 import { 
-  InputField, 
   PasswordField, 
   EmailField, 
   ErrorAlert 
-} from '../components/RegisterFields'; // Adjust import path
+} from '../components/RegisterFields';
+import GoogleIcon from '@mui/icons-material/Google'; 
 
 const loginValidation = (values) => {
   const errors = {};
@@ -23,12 +23,38 @@ const loginValidation = (values) => {
 export default function LoginPage({ onNavigate, onLogin }) {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [formErrors, setFormErrors] = useState({});
   const [formTouched, setFormTouched] = useState({});
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+  
+  // Success message state
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+
+  // Handle OAuth2 failure redirect from backend
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get('error');
+    const message = params.get('message');
+    
+    if (error) {
+      if (message) {
+        setFormErrors(prev => ({ ...prev, submit: decodeURIComponent(message) }));
+      }
+      
+      const mode = localStorage.getItem('oauthMode');
+      if (mode === 'register') {
+        // Send user back to registration page with error info
+        onNavigate('register');
+      }
+      
+      // Clear query so error doesn't persist
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [onNavigate]);
 
   const handleChange = (field) => (e) => {
     const value = e.target.value;
@@ -72,15 +98,40 @@ export default function LoginPage({ onNavigate, onLogin }) {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem('token', data.token);
-        onLogin();
+        localStorage.setItem('userEmail', formData.email);
+        localStorage.setItem('userRole', data.role || 'patient');
+        
+        // Show success message
+        setShowSuccessMessage(true);
+        
+        // Redirect after showing success message
+        setTimeout(() => {
+          onLogin();
+        }, 1500);
       } else {
-        setFormErrors({ submit: 'Invalid email or password' });
+        const errorData = await response.json().catch(() => null);
+        setFormErrors({ 
+          submit: errorData?.message || 'Invalid email or password' 
+        });
       }
     } catch (error) {
       setFormErrors({ submit: 'Login failed. Please try again.' });
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleLogin = () => {
+    // Clear tokens
+    localStorage.removeItem('token');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('userRole');
+    
+    setGoogleLoading(true);
+    localStorage.setItem('oauthMode', 'login');
+    
+    const timestamp = new Date().getTime();
+    window.location.href = `http://localhost:8080/api/auth/google?prompt=select_account&mode=login&_=${timestamp}`;
   };
 
   return (
@@ -91,14 +142,15 @@ export default function LoginPage({ onNavigate, onLogin }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell"'
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell"',
+        bgcolor: '#f5f5f5'
       }}
     >
       <Container maxWidth="sm">
         <Paper
           elevation={3}
           sx={{
-            p: 5,
+            p: { xs: 3, sm: 5 },
             borderRadius: 3,
             maxWidth: '400px',
             mx: 'auto'
@@ -111,6 +163,40 @@ export default function LoginPage({ onNavigate, onLogin }) {
             Sign in to your MediStream account
           </Typography>
 
+          {/* Google Login Button */}
+          <Button
+            fullWidth
+            variant="outlined"
+            onClick={handleGoogleLogin}
+            disabled={googleLoading || loading}
+            startIcon={<GoogleIcon />}
+            sx={{
+              mb: 2,
+              py: 1.5,
+              borderRadius: 2,
+              textTransform: 'none',
+              borderColor: '#dadce0',
+              color: '#3c4043',
+              backgroundColor: '#fff',
+              '&:hover': {
+                backgroundColor: '#f8f9fa',
+                borderColor: '#dadce0',
+              },
+              '&.Mui-disabled': {
+                backgroundColor: '#f8f9fa',
+                opacity: 0.7,
+              }
+            }}
+          >
+            {googleLoading ? 'Connecting to Google...' : 'Continue with Google'}
+          </Button>
+
+          <Divider sx={{ my: 3 }}>
+            <Typography variant="body2" color="text.secondary">
+              OR
+            </Typography>
+          </Divider>
+
           <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
             <EmailField
               value={formData.email}
@@ -119,6 +205,7 @@ export default function LoginPage({ onNavigate, onLogin }) {
               error={formErrors.email}
               helperText={formErrors.email}
               touched={formTouched.email}
+              disabled={loading || googleLoading}
             />
 
             <PasswordField
@@ -132,6 +219,7 @@ export default function LoginPage({ onNavigate, onLogin }) {
               showPassword={showPassword}
               onToggleVisibility={() => setShowPassword(!showPassword)}
               placeholder="Enter your password"
+              disabled={loading || googleLoading}
             />
 
             <ErrorAlert message={formErrors.submit} />
@@ -140,7 +228,7 @@ export default function LoginPage({ onNavigate, onLogin }) {
               type="submit"
               fullWidth
               variant="contained"
-              disabled={loading}
+              disabled={loading || googleLoading}
               sx={{
                 mt: 2,
                 py: 1.5,
@@ -184,6 +272,29 @@ export default function LoginPage({ onNavigate, onLogin }) {
           </Box>
         </Paper>
       </Container>
+
+      {/* Success Message Snackbar */}
+      <Snackbar
+        open={showSuccessMessage}
+        autoHideDuration={1500}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert 
+          severity="success"
+          sx={{ 
+            width: '100%',
+            minWidth: '300px',
+            backgroundColor: '#4caf50',
+            color: 'white',
+            fontWeight: 500,
+            '& .MuiAlert-icon': { 
+              color: 'white' 
+            }
+          }}
+        >
+          ✅ Login successful! Redirecting...
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
