@@ -1,0 +1,7 @@
+.env
+**/.env
+/backend/demo/.env
+/web/medistream/.env
+/target/
+node_modules/
+.DS_Store
