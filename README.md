@@ -18,7 +18,7 @@ Structured Logging: Medical professionals can record symptoms, diagnoses, prescr
 Consultation Service Layer: Built-in support for adding, updating, and fetching consultation records via a RESTful API.
 
 ## Technology Stack
-Frontend: React 18, TypeScript, and Tailwind CSS for a responsive web interface.
+Frontend: React 18, Javascript, and Tailwind CSS for a responsive web interface.
 
 Mobile: Kotlin and Jetpack Compose for a native Android application.
 
@@ -27,3 +27,20 @@ Backend: Java 17 with Spring Boot 3.x and Spring Security.
 Database: PostgreSQL 14+ for secure relational data storage.
 
 Authentication: JWT (JSON Web Tokens) for session handling and Bcrypt for password hashing.
+
+#### Backend (Spring Boot)
+Steps to run:
+1. Open a terminal and navigate to the backend directory: cd backend\demo
+2. Run the Maven wrapper: .\mvnw.cmd spring-boot:run
+
+#### Frontend (React + JavaScript)
+Steps to run:
+1. Open a terminal and navigate to the backend directory: cd web\medistream
+2. Install dependencies (if not already done): npm install
+3. Start the development server: npm start
+
+The app will be available at http://localhost:3000 by default.
+
+#### Database
+PostgreSQL must be running locally.
+JWT and Bcrypt are configured in the backend – no extra steps needed for basic setup.
