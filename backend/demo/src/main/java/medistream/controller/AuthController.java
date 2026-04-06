@@ -7,6 +7,8 @@ import medistream.entity.UserAccountEntity;
 import medistream.entity.MedicalStaffEntity;
 import medistream.repository.UserAccountRepository;
 import medistream.security.JwtUtils;
+import medistream.service.AuthFacade;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,154 +26,59 @@ import jakarta.servlet.http.HttpServletResponse;
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
 public class AuthController {
 
-    @Autowired
-    private UserAccountRepository userAccountRepository;
-    
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final AuthFacade authFacade;
 
-    @Autowired
-    private JwtUtils jwtUtils;
+    public AuthController(AuthFacade authFacade) {
+        this.authFacade = authFacade;
+    }
 
-    // Test endpoint
     @GetMapping("/test")
     public ResponseEntity<String> test() {
-        return ResponseEntity.ok("✅ Backend is working! Time: " + System.currentTimeMillis());
+        return ResponseEntity.ok("✅ Backend is working!");
     }
 
-    // Check if email exists
     @GetMapping("/check-email/{email}")
     public ResponseEntity<Boolean> checkEmail(@PathVariable String email) {
-        boolean exists = userAccountRepository.findByUsername(email).isPresent();
-        return ResponseEntity.ok(exists);
+        return ResponseEntity.ok(authFacade.emailExists(email));
     }
 
-    // Login endpoint
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-        try {
-            System.out.println("🔐 Login attempt for: " + request.getEmail());
-            
-            // Validate
-            if (request.getEmail() == null || request.getEmail().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(AuthResponse.error("Email is required"));
-            }
-            if (request.getPassword() == null || request.getPassword().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(AuthResponse.error("Password is required"));
-            }
-            
-            // Find user
-            Optional<UserAccountEntity> userOpt = userAccountRepository.findByUsername(request.getEmail());
-            if (userOpt.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(AuthResponse.error("Invalid email or password"));
-            }
-
-            UserAccountEntity user = userOpt.get();
-            
-            // Check password
-            if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(AuthResponse.error("Invalid email or password"));
-            }
-
-            String jwtToken = jwtUtils.generateToken(user);
-
-            // Create response
-            Map<String, Object> userData = createUserResponse(user);
-            return ResponseEntity.ok(AuthResponse.success("Login successful", jwtToken, userData));
-            
-        } catch (Exception e) {
-            System.err.println("🔥 Login error: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(AuthResponse.error("Login failed: " + e.getMessage()));
+        AuthResponse response = authFacade.login(request);
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(response);
         }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
-    // Register endpoint WITH EMAIL CHECK
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
-        try {
-            System.out.println("📝 Registration attempt: " + request.getEmail());
-            
-            // Validate
-            if (request.getEmail() == null || request.getEmail().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(AuthResponse.error("Email is required"));
-            }
-            if (request.getPassword() == null || request.getPassword().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(AuthResponse.error("Password is required"));
-            }
-            if (request.getFirstName() == null || request.getFirstName().trim().isEmpty()) {
-                return ResponseEntity.badRequest().body(AuthResponse.error("First name is required"));
-            }
-            
-            // ✅ CHECK IF EMAIL ALREADY EXISTS
-            Optional<UserAccountEntity> existingUser = userAccountRepository.findByUsername(request.getEmail());
-            if (existingUser.isPresent()) {
-                return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(AuthResponse.error("Email already registered. Please use a different email."));
-            }
-
-            // Hash password
-            String hashedPassword = passwordEncoder.encode(request.getPassword());
-
-            // Create new user
-            UserAccountEntity newUser = new UserAccountEntity();
-            newUser.setUsername(request.getEmail());
-            newUser.setPasswordHash(hashedPassword);
-            newUser.setRole(request.getRole() != null ? request.getRole() : "staff");
-            
-            // Create medical staff if not patient
-            String role = request.getRole() != null ? request.getRole().toLowerCase() : "staff";
-            if (!role.equals("patient")) {
-                MedicalStaffEntity medicalStaff = new MedicalStaffEntity();
-                medicalStaff.setName(request.getFirstName() + " " + request.getLastName());
-                medicalStaff.setRole(role);
-                medicalStaff.setContactNo("");
-                medicalStaff.setSpecialty("");
-                medicalStaff.setUserAccount(newUser);
-                newUser.setMedicalStaff(medicalStaff);
-            }
-            
-            // Save to database
-            UserAccountEntity savedUser = userAccountRepository.save(newUser);
-
-            String jwtToken = jwtUtils.generateToken(savedUser);
-
-            // Create response
-            Map<String, Object> userData = createUserResponse(savedUser);
-            userData.put("firstName", request.getFirstName());
-            userData.put("lastName", request.getLastName());
-            
-           return ResponseEntity.status(HttpStatus.CREATED)
-                .body(AuthResponse.success("Registration successful", jwtToken, userData));
-            
-        } catch (Exception e) {
-            System.err.println("🔥 Registration error: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(AuthResponse.error("Registration failed: " + e.getMessage()));
+        AuthResponse response = authFacade.register(request);
+        if (response.isSuccess()) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }
+        return ResponseEntity.badRequest().body(response);
     }
 
-    // Helper method
-    private Map<String, Object> createUserResponse(UserAccountEntity user) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("id", user.getAccountID());
-        response.put("email", user.getUsername());
-        response.put("role", user.getRole());
-        response.put("username", user.getUsername());
+    // // Helper method
+    // private Map<String, Object> createUserResponse(UserAccountEntity user) {
+    //     Map<String, Object> response = new HashMap<>();
+    //     response.put("id", user.getAccountID());
+    //     response.put("email", user.getUsername());
+    //     response.put("role", user.getRole());
+    //     response.put("username", user.getUsername());
         
-        if (user.getMedicalStaff() != null) {
-            Map<String, Object> staffInfo = new HashMap<>();
-            staffInfo.put("name", user.getMedicalStaff().getName());
-            staffInfo.put("role", user.getMedicalStaff().getRole());
-            staffInfo.put("specialty", user.getMedicalStaff().getSpecialty());
-            staffInfo.put("contactNo", user.getMedicalStaff().getContactNo());
-            response.put("medicalStaff", staffInfo);
-        }
+    //     if (user.getMedicalStaff() != null) {
+    //         Map<String, Object> staffInfo = new HashMap<>();
+    //         staffInfo.put("name", user.getMedicalStaff().getName());
+    //         staffInfo.put("role", user.getMedicalStaff().getRole());
+    //         staffInfo.put("specialty", user.getMedicalStaff().getSpecialty());
+    //         staffInfo.put("contactNo", user.getMedicalStaff().getContactNo());
+    //         response.put("medicalStaff", staffInfo);
+    //     }
         
-        return response;
-    }
+    //     return response;
+    // }
 
     // Simple redirect from frontend button to Spring's OAuth2 authorization endpoint.
     // We accept an optional mode parameter so the UI can distinguish login vs register.
