@@ -1,0 +1,10 @@
+<resources>
+    <style name="Theme.MediStream" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/brand_maroon</item>
+        <item name="colorSecondary">@color/brand_maroon</item>
+        <item name="android:statusBarColor">@color/brand_maroon</item>
+
+        <item name="fontFamily">@font/poppins_regular</item>
+        <item name="android:fontFamily">@font/poppins_regular</item>
+    </style>
+</resources>
