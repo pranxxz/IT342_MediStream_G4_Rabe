@@ -5,6 +5,7 @@ import {
   EmailField, 
   ErrorAlert 
 } from '../components/RegisterFields';
+import QueueModalForm from '../components/QueueModalForm'; // adjust path
 import GoogleIcon from '@mui/icons-material/Google'; 
 
 const loginValidation = (values) => {
@@ -31,7 +32,12 @@ export default function LoginPage({ onNavigate, onLogin }) {
     password: ''
   });
   
-  // Success message state
+  // Queue modal state
+  const [queueModalOpen, setQueueModalOpen] = useState(false);
+  const [queueSubmitting, setQueueSubmitting] = useState(false);
+  const [queueSuccessMsg, setQueueSuccessMsg] = useState('');
+
+  // Success message for login
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   // Handle OAuth2 failure redirect from backend
@@ -47,11 +53,9 @@ export default function LoginPage({ onNavigate, onLogin }) {
       
       const mode = localStorage.getItem('oauthMode');
       if (mode === 'register') {
-        // Send user back to registration page with error info
         onNavigate('register');
       }
       
-      // Clear query so error doesn't persist
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [onNavigate]);
@@ -101,10 +105,7 @@ export default function LoginPage({ onNavigate, onLogin }) {
         localStorage.setItem('userEmail', formData.email);
         localStorage.setItem('userRole', data.role || 'patient');
         
-        // Show success message
         setShowSuccessMessage(true);
-        
-        // Redirect after showing success message
         setTimeout(() => {
           onLogin();
         }, 1500);
@@ -122,7 +123,6 @@ export default function LoginPage({ onNavigate, onLogin }) {
   };
 
   const handleGoogleLogin = () => {
-    // Clear tokens
     localStorage.removeItem('token');
     localStorage.removeItem('userEmail');
     localStorage.removeItem('userRole');
@@ -134,6 +134,41 @@ export default function LoginPage({ onNavigate, onLogin }) {
     window.location.href = `http://localhost:8080/api/auth/google?prompt=select_account&mode=login&_=${timestamp}`;
   };
 
+  // Queue modal handlers
+  const handleOpenQueueModal = () => setQueueModalOpen(true);
+  const handleCloseQueueModal = () => setQueueModalOpen(false);
+
+  const handleQueueSubmit = async (patientData) => {
+    setQueueSubmitting(true);
+    try {
+      const response = await fetch('http://localhost:8080/api/patients', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...patientData,
+          age: patientData.age ? Number(patientData.age) : null,
+          status: 'Waiting'
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        const patientId = result.patientId || result.id || 'N/A';
+        setQueueSuccessMsg(`✅ Success! Patient added to queue. ID: #${patientId}`);
+        handleCloseQueueModal();
+        setTimeout(() => setQueueSuccessMsg(''), 5000);
+      } else {
+        const errorData = await response.json().catch(() => null);
+        alert(errorData?.message || 'Failed to join queue. Please try again.');
+      }
+    } catch (error) {
+      console.error('Queue submission error:', error);
+      alert('Network error. Please check your connection and try again.');
+    } finally {
+      setQueueSubmitting(false);
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -142,7 +177,6 @@ export default function LoginPage({ onNavigate, onLogin }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell"',
         bgcolor: '#f5f5f5'
       }}
     >
@@ -201,26 +235,37 @@ export default function LoginPage({ onNavigate, onLogin }) {
                 borderRadius: 2,
                 textTransform: 'none',
                 backgroundColor: '#660013',
-                '&:hover': {
-                  backgroundColor: '#44000d',
-                },
-                '&.Mui-disabled': {
-                  backgroundColor: '#44000d',
-                  opacity: 0.6,
-                }
+                '&:hover': { backgroundColor: '#44000d' },
+                '&.Mui-disabled': { backgroundColor: '#44000d', opacity: 0.6 }
               }}
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
           </Box>
 
-           <Divider sx={{ my: 3 }} >
-            <Typography variant="body2" color="text.secondary">
-              OR
-            </Typography>
-          </Divider>
+          <Divider sx={{ my: 3 }}>OR</Divider>
 
-           <Button
+          {/* Join Queue Button */}
+          <Button
+            fullWidth
+            variant="outlined"
+            onClick={handleOpenQueueModal}
+            disabled={queueSubmitting}
+            sx={{
+              mb: 2,
+              py: 1.5,
+              borderRadius: 2,
+              textTransform: 'none',
+              borderColor: '#44000d',
+              color: '#44000d',
+              backgroundColor: '#fff',
+              '&:hover': { backgroundColor: '#fff0f0', borderColor: '#44000d' }
+            }}
+          >
+            Join Queue (No Login Required)
+          </Button>
+
+          <Button
             fullWidth
             variant="outlined"
             onClick={handleGoogleLogin}
@@ -234,14 +279,7 @@ export default function LoginPage({ onNavigate, onLogin }) {
               borderColor: '#dadce0',
               color: '#3c4043',
               backgroundColor: '#fff',
-              '&:hover': {
-                backgroundColor: '#f8f9fa',
-                borderColor: '#dadce0',
-              },
-              '&.Mui-disabled': {
-                backgroundColor: '#f8f9fa',
-                opacity: 0.7,
-              }
+              '&:hover': { backgroundColor: '#f8f9fa', borderColor: '#dadce0' }
             }}
           >
             {googleLoading ? 'Connecting to Google...' : 'Continue with Google'}
@@ -259,10 +297,7 @@ export default function LoginPage({ onNavigate, onLogin }) {
                   p: 0,
                   minWidth: 'auto',
                   textTransform: 'none',
-                  '&:hover': {
-                    backgroundColor: 'transparent',
-                    textDecoration: 'underline',
-                  }
+                  '&:hover': { backgroundColor: 'transparent', textDecoration: 'underline' }
                 }}
               >
                 Sign up
@@ -272,28 +307,36 @@ export default function LoginPage({ onNavigate, onLogin }) {
         </Paper>
       </Container>
 
-      {/* Success Message Snackbar */}
+      {/* Login Success Snackbar */}
       <Snackbar
         open={showSuccessMessage}
         autoHideDuration={1500}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert 
-          severity="success"
-          sx={{ 
-            width: '100%',
-            minWidth: '300px',
-            backgroundColor: '#4caf50',
-            color: 'white',
-            fontWeight: 500,
-            '& .MuiAlert-icon': { 
-              color: 'white' 
-            }
-          }}
-        >
+        <Alert severity="success" sx={{ bgcolor: '#4caf50', color: 'white', '& .MuiAlert-icon': { color: 'white' } }}>
           ✅ Login successful! Redirecting...
         </Alert>
       </Snackbar>
+
+      {/* Queue Success Snackbar */}
+      <Snackbar
+        open={!!queueSuccessMsg}
+        autoHideDuration={5000}
+        onClose={() => setQueueSuccessMsg('')}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert severity="success" onClose={() => setQueueSuccessMsg('')} sx={{ bgcolor: '#44000d', color: 'white' }}>
+          {queueSuccessMsg}
+        </Alert>
+      </Snackbar>
+
+      {/* Queue Modal */}
+      <QueueModalForm
+        open={queueModalOpen}
+        onClose={handleCloseQueueModal}
+        onSubmit={handleQueueSubmit}
+        isSubmitting={queueSubmitting}
+      />
     </Box>
   );
 }

@@ -54,6 +54,9 @@ public class SecurityConfig {
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/", "/error", "/webjars/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/patients/**").permitAll()
+                .requestMatchers("/api/staff/**").permitAll()
+                .requestMatchers("/api/consultations/**").permitAll()
                 .requestMatchers("/oauth2/**").permitAll()
                 .requestMatchers("/login/**").permitAll()
                 .anyRequest().authenticated()
