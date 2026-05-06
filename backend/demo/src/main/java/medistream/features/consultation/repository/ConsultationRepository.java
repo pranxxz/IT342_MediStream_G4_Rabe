@@ -1,8 +1,10 @@
-package medistream.repository;
+package medistream.features.consultation.repository;
 
-import medistream.entity.ConsultationEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import medistream.features.consultation.entity.ConsultationEntity;
+
 import java.util.List;
 
 @Repository

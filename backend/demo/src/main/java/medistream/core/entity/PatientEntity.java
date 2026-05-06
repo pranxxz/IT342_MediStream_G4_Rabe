@@ -3,9 +3,10 @@ package medistream.core.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import medistream.features.consultation.entity.ConsultationEntity;
+
 import java.util.ArrayList;
 import java.util.List;
-import medistream.entity.ConsultationEntity;
 
 @Entity
 @Table(name = "patient")

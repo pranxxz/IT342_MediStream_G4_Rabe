@@ -1,10 +1,12 @@
-package medistream.controller;
+package medistream.features.consultation.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import medistream.entity.ConsultationEntity;
-import medistream.service.ConsultationService;
+import medistream.features.consultation.dto.request.ConsultationRequest;
+import medistream.features.consultation.entity.ConsultationEntity;
+import medistream.features.consultation.service.ConsultationService;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -19,7 +21,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import medistream.dto.request.ConsultationRequest;
 
 @RestController
 @RequestMapping("/api/consultations")

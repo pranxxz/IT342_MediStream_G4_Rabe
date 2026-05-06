@@ -1,13 +1,14 @@
-package medistream.service;
+package medistream.features.consultation.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import medistream.entity.ConsultationEntity;
+
 import medistream.entity.MedicalStaffEntity;
+import medistream.features.consultation.entity.ConsultationEntity;
+import medistream.features.consultation.repository.ConsultationRepository;
 import medistream.core.entity.PatientEntity;
-import medistream.repository.ConsultationRepository;
 import medistream.repository.MedicalStaffRepository;
 import medistream.core.repository.PatientRepository;
 

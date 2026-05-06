@@ -1,8 +1,8 @@
 import { useState, useMemo, useEffect } from "react";
 import dayjs from 'dayjs';
-import { patientService } from "../services/patientService";
+import { patientService } from "../../../services/patientService";
 import { consultationService } from "../services/consultationService";
-import { staffService } from "../services/staffService";
+import { staffService } from "../../../services/staffService";
 
 const gender = [
   { value: 'Female', label: 'Female' },

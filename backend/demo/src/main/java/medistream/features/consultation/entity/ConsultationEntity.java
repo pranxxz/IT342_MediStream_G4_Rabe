@@ -1,4 +1,4 @@
-package medistream.entity;
+package medistream.features.consultation.entity;
 
 import java.time.OffsetDateTime;
 

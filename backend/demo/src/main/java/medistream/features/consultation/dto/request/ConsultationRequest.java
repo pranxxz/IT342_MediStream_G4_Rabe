@@ -1,4 +1,4 @@
-package medistream.dto.request;
+package medistream.features.consultation.dto.request;
 
 import java.time.OffsetDateTime;
 
