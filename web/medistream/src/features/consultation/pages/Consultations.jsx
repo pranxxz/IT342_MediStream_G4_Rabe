@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   Box,
   AppBar,
@@ -19,6 +19,7 @@ import {
   ListItem
 } from '@mui/material';
 import API from '../../../shared/services/api';
+import { queueService } from '../../patientqueue/services/queueService';
 import { staffService } from '../../medicalstaff/service/staffService';
 import {
   PersonOutline as PersonOutlineIcon,
@@ -76,6 +77,9 @@ export default function Consultation() {
 
   const [todaysConsultations, setTodaysConsultations] = useState([]);
 
+  // Use a ref to keep track of the currently selected patient for cleanup purposes
+  const selectedPatientRef = useRef(null);
+
   const applyTemplate = (template) => {
     const data = QUICK_TEMPLATES[template];
     if (data) {
@@ -90,21 +94,20 @@ export default function Consultation() {
   const loadPatients = async () => {
     setLoadingPatients(true);
     try {
-      // Load patients from the queue so consultation picks the queued patients
       const resp = await API.get('/api/queue');
       const queues = resp.data || [];
-      // Map queue entries to patient objects expected by the Autocomplete
       const patientsFromQueue = queues
-        .map(q => q.patient)
-        .filter(p => p != null)
-        .map(p => ({
-          patientId: p.patientId,
-          firstName: p.firstName,
-          lastName: p.lastName,
-          age: p.age,
-          gender: p.gender,
-          contactNumber: p.contactNumber,
-          address: p.address
+        .filter(q => q.patient != null)
+        .map(q => ({
+          patientId: q.patient.patientId,
+          firstName: q.patient.firstName,
+          lastName: q.patient.lastName,
+          age: q.patient.age,
+          gender: q.patient.gender,
+          contactNumber: q.patient.contactNumber,
+          address: q.patient.address,
+          queueId: q.id || q.queueID || q.queueId,
+          queueStatus: q.status,
         }));
       setPatients(patientsFromQueue);
     } catch (error) {
@@ -145,7 +148,46 @@ export default function Consultation() {
     loadPatients();
     loadStaff();
     loadConsultations();
+
+    // Cleanup function: If the doctor closes the tab/leaves the page while a patient is selected, revert them to WAITING
+    return () => {
+      const currentPatient = selectedPatientRef.current;
+      if (currentPatient && (currentPatient.queueId || currentPatient.queueID)) {
+        const qid = currentPatient.queueId || currentPatient.queueID;
+        queueService.updateQueueItem(qid, { status: 'WAITING' }).catch(e => console.error("Cleanup failed", e));
+      }
+    };
   }, []);
+
+  const handlePatientSelect = async (event, newValue) => {
+    // 1. Revert the PREVIOUSLY selected patient back to WAITING (if they exist and changed their mind)
+    if (selectedPatient && (selectedPatient.queueId || selectedPatient.queueID)) {
+      try {
+        const prevQid = selectedPatient.queueId || selectedPatient.queueID;
+        await queueService.updateQueueItem(prevQid, { status: 'WAITING' });
+      } catch (err) {
+        console.error('Failed to revert previous patient to WAITING', err);
+      }
+    }
+
+    // 2. Set the NEW selected patient in state and ref
+    setSelectedPatient(newValue);
+    selectedPatientRef.current = newValue;
+
+    // 3. Update the NEW selected patient to CONSULTING
+    if (newValue && (newValue.queueId || newValue.queueID)) {
+      try {
+        const newQid = newValue.queueId || newValue.queueID;
+        await queueService.updateQueueItem(newQid, { status: 'CONSULTING' });
+      } catch (err) {
+        console.error('Failed to mark patient as CONSULTING in queue', err);
+        setSnackbar({ open: true, message: 'Could not update queue status', severity: 'warning' });
+      }
+    }
+    
+    // Refresh the list so the UI captures the latest statuses
+    loadPatients();
+  };
 
   const handleSave = async () => {
     if (!selectedPatient) {
@@ -192,6 +234,16 @@ export default function Consultation() {
         ...prev,
       ]);
 
+      // 4. Remove the patient from the queue permanently now that consultation is done
+      try {
+        const qid = selectedPatient?.queueId || selectedPatient?.queueID;
+        if (qid) {
+          await queueService.deleteQueueItem(qid);
+        }
+      } catch (delErr) {
+        console.error('Failed to remove patient from queue after consultation save', delErr);
+      }
+
       // Reset form
       setSymptoms('');
       setDiagnosis('');
@@ -200,6 +252,11 @@ export default function Consultation() {
       setDoctor('');
       setConsultDate(new Date());
       setSelectedPatient(null);
+      selectedPatientRef.current = null; // Clear the ref
+      
+      // Reload the patients so the removed patient disappears from the dropdown
+      loadPatients();
+
       setSnackbar({ open: true, message: 'Consultation saved successfully!', severity: 'success' });
     } catch (error) {
       console.error('Failed to save consultation', error);
@@ -225,7 +282,6 @@ export default function Consultation() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      {/* Root Box fills the layout space cleanly */}
       <Box sx={{ flexGrow: 1, minHeight: '100vh', backgroundColor: '#f9fafb', pb: 6 }}>
         
         <AppBar position="static" sx={{ bgcolor: 'transparent', boxShadow: 'none', color: maroonColor, pt: 4, px: { xs: 2, md: 5 } }}>
@@ -257,7 +313,7 @@ export default function Consultation() {
                   options={patients}
                   getOptionLabel={(option) => `${option.firstName || ''} ${option.lastName || option.name || ''}`.trim()}
                   value={selectedPatient}
-                  onChange={(event, newValue) => setSelectedPatient(newValue)}
+                  onChange={handlePatientSelect}
                   renderInput={(params) => (
                     <TextField {...params} label={loadingPatients ? "Loading..." : ""} variant="outlined" size="small" fullWidth sx={{ mb: 3 }} />
                   )}
