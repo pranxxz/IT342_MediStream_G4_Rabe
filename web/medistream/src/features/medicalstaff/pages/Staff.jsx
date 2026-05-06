@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useStaff } from "../hooks";
+import { useStaff } from "../../../hooks";
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────
 const M       = "#4a0e0e";

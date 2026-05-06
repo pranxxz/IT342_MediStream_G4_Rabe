@@ -1,4 +1,4 @@
-package medistream.controller;
+package medistream.features.medicalstaff.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import medistream.entity.MedicalStaffEntity;
-import medistream.service.MedicalStaffService;
+import medistream.features.medicalstaff.entity.MedicalStaffEntity;
+import medistream.features.medicalstaff.service.MedicalStaffService;
 
 @RestController
 @RequestMapping("/api/medicalstaff")

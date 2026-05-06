@@ -4,7 +4,7 @@ import medistream.dto.request.LoginRequest;
 import medistream.dto.request.RegisterRequest;
 import medistream.dto.response.AuthResponse;
 import medistream.entity.UserAccountEntity;
-import medistream.entity.MedicalStaffEntity;
+import medistream.features.medicalstaff.entity.MedicalStaffEntity;
 import medistream.repository.UserAccountRepository;
 import medistream.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;

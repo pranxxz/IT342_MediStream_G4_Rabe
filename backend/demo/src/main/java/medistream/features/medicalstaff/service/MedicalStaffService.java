@@ -1,8 +1,7 @@
-package medistream.service;
+package medistream.features.medicalstaff.service;
 
-import medistream.entity.MedicalStaffEntity;
-import medistream.repository.MedicalStaffRepository;
-
+import medistream.features.medicalstaff.entity.MedicalStaffEntity;
+import medistream.features.medicalstaff.repository.MedicalStaffRepository;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;

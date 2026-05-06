@@ -1,9 +1,10 @@
-package medistream.repository;
+package medistream.features.medicalstaff.repository;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import medistream.entity.MedicalStaffEntity;
+
+import medistream.features.medicalstaff.entity.MedicalStaffEntity;
 
 @Repository
 public interface MedicalStaffRepository extends JpaRepository<MedicalStaffEntity, Integer> {

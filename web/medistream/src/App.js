@@ -9,7 +9,7 @@ import RegisterPage from './pages/Register.jsx';
 import LoginPage from './pages/Login.jsx';  
 import MedicalHistory from './features/consultation/pages/MedicalHistory.jsx';
 import PatientQueue from './features/patientqueue/pages/PatientQueue.jsx';
-import Staff from './pages/Staff.jsx';
+import Staff from './features/medicalstaff/pages/Staff.jsx';
 import GeneralSettings from './pages/GeneralSettings.jsx';
 import QueueDashboard from './pages/QueueDashboard.jsx';
 import OAuthCallback from './pages/OAuthCallback.jsx';

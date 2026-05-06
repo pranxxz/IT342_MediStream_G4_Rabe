@@ -3,6 +3,7 @@ package medistream.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
+import medistream.features.medicalstaff.entity.MedicalStaffEntity;
 
 @Entity
 @Table(name = "user_account")

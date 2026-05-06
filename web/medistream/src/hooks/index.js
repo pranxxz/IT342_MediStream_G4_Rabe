@@ -4,7 +4,7 @@ export * from './usePatientManagement';
 export * from './useQueueStats';
 export * from './usePatientCard';
 export * from './useNumericInput';
-export * from './useStaff';
+export * from '../features/medicalstaff/hooks/useStaff';
 export * from '../features/consultation/hooks/usePatientHistory';
 export * from '../features/consultation/hooks/useConsultation';
 export * from './authentication/useAuth';

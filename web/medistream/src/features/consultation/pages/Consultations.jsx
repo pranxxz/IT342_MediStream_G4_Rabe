@@ -19,7 +19,7 @@ import {
   ListItem
 } from '@mui/material';
 import API from '../../../services/api';
-import { staffService } from '../../../services/staffService';
+import { staffService } from '../../medicalstaff/service/staffService';
 import {
   PersonOutline as PersonOutlineIcon,
   Group as GroupIcon,

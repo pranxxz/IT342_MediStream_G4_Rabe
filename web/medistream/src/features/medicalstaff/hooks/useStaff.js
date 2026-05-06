@@ -1,6 +1,6 @@
 // hooks/useStaff.js
 import { useState, useEffect, useMemo } from "react";
-import API from '../services/api';
+import API from '../../../services/api';
 
 export const useStaff = () => {
   const [searchQuery, setSearchQuery] = useState('');

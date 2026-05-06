@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 import medistream.dto.request.LoginRequest;
 import medistream.dto.request.RegisterRequest;
 import medistream.dto.response.AuthResponse;
-import medistream.entity.MedicalStaffEntity;
 import medistream.entity.UserAccountEntity;
+import medistream.features.medicalstaff.entity.MedicalStaffEntity;
+import medistream.features.medicalstaff.repository.MedicalStaffRepository;
 import medistream.repository.UserAccountRepository;
-import medistream.repository.MedicalStaffRepository;
 import medistream.security.JwtUtils;
 
 import jakarta.transaction.Transactional;
