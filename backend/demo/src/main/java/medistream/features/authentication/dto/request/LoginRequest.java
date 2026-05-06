@@ -1,4 +1,4 @@
-package medistream.dto.request;
+package medistream.features.authentication.dto.request;
 
 public class LoginRequest {
     private String email;

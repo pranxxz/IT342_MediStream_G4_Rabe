@@ -1,4 +1,4 @@
-package medistream.security;
+package medistream.shared.security;
 
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;

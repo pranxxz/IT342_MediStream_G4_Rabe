@@ -1,4 +1,4 @@
-package medistream.dto.response;
+package medistream.features.authentication.dto.response;
 
 import java.util.Map;
 

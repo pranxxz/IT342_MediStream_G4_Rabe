@@ -1,10 +1,11 @@
-package medistream.security;
+package medistream.shared.security;
 
-import medistream.entity.UserAccountEntity;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import medistream.features.authentication.entity.UserAccountEntity;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

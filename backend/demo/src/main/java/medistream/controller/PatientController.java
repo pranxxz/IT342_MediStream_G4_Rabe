@@ -1,8 +1,8 @@
 package medistream.controller;
 
-import medistream.core.entity.PatientEntity;
-import medistream.core.repository.PatientRepository;
 import medistream.features.consultation.entity.ConsultationEntity;
+import medistream.shared.entity.PatientEntity;
+import medistream.shared.repository.PatientRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

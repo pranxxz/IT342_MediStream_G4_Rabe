@@ -1,4 +1,4 @@
-package medistream.service;
+package medistream.features.authentication.service;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,15 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import medistream.dto.request.LoginRequest;
-import medistream.dto.request.RegisterRequest;
-import medistream.dto.response.AuthResponse;
-import medistream.entity.UserAccountEntity;
+import medistream.features.authentication.dto.request.LoginRequest;
+import medistream.features.authentication.dto.request.RegisterRequest;
+import medistream.features.authentication.dto.response.AuthResponse;
+import medistream.features.authentication.entity.UserAccountEntity;
+import medistream.features.authentication.repository.UserAccountRepository;
 import medistream.features.medicalstaff.entity.MedicalStaffEntity;
 import medistream.features.medicalstaff.repository.MedicalStaffRepository;
-import medistream.repository.UserAccountRepository;
-import medistream.security.JwtUtils;
-
+import medistream.shared.security.JwtUtils;
 import jakarta.transaction.Transactional;
 
 @Service

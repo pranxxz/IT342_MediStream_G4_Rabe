@@ -1,4 +1,4 @@
-package medistream.entity;
+package medistream.features.authentication.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

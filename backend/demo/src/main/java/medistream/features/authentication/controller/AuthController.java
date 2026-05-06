@@ -1,12 +1,13 @@
-package medistream.controller;
+package medistream.features.authentication.controller;
 
-import medistream.dto.request.LoginRequest;
-import medistream.dto.request.RegisterRequest;
-import medistream.dto.response.AuthResponse;
-import medistream.entity.UserAccountEntity;
+import medistream.features.authentication.dto.request.LoginRequest;
+import medistream.features.authentication.dto.request.RegisterRequest;
+import medistream.features.authentication.dto.response.AuthResponse;
+import medistream.features.authentication.entity.UserAccountEntity;
+import medistream.features.authentication.repository.UserAccountRepository;
 import medistream.features.medicalstaff.entity.MedicalStaffEntity;
-import medistream.repository.UserAccountRepository;
-import medistream.security.JwtUtils;
+import medistream.shared.security.JwtUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

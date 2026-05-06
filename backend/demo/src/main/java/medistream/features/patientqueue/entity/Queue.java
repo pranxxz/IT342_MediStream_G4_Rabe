@@ -1,8 +1,9 @@
 package medistream.features.patientqueue.entity;
 
 import jakarta.persistence.*;
+import medistream.shared.entity.PatientEntity;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import medistream.core.entity.PatientEntity;
 
 @Entity
 @Table(name = "queue")

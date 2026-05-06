@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import medistream.features.patientqueue.dto.request.PatientQueueRequest;
-import medistream.core.entity.PatientEntity;
 import medistream.features.patientqueue.entity.Queue;
-import medistream.core.repository.PatientRepository;
 import medistream.features.patientqueue.repository.QueueRepository;
+import medistream.shared.entity.PatientEntity;
+import medistream.shared.repository.PatientRepository;
 
 @Service
 public class QueueService {

@@ -1,7 +1,8 @@
-package medistream.security;
+package medistream.shared.security;
 
-import medistream.entity.UserAccountEntity;
-import medistream.repository.UserAccountRepository;
+import medistream.features.authentication.entity.UserAccountEntity;
+import medistream.features.authentication.repository.UserAccountRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;

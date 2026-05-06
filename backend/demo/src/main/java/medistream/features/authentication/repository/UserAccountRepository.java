@@ -1,7 +1,9 @@
-package medistream.repository;
+package medistream.features.authentication.repository;
 
-import medistream.entity.UserAccountEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import medistream.features.authentication.entity.UserAccountEntity;
+
 import java.util.Optional;
 
 

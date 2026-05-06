@@ -1,7 +1,7 @@
 package medistream.features.medicalstaff.entity;
 
 import jakarta.persistence.*;
-import medistream.entity.UserAccountEntity;
+import medistream.features.authentication.entity.UserAccountEntity;
 
 @Entity
 @Table(name = "medical_staff")

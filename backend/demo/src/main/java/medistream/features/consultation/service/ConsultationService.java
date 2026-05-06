@@ -9,8 +9,8 @@ import medistream.features.consultation.entity.ConsultationEntity;
 import medistream.features.consultation.repository.ConsultationRepository;
 import medistream.features.medicalstaff.entity.MedicalStaffEntity;
 import medistream.features.medicalstaff.repository.MedicalStaffRepository;
-import medistream.core.entity.PatientEntity;
-import medistream.core.repository.PatientRepository;
+import medistream.shared.entity.PatientEntity;
+import medistream.shared.repository.PatientRepository;
 
 @Service
 public class ConsultationService {
