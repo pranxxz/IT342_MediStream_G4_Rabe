@@ -5,9 +5,7 @@ import {
   EmailField, 
   ErrorAlert 
 } from '../components/RegisterFields';
-import QueueModalForm from '../components/QueueModalForm'; // adjust path
 import GoogleIcon from '@mui/icons-material/Google'; 
-import { queueService } from '../services/queueService'; // Add this line!
 
 const loginValidation = (values) => {
   const errors = {};
@@ -33,11 +31,6 @@ export default function LoginPage({ onNavigate, onLogin }) {
     password: ''
   });
   
-  // Queue modal state
-  const [queueModalOpen, setQueueModalOpen] = useState(false);
-  const [queueSubmitting, setQueueSubmitting] = useState(false);
-  const [queueSuccessMsg, setQueueSuccessMsg] = useState('');
-
   // Success message for login
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
@@ -135,39 +128,6 @@ export default function LoginPage({ onNavigate, onLogin }) {
     window.location.href = `http://localhost:8080/api/auth/google?prompt=select_account&mode=login&_=${timestamp}`;
   };
 
-  // Queue modal handlers
-  const handleOpenQueueModal = () => setQueueModalOpen(true);
-  const handleCloseQueueModal = () => setQueueModalOpen(false);
-
-  const handleQueueSubmit = async (patientData) => {
-    setQueueSubmitting(true);
-    try {
-      // 1. Format the data to match what the backend expects
-      const formattedData = {
-        ...patientData,
-        age: patientData.age ? Number(patientData.age) : null,
-        status: 'Waiting'
-      };
-
-      // 2. Call our new composite endpoint via the service!
-      // This single call will now create BOTH the Patient and Queue records.
-      const result = await queueService.joinQueue(formattedData);
-
-      // 3. Handle success (Using the data returned from QueueController)
-      setQueueSuccessMsg(`✅ Success! Added to queue. Queue Number: ${result.queueNumber}`);
-      handleCloseQueueModal();
-      setTimeout(() => setQueueSuccessMsg(''), 5000);
-      
-    } catch (error) {
-      console.error('Queue submission error:', error);
-      
-      // Try to extract a useful error message if the backend sent one
-      const errorMsg = error.response?.data || 'Failed to join queue. Please try again.';
-      alert(typeof errorMsg === 'string' ? errorMsg : 'Network error. Please check your connection.');
-    } finally {
-      setQueueSubmitting(false);
-    }
-  };
 
   return (
     <Box
@@ -245,26 +205,6 @@ export default function LoginPage({ onNavigate, onLogin }) {
 
           <Divider sx={{ my: 3 }}>OR</Divider>
 
-          {/* Join Queue Button */}
-          <Button
-            fullWidth
-            variant="outlined"
-            onClick={handleOpenQueueModal}
-            disabled={queueSubmitting}
-            sx={{
-              mb: 2,
-              py: 1.5,
-              borderRadius: 2,
-              textTransform: 'none',
-              borderColor: '#44000d',
-              color: '#44000d',
-              backgroundColor: '#fff',
-              '&:hover': { backgroundColor: '#fff0f0', borderColor: '#44000d' }
-            }}
-          >
-            Join Queue (No Login Required)
-          </Button>
-
           <Button
             fullWidth
             variant="outlined"
@@ -317,26 +257,6 @@ export default function LoginPage({ onNavigate, onLogin }) {
           ✅ Login successful! Redirecting...
         </Alert>
       </Snackbar>
-
-      {/* Queue Success Snackbar */}
-      <Snackbar
-        open={!!queueSuccessMsg}
-        autoHideDuration={5000}
-        onClose={() => setQueueSuccessMsg('')}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert severity="success" onClose={() => setQueueSuccessMsg('')} sx={{ bgcolor: '#44000d', color: 'white' }}>
-          {queueSuccessMsg}
-        </Alert>
-      </Snackbar>
-
-      {/* Queue Modal */}
-      <QueueModalForm
-        open={queueModalOpen}
-        onClose={handleCloseQueueModal}
-        onSubmit={handleQueueSubmit}
-        isSubmitting={queueSubmitting}
-      />
     </Box>
   );
 }
