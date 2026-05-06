@@ -1,6 +1,6 @@
-package medistream.repository;
+package medistream.core.repository;
 
-import medistream.entity.PatientEntity;
+import medistream.core.entity.PatientEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

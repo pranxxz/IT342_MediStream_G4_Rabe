@@ -1,4 +1,4 @@
-package medistream.dto.request;
+package medistream.features.patientqueue.dto.request;
 
 public class PatientQueueRequest {
     private String firstName;

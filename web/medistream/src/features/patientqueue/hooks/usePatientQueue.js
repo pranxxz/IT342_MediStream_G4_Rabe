@@ -17,51 +17,6 @@ export const usePatientQueue = () => {
       status: "Consulting",
       priority: "high"
     },
-    {
-      id: 2,
-      initials: "JDC",
-      name: "Juan Dela Cruz",
-      age: 32,
-      gender: "Male",
-      assignedTo: "Dr. Cruz",
-      arrivalTime: "08:45 AM",
-      status: "Waiting",
-      priority: "medium"
-    },
-    {
-      id: 3,
-      initials: "AR",
-      name: "Ana Reyes",
-      age: 28,
-      gender: "Female",
-      assignedTo: "Dr. Cruz",
-      arrivalTime: "09:00 AM",
-      status: "Completed",
-      priority: "low"
-    },
-    {
-      id: 4,
-      initials: "PG",
-      name: "Pedro Garcia",
-      age: 55,
-      gender: "Male",
-      assignedTo: "Dr. Santos",
-      arrivalTime: "09:15 AM",
-      status: "Waiting",
-      priority: "medium"
-    },
-    {
-      id: 5,
-      initials: "RM",
-      name: "Rosa Martinez",
-      age: 38,
-      gender: "Female",
-      assignedTo: "Dr. Santos",
-      arrivalTime: "09:30 AM",
-      status: "Consulting",
-      priority: "high"
-    },
-    
   ], []);
 
   const displayPatients = useMemo(() => {
@@ -90,7 +45,6 @@ export const usePatientQueue = () => {
   const handleRefresh = () => {
     setSearchTerm('');
     setFilterStatus('all');
-    // Removed: setIsFilterOpen(false);
   };
 
   const clearFilters = () => {

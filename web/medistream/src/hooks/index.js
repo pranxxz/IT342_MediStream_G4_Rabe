@@ -1,5 +1,5 @@
 export * from './useFilter';
-export * from './usePatientQueue'; 
+export * from '../features/patientqueue/hooks/usePatientQueue';
 export * from './usePatientManagement';
 export * from './useQueueStats';
 export * from './usePatientCard';

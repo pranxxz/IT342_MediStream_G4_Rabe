@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import API from '../services/api';
-import { COLORS, Avatar } from '../components/Sidebar'; 
+import API from '../../../services/api';
+import { COLORS, Avatar } from '../../../components/Sidebar'; 
 
 // ─── PatientQueue Specific Icons ──────────────────────────────────────────────
 const IconPlus = () => (

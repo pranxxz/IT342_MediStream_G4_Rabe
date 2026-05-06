@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { styled, keyframes } from "@mui/system";
 import QueueModalForm from "../components/QueueModalForm";
-import { queueService } from "../services/queueService";
+import { queueService } from "../features/patientqueue/services/queueService";
 
 const MAROON      = "#660013";   
 const MAROON_DARK = "#44000d";   

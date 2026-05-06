@@ -1,8 +1,8 @@
-package medistream.controller;
+package medistream.features.patientqueue.controller;
 
-import medistream.dto.request.PatientQueueRequest;
-import medistream.entity.Queue;
-import medistream.service.QueueService;
+import medistream.features.patientqueue.dto.request.PatientQueueRequest;
+import medistream.features.patientqueue.entity.Queue;
+import medistream.features.patientqueue.service.QueueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

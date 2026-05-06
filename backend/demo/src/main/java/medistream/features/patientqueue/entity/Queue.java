@@ -1,7 +1,8 @@
-package medistream.entity;
+package medistream.features.patientqueue.entity;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import medistream.core.entity.PatientEntity;
 
 @Entity
 @Table(name = "queue")
@@ -30,7 +31,6 @@ public class Queue {
     @JsonIgnoreProperties({"consultations"})
     private PatientEntity patient;
 
-    // Constructors
     public Queue() {}
 
     public Queue(String queueNumber, String status, PatientEntity patient, String arrivalTime, String assignedDoctor) {
@@ -41,7 +41,6 @@ public class Queue {
         this.assignedDoctor = assignedDoctor;
     }
 
-    // Getters and Setters
     public String getArrivalTime() { return arrivalTime; }
     public void setArrivalTime(String arrivalTime) { this.arrivalTime = arrivalTime; }
 

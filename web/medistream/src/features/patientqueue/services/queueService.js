@@ -1,7 +1,6 @@
-import API from './api';
+import API from '../../../services/api';
 
 export const queueService = {
-  // NEW: This connects to @PostMapping("/join") in QueueController
   joinQueue: async (queueRequestData) => {
     try {
       const response = await API.post('/api/queue/join', queueRequestData);

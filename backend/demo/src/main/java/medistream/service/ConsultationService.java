@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import medistream.entity.ConsultationEntity;
 import medistream.entity.MedicalStaffEntity;
-import medistream.entity.PatientEntity;
+import medistream.core.entity.PatientEntity;
 import medistream.repository.ConsultationRepository;
 import medistream.repository.MedicalStaffRepository;
-import medistream.repository.PatientRepository;
+import medistream.core.repository.PatientRepository;
 
 @Service
 public class ConsultationService {

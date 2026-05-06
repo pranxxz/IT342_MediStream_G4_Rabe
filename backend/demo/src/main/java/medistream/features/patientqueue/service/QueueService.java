@@ -1,4 +1,4 @@
-package medistream.service;
+package medistream.features.patientqueue.service;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import medistream.dto.request.PatientQueueRequest;
-import medistream.entity.PatientEntity;
-import medistream.entity.Queue;
-import medistream.repository.PatientRepository;
-import medistream.repository.QueueRepository;
+import medistream.features.patientqueue.dto.request.PatientQueueRequest;
+import medistream.core.entity.PatientEntity;
+import medistream.features.patientqueue.entity.Queue;
+import medistream.core.repository.PatientRepository;
+import medistream.features.patientqueue.repository.QueueRepository;
 
 @Service
 public class QueueService {
