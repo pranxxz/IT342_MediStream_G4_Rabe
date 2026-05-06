@@ -1,4 +1,4 @@
-package medistream.features.patientqueue.service;
+package medistream.features.queue.service;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import medistream.features.patientqueue.dto.request.PatientQueueRequest;
-import medistream.features.patientqueue.entity.Queue;
-import medistream.features.patientqueue.repository.QueueRepository;
-import medistream.shared.entity.PatientEntity;
-import medistream.shared.repository.PatientRepository;
+import medistream.features.patient.entity.PatientEntity;
+import medistream.features.patient.service.PatientService;
+import medistream.features.queue.dto.request.PatientQueueRequest;
+import medistream.features.queue.entity.Queue;
+import medistream.features.queue.repository.QueueRepository;
 
 @Service
 public class QueueService {
@@ -21,7 +21,7 @@ public class QueueService {
     private QueueRepository queueRepository;
 
     @Autowired
-    private PatientRepository patientRepository;
+    private PatientService patientService;
 
     @Transactional
     public Queue joinQueue(PatientQueueRequest request) {
@@ -37,7 +37,7 @@ public class QueueService {
         patient.setFullName(request.getFirstName() + " " + request.getLastName());
 
         // Save patient first
-        patient = patientRepository.save(patient);
+        patient = patientService.createPatient(patient);
 
         // 2. Generate Queue Number
         String nextQueueNumber = generateNextQueueNumber();
@@ -94,7 +94,7 @@ public class QueueService {
             if (queueData.getPatient().getAge() > 0) {
                 patient.setAge(queueData.getPatient().getAge());
             }
-            patientRepository.save(patient);
+            patientService.updatePatient(patient.getPatientId(), patient);
         }
 
         return queueRepository.save(queue);

@@ -1,8 +1,10 @@
-package medistream.features.patientqueue.repository;
+package medistream.features.queue.repository;
 
-import medistream.features.patientqueue.entity.Queue;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import medistream.features.queue.entity.Queue;
+
 import java.util.Optional;
 
 public interface QueueRepository extends JpaRepository<Queue, Long> {

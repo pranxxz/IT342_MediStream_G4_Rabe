@@ -1,7 +1,7 @@
-package medistream.features.patientqueue.entity;
+package medistream.features.queue.entity;
 
 import jakarta.persistence.*;
-import medistream.shared.entity.PatientEntity;
+import medistream.features.patient.entity.PatientEntity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

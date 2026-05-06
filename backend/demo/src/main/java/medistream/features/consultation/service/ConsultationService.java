@@ -9,8 +9,8 @@ import medistream.features.consultation.entity.ConsultationEntity;
 import medistream.features.consultation.repository.ConsultationRepository;
 import medistream.features.medicalstaff.entity.MedicalStaffEntity;
 import medistream.features.medicalstaff.repository.MedicalStaffRepository;
-import medistream.shared.entity.PatientEntity;
-import medistream.shared.repository.PatientRepository;
+import medistream.features.patient.entity.PatientEntity;
+import medistream.features.patient.service.PatientService;
 
 @Service
 public class ConsultationService {
@@ -18,7 +18,7 @@ public class ConsultationService {
     private ConsultationRepository crepo;
 
     @Autowired
-    private PatientRepository prepo;
+    private PatientService patientService;
 
     @Autowired
     private MedicalStaffRepository srepo;
@@ -26,8 +26,7 @@ public class ConsultationService {
     public ConsultationEntity saveConsultation(int patientId, int staffId, ConsultationEntity consultation) {
         
         // 1. Fetch Patient
-        PatientEntity patient = prepo.findById(patientId)
-            .orElseThrow(() -> new RuntimeException("Patient not found"));
+        PatientEntity patient = patientService.getPatientById(patientId);
 
         // 2. Fetch Doctor/Staff
         MedicalStaffEntity staff = srepo.findById(staffId)

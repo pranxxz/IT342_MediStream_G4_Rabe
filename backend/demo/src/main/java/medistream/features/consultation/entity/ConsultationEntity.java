@@ -4,7 +4,8 @@ import java.time.OffsetDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import medistream.shared.entity.PatientEntity;
+import medistream.features.medicalstaff.entity.MedicalStaffEntity;
+import medistream.features.patient.entity.PatientEntity;
 
 @Entity
 @Table(name = "consultation")

@@ -1,11 +1,12 @@
-package medistream.features.patientqueue.controller;
+package medistream.features.queue.controller;
 
-import medistream.features.patientqueue.dto.request.PatientQueueRequest;
-import medistream.features.patientqueue.entity.Queue;
-import medistream.features.patientqueue.service.QueueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import medistream.features.queue.dto.request.PatientQueueRequest;
+import medistream.features.queue.entity.Queue;
+import medistream.features.queue.service.QueueService;
 
 import java.util.HashMap;
 import java.util.Map;

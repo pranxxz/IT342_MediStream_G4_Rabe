@@ -1,4 +1,4 @@
-package medistream.shared.entity;
+package medistream.features.patient.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonIgnore;
