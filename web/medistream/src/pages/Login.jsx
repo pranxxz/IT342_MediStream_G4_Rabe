@@ -31,7 +31,7 @@ export default function LoginPage({ onNavigate, onLogin }) {
     password: ''
   });
   
-  // Success message state
+  // Success message for login
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   // Handle OAuth2 failure redirect from backend
@@ -47,11 +47,9 @@ export default function LoginPage({ onNavigate, onLogin }) {
       
       const mode = localStorage.getItem('oauthMode');
       if (mode === 'register') {
-        // Send user back to registration page with error info
         onNavigate('register');
       }
       
-      // Clear query so error doesn't persist
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [onNavigate]);
@@ -101,10 +99,7 @@ export default function LoginPage({ onNavigate, onLogin }) {
         localStorage.setItem('userEmail', formData.email);
         localStorage.setItem('userRole', data.role || 'patient');
         
-        // Show success message
         setShowSuccessMessage(true);
-        
-        // Redirect after showing success message
         setTimeout(() => {
           onLogin();
         }, 1500);
@@ -122,7 +117,6 @@ export default function LoginPage({ onNavigate, onLogin }) {
   };
 
   const handleGoogleLogin = () => {
-    // Clear tokens
     localStorage.removeItem('token');
     localStorage.removeItem('userEmail');
     localStorage.removeItem('userRole');
@@ -134,6 +128,7 @@ export default function LoginPage({ onNavigate, onLogin }) {
     window.location.href = `http://localhost:8080/api/auth/google?prompt=select_account&mode=login&_=${timestamp}`;
   };
 
+
   return (
     <Box
       sx={{
@@ -142,7 +137,6 @@ export default function LoginPage({ onNavigate, onLogin }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell"',
         bgcolor: '#f5f5f5'
       }}
     >
@@ -201,26 +195,17 @@ export default function LoginPage({ onNavigate, onLogin }) {
                 borderRadius: 2,
                 textTransform: 'none',
                 backgroundColor: '#660013',
-                '&:hover': {
-                  backgroundColor: '#44000d',
-                },
-                '&.Mui-disabled': {
-                  backgroundColor: '#44000d',
-                  opacity: 0.6,
-                }
+                '&:hover': { backgroundColor: '#44000d' },
+                '&.Mui-disabled': { backgroundColor: '#44000d', opacity: 0.6 }
               }}
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
           </Box>
 
-           <Divider sx={{ my: 3 }} >
-            <Typography variant="body2" color="text.secondary">
-              OR
-            </Typography>
-          </Divider>
+          <Divider sx={{ my: 3 }}>OR</Divider>
 
-           <Button
+          <Button
             fullWidth
             variant="outlined"
             onClick={handleGoogleLogin}
@@ -234,14 +219,7 @@ export default function LoginPage({ onNavigate, onLogin }) {
               borderColor: '#dadce0',
               color: '#3c4043',
               backgroundColor: '#fff',
-              '&:hover': {
-                backgroundColor: '#f8f9fa',
-                borderColor: '#dadce0',
-              },
-              '&.Mui-disabled': {
-                backgroundColor: '#f8f9fa',
-                opacity: 0.7,
-              }
+              '&:hover': { backgroundColor: '#f8f9fa', borderColor: '#dadce0' }
             }}
           >
             {googleLoading ? 'Connecting to Google...' : 'Continue with Google'}
@@ -259,10 +237,7 @@ export default function LoginPage({ onNavigate, onLogin }) {
                   p: 0,
                   minWidth: 'auto',
                   textTransform: 'none',
-                  '&:hover': {
-                    backgroundColor: 'transparent',
-                    textDecoration: 'underline',
-                  }
+                  '&:hover': { backgroundColor: 'transparent', textDecoration: 'underline' }
                 }}
               >
                 Sign up
@@ -272,25 +247,13 @@ export default function LoginPage({ onNavigate, onLogin }) {
         </Paper>
       </Container>
 
-      {/* Success Message Snackbar */}
+      {/* Login Success Snackbar */}
       <Snackbar
         open={showSuccessMessage}
         autoHideDuration={1500}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert 
-          severity="success"
-          sx={{ 
-            width: '100%',
-            minWidth: '300px',
-            backgroundColor: '#4caf50',
-            color: 'white',
-            fontWeight: 500,
-            '& .MuiAlert-icon': { 
-              color: 'white' 
-            }
-          }}
-        >
+        <Alert severity="success" sx={{ bgcolor: '#4caf50', color: 'white', '& .MuiAlert-icon': { color: 'white' } }}>
           ✅ Login successful! Redirecting...
         </Alert>
       </Snackbar>
