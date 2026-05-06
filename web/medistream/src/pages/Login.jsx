@@ -7,6 +7,7 @@ import {
 } from '../components/RegisterFields';
 import QueueModalForm from '../components/QueueModalForm'; // adjust path
 import GoogleIcon from '@mui/icons-material/Google'; 
+import { queueService } from '../services/queueService'; // Add this line!
 
 const loginValidation = (values) => {
   const errors = {};
@@ -141,29 +142,28 @@ export default function LoginPage({ onNavigate, onLogin }) {
   const handleQueueSubmit = async (patientData) => {
     setQueueSubmitting(true);
     try {
-      const response = await fetch('http://localhost:8080/api/patients', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...patientData,
-          age: patientData.age ? Number(patientData.age) : null,
-          status: 'Waiting'
-        })
-      });
+      // 1. Format the data to match what the backend expects
+      const formattedData = {
+        ...patientData,
+        age: patientData.age ? Number(patientData.age) : null,
+        status: 'Waiting'
+      };
 
-      if (response.ok) {
-        const result = await response.json();
-        const patientId = result.patientId || result.id || 'N/A';
-        setQueueSuccessMsg(`✅ Success! Patient added to queue. ID: #${patientId}`);
-        handleCloseQueueModal();
-        setTimeout(() => setQueueSuccessMsg(''), 5000);
-      } else {
-        const errorData = await response.json().catch(() => null);
-        alert(errorData?.message || 'Failed to join queue. Please try again.');
-      }
+      // 2. Call our new composite endpoint via the service!
+      // This single call will now create BOTH the Patient and Queue records.
+      const result = await queueService.joinQueue(formattedData);
+
+      // 3. Handle success (Using the data returned from QueueController)
+      setQueueSuccessMsg(`✅ Success! Added to queue. Queue Number: ${result.queueNumber}`);
+      handleCloseQueueModal();
+      setTimeout(() => setQueueSuccessMsg(''), 5000);
+      
     } catch (error) {
       console.error('Queue submission error:', error);
-      alert('Network error. Please check your connection and try again.');
+      
+      // Try to extract a useful error message if the backend sent one
+      const errorMsg = error.response?.data || 'Failed to join queue. Please try again.';
+      alert(typeof errorMsg === 'string' ? errorMsg : 'Network error. Please check your connection.');
     } finally {
       setQueueSubmitting(false);
     }

@@ -5,3 +5,6 @@
 /target/
 node_modules/
 .DS_Store
+mobile/.gradle/
+mobile/build/
+mobile/app/build/

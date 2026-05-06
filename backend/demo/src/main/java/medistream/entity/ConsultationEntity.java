@@ -1,11 +1,13 @@
 package medistream.entity;
 
+import java.time.OffsetDateTime;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "consultation")
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer","handler"}, ignoreUnknown = true)
 public class ConsultationEntity {
 
     @Id
@@ -18,12 +20,25 @@ public class ConsultationEntity {
     private PatientEntity patient;
 
     private String doctorName;
-    private String consultationDateTime;
+    @Column(name = "consultation_date")
+    private OffsetDateTime consultationDateTime;
     private String symptoms;
     private String diagnosis;
     private String prescription;
     private String remarks;
     private String status;
+
+    @ManyToOne
+    @JoinColumn(name = "staff_id") 
+    private MedicalStaffEntity medicalStaff; 
+
+    public void setMedicalStaff(MedicalStaffEntity medicalStaff) {
+        this.medicalStaff = medicalStaff;
+    }
+
+    public MedicalStaffEntity getMedicalStaff() {
+        return medicalStaff;
+    }
 
     public int getConsultationId() {
         return consultationId;
@@ -49,11 +64,11 @@ public class ConsultationEntity {
         this.doctorName = doctorName;
     }
 
-    public String getConsultationDateTime() {
+    public OffsetDateTime getConsultationDate() {
         return consultationDateTime;
     }
 
-    public void setConsultationDateTime(String consultationDateTime) {
+    public void setConsultationDate(OffsetDateTime consultationDateTime) {
         this.consultationDateTime = consultationDateTime;
     }
 
@@ -73,12 +88,12 @@ public class ConsultationEntity {
         this.diagnosis = diagnosis;
     }
 
-    public String getPrescription() {
+    public String getMedicinePrescribed() {
         return prescription;
     }
 
-    public void setPrescription(String prescription) {
-        this.prescription = prescription;
+    public void setMedicinePrescribed(String medicinePrescribed) {
+        this.prescription = medicinePrescribed;
     }
 
     public String getRemarks() {

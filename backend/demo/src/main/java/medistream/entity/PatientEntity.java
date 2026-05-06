@@ -1,21 +1,24 @@
 package medistream.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "patient")
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer","handler"}, ignoreUnknown = true)
 public class PatientEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "patient_id") 
     private int patientId;
 
     private String firstName;
     private String lastName;
+    private String fullName;
     private Integer age;
     private String gender;
     private String address;
@@ -25,7 +28,7 @@ public class PatientEntity {
     private String lastVisit;
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({"patient"})
+    @JsonIgnore
     private List<ConsultationEntity> consultations = new ArrayList<>();
 
     public int getPatientId() {
@@ -42,6 +45,14 @@ public class PatientEntity {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = firstName + " " + lastName;
     }
 
     public String getLastName() {

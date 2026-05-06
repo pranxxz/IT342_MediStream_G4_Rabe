@@ -1,18 +1,14 @@
 package medistream.repository;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
 import medistream.entity.MedicalStaffEntity;
 
 @Repository
 public interface MedicalStaffRepository extends JpaRepository<MedicalStaffEntity, Integer> {
     
-    Optional<MedicalStaffEntity> findByUserAccountAccountID(int accountId);
-    
+    // --- Basic Filtering ---
     List<MedicalStaffEntity> findByGenderIgnoreCase(String gender);
     
     List<MedicalStaffEntity> findByRoleIgnoreCase(String role);
@@ -23,7 +19,7 @@ public interface MedicalStaffRepository extends JpaRepository<MedicalStaffEntity
     
     List<MedicalStaffEntity> findBySpecialtyIgnoreCase(String specialty);
     
-    // NEW: Department queries
+    // --- Department Queries ---
     List<MedicalStaffEntity> findByDepartmentIgnoreCase(String department);
     
     List<MedicalStaffEntity> findByDepartmentAndRole(String department, String role);
@@ -32,7 +28,7 @@ public interface MedicalStaffRepository extends JpaRepository<MedicalStaffEntity
     
     List<MedicalStaffEntity> findByDepartmentAndSpecialty(String department, String specialty);
     
-    // NEW: Availability queries
+    // --- Availability Queries ---
     List<MedicalStaffEntity> findByAvailabilityIgnoreCase(String availability);
     
     List<MedicalStaffEntity> findByAvailabilityIsNull();
