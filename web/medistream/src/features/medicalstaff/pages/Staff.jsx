@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useStaff } from "../../../hooks";
+import useFilter from '../../../shared/hooks/useFilter';
+import { useStaff } from '../hooks/useStaff';
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────
 const M       = "#4a0e0e";

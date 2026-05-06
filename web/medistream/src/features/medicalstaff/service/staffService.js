@@ -1,4 +1,4 @@
-import API from '../../../services/api'; 
+import API from '../../../shared/services/api'; 
 
 export const staffService = {
   // Get all medical staff

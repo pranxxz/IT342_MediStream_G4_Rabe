@@ -4,8 +4,14 @@ import {
 } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, People, Male, Female, MoreVert, FaUsers, FilterList } from "../lib";
-import { FeedbackModal } from "../components/FeedbackModal";
+import Add from '@mui/icons-material/Add';
+import People from '@mui/icons-material/People';
+import Male from '@mui/icons-material/Male';
+import Female from '@mui/icons-material/Female';
+import MoreVert from '@mui/icons-material/MoreVert';
+import FilterList from '@mui/icons-material/FilterList';
+import { FaUsers } from 'react-icons/fa';
+import { FeedbackModal } from "../../../shared/components/FeedbackModal";
 import { patientService } from "../services/patientService";
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────

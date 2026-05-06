@@ -1,18 +1,19 @@
 import React from 'react';
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
-import Layout, { ProtectedRoute } from './components';
-import LandingPage from './pages/Landing.jsx';
-import PatientPage from './pages/Patient.jsx';
+import Layout from './shared/components/Layout';
+import LandingPage from './shared/pages/Landing.jsx';
+import ProtectedRoute from './shared/components/ProtectedRoute';
+import PatientPage from './features/patient/pages/Patient.jsx';
 import Consultation from './features/consultation/pages/Consultations.jsx';
-import RegisterPage from './pages/Register.jsx';
-import LoginPage from './pages/Login.jsx';  
+import RegisterPage from './features/authentication/pages/Register'
+import LoginPage from './features/authentication/pages/Login.jsx';  
 import MedicalHistory from './features/consultation/pages/MedicalHistory.jsx';
 import PatientQueue from './features/patientqueue/pages/PatientQueue.jsx';
 import Staff from './features/medicalstaff/pages/Staff.jsx';
-import GeneralSettings from './pages/GeneralSettings.jsx';
-import QueueDashboard from './pages/QueueDashboard.jsx';
-import OAuthCallback from './pages/OAuthCallback.jsx';
+import GeneralSettings from './shared/pages/GeneralSettings';
+import QueueDashboard from './features/patientqueue/pages/QueueDashboard.jsx';
+import OAuthCallback from './features/authentication/pages/OAuthCallback.jsx';
 
 function App() {
   return (

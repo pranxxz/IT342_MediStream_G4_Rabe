@@ -18,7 +18,7 @@ import {
   List,
   ListItem
 } from '@mui/material';
-import API from '../../../services/api';
+import API from '../../../shared/services/api';
 import { staffService } from '../../medicalstaff/service/staffService';
 import {
   PersonOutline as PersonOutlineIcon,

@@ -7,9 +7,9 @@ import {
   PasswordField, 
   NameFieldsRow, 
   EmailField, 
-  ErrorAlert ,
+  ErrorAlert,
   NumberField
-} from '../components/RegisterFields'; 
+} from '../components/RegisterFields';
 
 const basicValidation = (values) => {
   const errors = {};

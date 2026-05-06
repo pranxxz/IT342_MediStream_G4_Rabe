@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import API from '../../../services/api';
+import API from '../../../shared/services/api';
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────
 const M       = "#4a0e0e";

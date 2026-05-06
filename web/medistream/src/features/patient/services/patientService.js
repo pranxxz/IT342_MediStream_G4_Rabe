@@ -1,4 +1,4 @@
-import API from './api'; 
+import API from '../../../shared/services/api'; 
 
 export const patientService = {
   getAllPatients: async () => {

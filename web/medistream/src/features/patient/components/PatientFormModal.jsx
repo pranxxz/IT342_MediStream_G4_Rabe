@@ -6,7 +6,7 @@ import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Backdrop from '@mui/material/Backdrop';
 import MenuItem from '@mui/material/MenuItem';
-import { useNumericInput, useFormValidation } from '../hooks';
+import { useNumericInput, useFormValidation } from '../../../hooks';
 import { GradientButton } from './ButtonComponents';
 
 const style = {

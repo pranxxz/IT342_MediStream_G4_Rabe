@@ -6,11 +6,13 @@ import {
   HeaderPaper,
   HeaderIcon,
   HeaderTitle,
-  HeaderSubText,
-  SettingsProfileView,
-  SettingsPasswordView,
-  SettingsEditModal
-} from '../components';
+  HeaderSubText
+} from '../components/HeaderComponents';
+import SettingsProfileView from '../components/general_settings/SettingsProfileView';
+import SettingsPasswordView from '../components/general_settings/SettingsPasswordView';
+import SettingsEditModal from '../components/general_settings/SettingsEditModal';
+import Sidebar from '../components/Sidebar';
+import ButtonComponents from '../components/ButtonComponents';
 
 const GeneralSettings = () => {
   const [currentView, setCurrentView] = useState('profile');

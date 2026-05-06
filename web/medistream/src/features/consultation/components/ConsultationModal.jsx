@@ -17,8 +17,8 @@ import {
 } from '@mui/icons-material';
 
 // Import your styled components here
-import { InputField } from './RegisterFields'; 
-import { GradientButton, OutlineButton } from './ButtonComponents'; 
+import { InputField } from '../../authentication/components/RegisterFields'; 
+import { GradientButton, OutlineButton } from '../../../shared/components/ButtonComponents'; 
 
 const ConsultationModal = ({ open, onClose, data, isEditMode = false, onSave }) => {
   const [formData, setFormData] = useState({});

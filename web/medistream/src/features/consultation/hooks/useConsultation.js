@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import dayjs from 'dayjs';
-import { patientService } from "../../../services/patientService";
+import { patientService } from "../../patient/services/patientService";
 import { consultationService } from "../services/consultationService";
 import { staffService } from "../../medicalstaff/service/staffService";
 
