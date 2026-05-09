@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import medistream.features.consultation.entity.ConsultationEntity;
 import medistream.features.consultation.repository.ConsultationRepository;
 import medistream.features.medicalstaff.entity.MedicalStaffEntity;
@@ -23,24 +24,41 @@ public class ConsultationService {
     @Autowired
     private MedicalStaffRepository srepo;
 
+    @Transactional // Ensures the record is committed to the DB
     public ConsultationEntity saveConsultation(int patientId, int staffId, ConsultationEntity consultation) {
-        
-        // 1. Fetch Patient
+        // 1. Fetch Patient - Ensure this isn't returning null!
         PatientEntity patient = patientService.getPatientById(patientId);
+        if (patient == null)
+            throw new RuntimeException("Patient ID " + patientId + " not found");
 
-        // 2. Fetch Doctor/Staff
+        // 2. Fetch Staff
         MedicalStaffEntity staff = srepo.findById(staffId)
-            .orElseThrow(() -> new RuntimeException("Staff not found"));
+                .orElseThrow(() -> new RuntimeException("Staff ID " + staffId + " not found"));
 
         // 3. Set Relationships
         consultation.setPatient(patient);
         consultation.setMedicalStaff(staff);
 
-        // 4. Save
+        // 4. Save and return
         return crepo.save(consultation);
     }
 
-    //read
+    @Transactional
+    public ConsultationEntity putConsultation(int id, ConsultationEntity details) {
+        return crepo.findById(id).map(existing -> {
+            existing.setSymptoms(details.getSymptoms());
+            existing.setDiagnosis(details.getDiagnosis());
+            existing.setMedicinePrescribed(details.getMedicinePrescribed());
+            existing.setRemarks(details.getRemarks());
+            existing.setConsultationDate(details.getConsultationDate());
+            if (details.getStatus() != null) {
+                existing.setStatus(details.getStatus());
+            }
+            return crepo.save(existing);
+        }).orElseThrow(() -> new RuntimeException("Consultation not found with id " + id));
+    }
+
+    // read
     public List<ConsultationEntity> getAllConsultations() {
         return crepo.findAll();
     }
@@ -50,25 +68,7 @@ public class ConsultationService {
         return crepo.findByPatient_PatientIdOrderByConsultationDateTimeDesc(patientId);
     }
 
-    //update
-    @SuppressWarnings("finally")
-    public ConsultationEntity putConsultation(int id, ConsultationEntity newConsultationDetails) { 
-        ConsultationEntity consultation = new ConsultationEntity();
-        try{
-            consultation = crepo.findById(id).get();
-            consultation.setSymptoms(newConsultationDetails.getSymptoms());
-            consultation.setDiagnosis(newConsultationDetails.getDiagnosis());
-            consultation.setMedicinePrescribed(newConsultationDetails.getMedicinePrescribed());
-            consultation.setRemarks(newConsultationDetails.getRemarks());
-            consultation.setConsultationDate(newConsultationDetails.getConsultationDate());
-        } catch (NoSuchElementException e){
-            System.out.println("Consultation " + id + " does not exist");
-        } finally {
-            return crepo.save(consultation);
-        }
-    }
-
-    //delete
+    // delete
     public String deleteConsultation(int consultationId) {
         crepo.deleteById(consultationId);
         return "Consultation removed! " + consultationId;

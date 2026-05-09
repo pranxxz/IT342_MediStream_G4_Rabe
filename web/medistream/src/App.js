@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import Layout from './shared/components/Layout';
 import LandingPage from './shared/pages/Landing.jsx';
 import ProtectedRoute from './shared/components/ProtectedRoute';
+import RoleBasedRoute from './shared/components/RoleBasedRoute';
 import PatientPage from './features/patient/pages/Patient.jsx';
 import Consultation from './features/consultation/pages/Consultations.jsx';
 import RegisterPage from './features/authentication/pages/Register'
@@ -19,11 +20,31 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-        <Route path="Patient" element={<PatientPage />} />
-        <Route path="Consultations" element={<Consultation />} />
-        <Route path="MedicalHistory" element={<MedicalHistory />} />
-        <Route path="PatientQueue" element={<PatientQueue />} />
-        <Route path="Staff" element={<Staff />} /> 
+        <Route path="Patient" element={
+          <RoleBasedRoute requiredRoles={['nurse', 'staff', 'doctor', 'admin']}>
+            <PatientPage />
+          </RoleBasedRoute>
+        } />
+        <Route path="Consultations" element={
+          <RoleBasedRoute requiredRoles={['doctor', 'admin']}>
+            <Consultation />
+          </RoleBasedRoute>
+        } />
+        <Route path="MedicalHistory" element={
+          <RoleBasedRoute requiredRoles={['nurse', 'staff', 'doctor', 'admin']}>
+            <MedicalHistory />
+          </RoleBasedRoute>
+        } />
+        <Route path="PatientQueue" element={
+          <RoleBasedRoute requiredRoles={['nurse', 'staff', 'doctor', 'admin']}>
+            <PatientQueue />
+          </RoleBasedRoute>
+        } />
+        <Route path="Staff" element={
+          <RoleBasedRoute requiredRoles={['nurse', 'staff', 'doctor', 'admin']}>
+            <Staff />
+          </RoleBasedRoute>
+        } /> 
       </Route>
 
       <Route path="general-settings" element={<ProtectedRoute><GeneralSettings /></ProtectedRoute>} />

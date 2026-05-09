@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Typography, Paper, Container, Divider } from '@mui/material';
+import { useNavigate } from "react-router-dom";
+import { Box, Button, Typography, Paper, Container, Divider, FormControl, InputLabel, Select, MenuItem, FormHelperText } from '@mui/material';
 import { Badge } from '@mui/icons-material';
 import GoogleIcon from '@mui/icons-material/Google';
 import { 
@@ -36,6 +37,10 @@ const basicValidation = (values) => {
     errors.email = 'Email is invalid';
   }
 
+  if (!values.role) {
+    errors.role = 'Role is required';
+  }
+
   // If registering as staff (not patient), require an ID number
   const roleLower = values.role ? values.role.toLowerCase() : '';
   if (roleLower && roleLower !== 'patient') {
@@ -66,6 +71,7 @@ const basicValidation = (values) => {
 };
 
 export default function RegisterPage({ onNavigate }) {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -87,7 +93,8 @@ export default function RegisterPage({ onNavigate }) {
     const params = new URLSearchParams(window.location.search);
     const error = params.get('error');
     if (error) {
-      onNavigate('register');
+      if (onNavigate) onNavigate('register');
+      else navigate('/Register');
       window.history.replaceState({}, document.title, '/');
     }
   }, [onNavigate]);
@@ -141,7 +148,8 @@ export default function RegisterPage({ onNavigate }) {
 
       if (response.ok) {
         alert('Registration successful! Please log in.');
-        onNavigate('login');
+        if (onNavigate) onNavigate('login');
+        else navigate('/Login');
       } else {
         const errorData = await response.json().catch(() => null);
         setFormErrors({ submit: errorData?.message || 'Registration failed. Please try again.' });
@@ -212,6 +220,23 @@ export default function RegisterPage({ onNavigate }) {
               type="text"  // Add this to override email validation
               inputMode="numeric"
             />
+
+            <FormControl fullWidth margin="normal" error={!!(formTouched.role && formErrors.role)} disabled={loading || googleLoading}>
+              <InputLabel id="role-select-label">Role</InputLabel>
+              <Select
+                labelId="role-select-label"
+                id="role-select"
+                value={formData.role}
+                label="Role"
+                onChange={handleChange('role')}
+                onBlur={() => handleBlur('role')}
+              >
+                <MenuItem value="staff">Staff</MenuItem>
+                <MenuItem value="nurse">Nurse</MenuItem>
+                <MenuItem value="doctor">Doctor</MenuItem>
+              </Select>
+              {formTouched.role && formErrors.role && <FormHelperText>{formErrors.role}</FormHelperText>}
+            </FormControl>
 
             <NumberField
               label="Staff ID Number"
@@ -324,7 +349,10 @@ export default function RegisterPage({ onNavigate }) {
             <Typography variant="body2" color="text.secondary">
               Already have an account?{' '}
               <Button
-                onClick={() => onNavigate('login')}
+                onClick={() => {
+                  if (onNavigate) onNavigate('login');
+                  else navigate('/Login');
+                }}
                 sx={{
                   color: '#44000d',
                   fontWeight: 600,

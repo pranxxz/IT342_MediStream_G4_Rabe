@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, Shield, Home, Settings, Edit2 } from 'lucide-react';
-import { Box, Button, Typography, Container, CircularProgress, Alert } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Box, Button, Typography, Container, CircularProgress, Alert, Snackbar } from '@mui/material';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   HeaderPaper,
   HeaderIcon,
@@ -22,6 +22,8 @@ const GeneralSettings = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [showSnackbar, setShowSnackbar] = useState(false);
 
   // Fetch user data
   useEffect(() => {
@@ -74,8 +76,15 @@ const GeneralSettings = () => {
           // Find medical staff for current user
           let medicalStaff = null;
           
+          // Try to match by staff ID first
+          if (parsedUser.staffID) {
+            medicalStaff = allStaff.find(staff => 
+              staff.id === parseInt(parsedUser.staffID) || staff.staffID === parseInt(parsedUser.staffID)
+            );
+          }
+
           // Try to match by account ID
-          if (parsedUser.accountID) {
+          if (!medicalStaff && parsedUser.accountID) {
             medicalStaff = allStaff.find(staff => 
               staff.userAccount && staff.userAccount.accountID === parseInt(parsedUser.accountID)
             );
@@ -490,6 +499,22 @@ const GeneralSettings = () => {
       // Note: We use updatedBackendData here to ensure we sync with what the DB actually has
       // updateStaffListInLocalStorage(updatedBackendData, newData);
 
+      // 7.5 Update the current logged-in user in localStorage
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        const currentUser = JSON.parse(userStr);
+        // Update both the root name/role and the nested medicalStaff object
+        currentUser.name = newData.name;
+        currentUser.role = newData.role;
+        if (!currentUser.medicalStaff) {
+          currentUser.medicalStaff = {};
+        }
+        currentUser.medicalStaff.name = newData.name;
+        currentUser.medicalStaff.role = newData.role;
+        
+        localStorage.setItem('user', JSON.stringify(currentUser));
+      }
+
       // 8. Close the modal
       setShowEditModal(false);
 
@@ -601,6 +626,14 @@ const GeneralSettings = () => {
       window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
+
+  useEffect(() => {
+    if (location.state?.showUpdateSnackbar) {
+      setShowSnackbar(true);
+      // Clean up the location state so it doesn't show again on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   return (
     <Box sx={{ minHeight: '100vh', background: '#f9fafb' }}>
@@ -914,6 +947,18 @@ const GeneralSettings = () => {
           onSave={handleProfileUpdate}
         />
       )}
+
+      {/* Snackbar for update profile prompt */}
+      <Snackbar
+        open={showSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setShowSnackbar(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setShowSnackbar(false)} severity="info" sx={{ width: '100%', borderRadius: '8px' }}>
+          Please update your profile information first.
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

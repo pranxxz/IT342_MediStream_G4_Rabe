@@ -80,7 +80,12 @@ public class MedicalStaffService {
             }
             
             if (updatedStaff.getRole() != null && !updatedStaff.getRole().trim().isEmpty()) {
-                staff.setRole(updatedStaff.getRole().trim());
+                String newRole = updatedStaff.getRole().trim().toLowerCase();
+                staff.setRole(newRole);
+                
+                if (staff.getUserAccount() != null) {
+                    staff.getUserAccount().setRole(newRole);
+                }
             }
             
             if (updatedStaff.getContactNo() != null) {

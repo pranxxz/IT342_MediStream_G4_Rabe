@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../features/authentication/hooks/useAuth';
 
 // ─── Shared Theme ─────────────────────────────────────────────────────────────
 export const COLORS = {
@@ -116,9 +117,19 @@ export const SidebarItem = ({ icon, label, active, onClick }) => (
 );
 
 // ─── Reusable: Sidebar ────────────────────────────────────────────────────────
-export const Sidebar = ({ onLogout }) => {
+export const Sidebar = () => {
   const location = useLocation(); 
   const navigate = useNavigate();
+  const { getCurrentUser, logout } = useAuth();
+
+  const currentUser = getCurrentUser();
+  const nameToDisplay = currentUser?.medicalStaff?.name || currentUser?.firstName || currentUser?.name || currentUser?.email?.split('@')[0] || "User";
+  const roleToDisplay = currentUser?.medicalStaff?.role || currentUser?.role || "Staff";
+  
+  const nameParts = nameToDisplay.trim().split(" ");
+  const initials = nameParts.length > 1 
+    ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase()
+    : nameParts[0].substring(0, 2).toUpperCase();
 
   const navItems = [
     { path: "/PatientQueue", label: "Patient Queue", icon: <IconQueue /> },
@@ -170,13 +181,13 @@ export const Sidebar = ({ onLogout }) => {
 
       {/* Footer */}
       <div style={{ padding: "16px 20px", display: "flex", alignItems: "center", gap: 10 }}>
-        <Avatar initials="EL" size={34} color={COLORS.accent} />
-        <div style={{ flex: 1 }}>
-          <div style={{ color: "white", fontWeight: 600, fontSize: 13 }}>Ethan Lee</div>
-          <div style={{ color: COLORS.sidebarTextMuted, fontSize: 11 }}>Doctor</div>
+        <Avatar initials={initials} size={34} color={COLORS.accent} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ color: "white", fontWeight: 600, fontSize: 13, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={nameToDisplay}>{nameToDisplay}</div>
+          <div style={{ color: COLORS.sidebarTextMuted, fontSize: 11, textTransform: "capitalize" }}>{roleToDisplay}</div>
         </div>
         <button
-          onClick={onLogout}
+          onClick={logout}
           title="Logout"
           style={{
             background: "none", border: "none", cursor: "pointer",

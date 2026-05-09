@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import useFilter from '../../../shared/hooks/useFilter';
 import { useStaff } from '../hooks/useStaff';
+import { useRole } from '../../../shared/hooks/useRole';
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────
 const M       = "#4a0e0e";
@@ -104,9 +105,12 @@ const Staff = () => {
     clearFilters,
   } = useStaff();
 
+  const { isAdmin } = useRole();
+
   // Dropdown States
   const [roleDropOpen, setRoleDropOpen] = useState(false);
   const [statusDropOpen, setStatusDropOpen] = useState(false);
+  const [showAddStaffModal, setShowAddStaffModal] = useState(false);
 
   // Dropdown Helper Component
   const Dropdown = ({ open, setOpen, value, setValue, options, label }) => (
@@ -217,6 +221,29 @@ const Staff = () => {
             
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               
+              {isAdmin() && (
+                <button 
+                  onClick={() => setShowAddStaffModal(true)}
+                  style={{
+                    padding: "8px 16px", 
+                    borderRadius: 8,
+                    border: `1px solid ${M}`,
+                    background: M,
+                    color: WHITE,
+                    fontWeight: 600,
+                    fontSize: 13,
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                    whiteSpace: "nowrap",
+                    transition: "opacity 0.2s",
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.opacity = "0.9"}
+                  onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+                >
+                  + Add Staff
+                </button>
+              )}
+
               {hasActiveFilters && (
                 <button onClick={clearFilters} style={{ background: 'none', border: 'none', color: MUTED, fontSize: 13, cursor: 'pointer', fontWeight: 600 }}>
                   Clear Filters
@@ -339,6 +366,191 @@ const Staff = () => {
             ))
           )}
         </div>
+
+        {/* Add Staff Modal - Only for Admin */}
+        {showAddStaffModal && isAdmin() && (
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            fontFamily: "'Segoe UI', system-ui, sans-serif",
+          }}>
+            <div style={{
+              background: WHITE,
+              borderRadius: 12,
+              padding: '32px',
+              maxWidth: 500,
+              width: '90%',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                <h2 style={{ color: M, fontSize: 20, fontWeight: 700, margin: 0 }}>Add New Staff Member</h2>
+                <button 
+                  onClick={() => setShowAddStaffModal(false)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: 24,
+                    cursor: 'pointer',
+                    color: MUTED,
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+              
+              <form style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: TEXT, marginBottom: 6 }}>
+                    First Name
+                  </label>
+                  <input 
+                    type="text" 
+                    placeholder="Enter first name"
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      borderRadius: 6,
+                      border: `1px solid ${BORDER}`,
+                      fontSize: 13,
+                      fontFamily: 'inherit',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: TEXT, marginBottom: 6 }}>
+                    Last Name
+                  </label>
+                  <input 
+                    type="text" 
+                    placeholder="Enter last name"
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      borderRadius: 6,
+                      border: `1px solid ${BORDER}`,
+                      fontSize: 13,
+                      fontFamily: 'inherit',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: TEXT, marginBottom: 6 }}>
+                    Email
+                  </label>
+                  <input 
+                    type="email" 
+                    placeholder="Enter email address"
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      borderRadius: 6,
+                      border: `1px solid ${BORDER}`,
+                      fontSize: 13,
+                      fontFamily: 'inherit',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: TEXT, marginBottom: 6 }}>
+                    Role
+                  </label>
+                  <select 
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      borderRadius: 6,
+                      border: `1px solid ${BORDER}`,
+                      fontSize: 13,
+                      fontFamily: 'inherit',
+                      boxSizing: 'border-box',
+                      background: WHITE,
+                    }}
+                  >
+                    <option value="">Select a role</option>
+                    <option value="Doctor">Doctor</option>
+                    <option value="Nurse">Nurse</option>
+                    <option value="Staff">Staff</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: TEXT, marginBottom: 6 }}>
+                    Contact Number
+                  </label>
+                  <input 
+                    type="tel" 
+                    placeholder="Enter contact number"
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      borderRadius: 6,
+                      border: `1px solid ${BORDER}`,
+                      fontSize: 13,
+                      fontFamily: 'inherit',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+
+                <div style={{ display: 'flex', gap: 12, marginTop: 20 }}>
+                  <button 
+                    type="button"
+                    onClick={() => setShowAddStaffModal(false)}
+                    style={{
+                      flex: 1,
+                      padding: '10px 16px',
+                      borderRadius: 6,
+                      border: `1px solid ${BORDER}`,
+                      background: WHITE,
+                      color: TEXT,
+                      fontWeight: 600,
+                      fontSize: 13,
+                      cursor: 'pointer',
+                      fontFamily: 'inherit',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = BG}
+                    onMouseLeave={e => e.currentTarget.style.background = WHITE}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit"
+                    style={{
+                      flex: 1,
+                      padding: '10px 16px',
+                      borderRadius: 6,
+                      border: 'none',
+                      background: M,
+                      color: WHITE,
+                      fontWeight: 600,
+                      fontSize: 13,
+                      cursor: 'pointer',
+                      fontFamily: 'inherit',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.opacity = '0.9'}
+                    onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+                  >
+                    Add Staff
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

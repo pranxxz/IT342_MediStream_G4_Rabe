@@ -1,711 +1,562 @@
 import React, { useState, useEffect } from 'react';
-import { X, Edit2, User } from 'lucide-react';
-import { Box, Button, TextField, Typography, IconButton, Alert, Snackbar } from '@mui/material';
+import { X, User, Loader2 } from 'lucide-react';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
+import { FormTextField, FormSelectField } from './FormComponents';
+
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+const ACCENT     = '#44000d';
+const ACCENT_ALT = '#5a0011';
+const BG_TINT    = '#fdf2f4';
+const BORDER     = '#f3e6e8';
+
+const GENDER_OPTIONS = [
+  { value: 'Male',              label: 'Male'              },
+  { value: 'Female',            label: 'Female'            },
+  { value: 'Other',             label: 'Other'             },
+  { value: 'Prefer not to say', label: 'Prefer not to say' },
+];
+
+const REQUIRED_FIELDS = [
+  { key: 'name',  label: 'Full Name'     },
+  { key: 'role',  label: 'Role'          },
+  { key: 'email', label: 'Email Address' },
+];
+
+const LS_KEYS = ['currentUser', 'user', 'loggedInUser', 'authUser'];
+
+// ─── Error message parser ─────────────────────────────────────────────────────
+// Converts raw backend errors into short, user-friendly messages.
+
+const FIELD_LABEL_MAP = {
+  gender:        'Gender',
+  name:          'Full Name',
+  role:          'Role',
+  email:         'Email',
+  contactNo:     'Contact Number',
+  specialty:     'Specialization',
+  department:    'Department',
+  age:           'Age',
+};
+
+const parseFriendlyError = (rawMessage) => {
+  if (!rawMessage) return 'Something went wrong. Please try again.';
+
+  const lower = rawMessage.toLowerCase();
+
+  // Gender validation — backend says: "Gender must be Male, Female, Other, or Prefer not to say"
+  if (lower.includes('gender')) {
+    return 'Please select a valid gender option.';
+  }
+
+  // Field-specific "must not be blank / required" errors
+  for (const [field, label] of Object.entries(FIELD_LABEL_MAP)) {
+    if (lower.includes(field) && (lower.includes('blank') || lower.includes('null') || lower.includes('required'))) {
+      return label + ' is required.';
+    }
+  }
+
+  // HTTP status hints
+  if (lower.includes('400')) return 'Some information is invalid. Please review your details and try again.';
+  if (lower.includes('401') || lower.includes('403')) return 'You do not have permission to perform this action.';
+  if (lower.includes('404')) return 'Staff record not found. Please refresh and try again.';
+  if (lower.includes('409')) return 'A record with this information already exists.';
+  if (lower.includes('500')) return 'The server encountered an error. Please try again later.';
+
+  // Network failure
+  if (lower.includes('failed to fetch') || lower.includes('networkerror')) {
+    return 'Could not connect to the server. Check your network connection.';
+  }
+
+  return 'Failed to save changes. Please check your details and try again.';
+};
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+const readParsed = (storage, keys) => {
+  for (const key of keys) {
+    try {
+      const raw = storage.getItem(key);
+      if (!raw) continue;
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.accountID && parsed.accountID !== 'N/A') return parsed.accountID;
+    } catch (_) { /* ignore */ }
+  }
+  return null;
+};
+
+const resolveAccountID = (userData) => {
+  if (userData && userData.accountID && userData.accountID !== 'N/A') return userData.accountID;
+  const fromLS = readParsed(localStorage, LS_KEYS);
+  if (fromLS) return fromLS;
+  const fromSS = readParsed(sessionStorage, LS_KEYS);
+  if (fromSS) return fromSS;
+  try {
+    const raw = localStorage.getItem('medicalStaffData');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.userAccount && parsed.userAccount.accountID) {
+        return parsed.userAccount.accountID;
+      }
+    }
+  } catch (_) { /* ignore */ }
+  return null;
+};
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+const HRule = () => (
+  <Box sx={{ height: '1px', background: BORDER, my: 2.5 }} />
+);
+
+const ModalHeader = ({ userData, accountID, fetchingAccount }) => (
+  <Box sx={{ textAlign: 'center', mb: 3 }}>
+    <Box
+      sx={{
+        width: 72, height: 72, borderRadius: '50%',
+        background: 'linear-gradient(135deg, #44000d 0%, #7a0018 100%)',
+        margin: '0 auto 14px',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        boxShadow: '0 6px 20px rgba(68,0,13,0.3)',
+      }}
+    >
+      <User size={30} color="white" />
+    </Box>
+
+    <Typography
+      variant="h6"
+      sx={{
+        fontWeight: 700, color: ACCENT, mb: 0.5,
+        fontFamily: '"Poppins", "Arimo", sans-serif',
+        fontSize: '1.125rem', letterSpacing: '-0.01em',
+      }}
+    >
+      Edit Profile
+    </Typography>
+
+    <Typography
+      variant="caption"
+      sx={{
+        display: 'inline-block', px: 1.5, py: 0.5,
+        background: BG_TINT, color: ACCENT,
+        borderRadius: '20px', fontWeight: 600,
+        fontSize: '0.75rem', border: '1px solid ' + BORDER,
+      }}
+    >
+      {userData.department || 'General Medicine'}
+    </Typography>
+
+    {fetchingAccount ? (
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mt: 1.5 }}>
+        <Loader2 size={14} color={ACCENT} style={{ animation: 'spin 1s linear infinite' }} />
+        <Typography variant="caption" color="text.secondary">
+          Loading account info...
+        </Typography>
+      </Box>
+    ) : accountID ? (
+      <Typography variant="caption" sx={{ display: 'block', mt: 1, color: '#9ca3af', fontSize: '11px' }}>
+        {userData.staffID && userData.staffID !== 'N/A'
+          ? 'Staff ID: ' + userData.staffID + ' · Account ID: ' + accountID
+          : 'No staff record found — a new one will be created on save.'}
+      </Typography>
+    ) : null}
+  </Box>
+);
+
+const SectionLabel = ({ children }) => (
+  <Typography
+    variant="overline"
+    sx={{
+      display: 'block', color: ACCENT,
+      fontWeight: 700, fontSize: '0.6875rem',
+      letterSpacing: '0.08em', mb: 1.5, mt: 0.5,
+      fontFamily: '"Poppins", "Arimo", sans-serif',
+    }}
+  >
+    {children}
+  </Typography>
+);
+
+// ─── Main component ───────────────────────────────────────────────────────────
 
 const SettingsEditModal = ({ userData, close, onSave }) => {
   const [formData, setFormData] = useState({
-    name: userData.name || '',
-    age: userData.age || '',
-    gender: userData.gender || '',
-    phone: userData.phone || '',
-    email: userData.email || '',
-    role: userData.role || '',
+    name:           userData.name           || '',
+    age:            userData.age            || '',
+    gender:         userData.gender         || '',
+    phone:          userData.phone          || '',
+    email:          userData.email          || '',
+    role:           userData.role           || '',
     specialization: userData.specialization || '',
-    department: userData.department || 'General Medicine'  // Add department
+    department:     userData.department     || 'General Medicine',
   });
-  
-  const [accountID, setAccountID] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
+
+  const [accountID,       setAccountID]       = useState(null);
+  const [loading,         setLoading]         = useState(false);
   const [fetchingAccount, setFetchingAccount] = useState(false);
 
-  // Fetch current account ID on mount
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'warning' });
+  const showSnackbar  = (message, severity = 'warning') => setSnackbar({ open: true, message, severity });
+  const closeSnackbar = () => setSnackbar(prev => ({ ...prev, open: false }));
+
+  // ── Account ID resolution ──────────────────────────────────────────────────
+
   useEffect(() => {
-    fetchCurrentAccountID();
+    setFetchingAccount(true);
+    const id = resolveAccountID(userData);
+    if (id) {
+      setAccountID(id);
+    } else {
+      showSnackbar('Could not load your account. Please refresh the page.', 'error');
+    }
+    setFetchingAccount(false);
   }, []);
 
-  const fetchCurrentAccountID = async () => {
-    try {
-      setFetchingAccount(true);
-      
-      // console.log('🔍 Looking for account ID...');
-      // console.log('UserData passed to modal:', userData);
-      
-      // Method 1: Check userData prop first
-      if (userData.accountID && userData.accountID !== 'N/A') {
-        // console.log('✅ Found account ID in userData prop:', userData.accountID);
-        setAccountID(userData.accountID);
-        return;
-      }
-      
-      // Method 2: Check all possible localStorage keys
-      const localStorageKeys = ['currentUser', 'user', 'loggedInUser', 'authUser'];
-      let foundAccountID = null;
-      
-      for (const key of localStorageKeys) {
-        const storedData = localStorage.getItem(key);
-        if (storedData) {
-          try {
-            const parsed = JSON.parse(storedData);
-            // console.log(`Checking localStorage key "${key}":`, parsed);
-            
-            if (parsed.accountID && parsed.accountID !== 'N/A') {
-              foundAccountID = parsed.accountID;
-              // console.log(`✅ Found account ID in ${key}:`, foundAccountID);
-              break;
-            }
-          } catch (e) {
-            // console.log(`Could not parse ${key}:`, e);
-          }
-        }
-      }
-      
-      if (foundAccountID) {
-        setAccountID(foundAccountID);
-        return;
-      }
-      
-      // Method 3: Try to get from sessionStorage
-      const sessionStorageKeys = ['currentUser', 'user', 'loggedInUser', 'authUser'];
-      for (const key of sessionStorageKeys) {
-        const storedData = sessionStorage.getItem(key);
-        if (storedData) {
-          try {
-            const parsed = JSON.parse(storedData);
-            // console.log(`Checking sessionStorage key "${key}":`, parsed);
-            
-            if (parsed.accountID && parsed.accountID !== 'N/A') {
-              foundAccountID = parsed.accountID;
-              // console.log(`✅ Found account ID in sessionStorage ${key}:`, foundAccountID);
-              break;
-            }
-          } catch (e) {
-            // console.log(`Could not parse sessionStorage ${key}:`, e);
-          }
-        }
-      }
-      
-      if (foundAccountID) {
-        setAccountID(foundAccountID);
-        return;
-      }
-      
-      // Method 4: Try to extract from medical staff data
-      const medicalStaffData = localStorage.getItem('medicalStaffData');
-      if (medicalStaffData) {
-        try {
-          const parsed = JSON.parse(medicalStaffData);
-          // console.log('Checking medicalStaffData:', parsed);
-          
-          if (parsed.userAccount && parsed.userAccount.accountID) {
-            foundAccountID = parsed.userAccount.accountID;
-            // console.log('✅ Found account ID in medicalStaffData:', foundAccountID);
-          }
-        } catch (e) {
-          // console.log('Could not parse medicalStaffData:', e);
-        }
-      }
-      
-      if (foundAccountID) {
-        setAccountID(foundAccountID);
-        return;
-      }
-      
-      // Method 5: Last resort - check if we're Sophie (accountID: 1)
-      if (userData.email === 'sophie.aloria@gmail.com' || 
-          userData.name === 'Sophie Aloria' || 
-          userData.name === 'sophie.aloria') {
-        // console.log('⚠️ Using fallback: Sophie Aloria detected, using accountID: 1');
-        setAccountID('1');
-        return;
-      }
-      
-      // Method 6: If we have email but no accountID, show error with instructions
-      if (userData.email && userData.email !== 'N/A') {
-        // console.log('❌ Could not find account ID for email:', userData.email);
-        setError(`Unable to find your account ID. Please refresh the page or contact support.`);
-      } else {
-        setError('Unable to retrieve account information. Please login again.');
-      }
-      
-    } catch (error) {
-      console.error('Error fetching account ID:', error);
-      setError('An error occurred while loading account information.');
-    } finally {
-      setFetchingAccount(false);
-    }
-  };
+  // ── Handlers ───────────────────────────────────────────────────────────────
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const validateForm = () => {
+    for (var i = 0; i < REQUIRED_FIELDS.length; i++) {
+      var field = REQUIRED_FIELDS[i];
+      if (!formData[field.key] || !formData[field.key].trim()) {
+        showSnackbar(field.label + ' is required.', 'warning');
+        return false;
+      }
+    }
+    if (!accountID) {
+      showSnackbar('Account information not found. Please refresh the page.', 'error');
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = async () => {
+    if (!validateForm()) return;
     try {
       setLoading(true);
-      setError(null);
-      
-      // console.log('Updating profile with:', formData);
-      // console.log('Account ID:', accountID);
-      // console.log('Current user data:', userData);
-      
-      // Validate required fields
-      if (!formData.name.trim()) {
-        throw new Error('Full name is required');
-      }
-      
-      if (!formData.role.trim()) {
-        throw new Error('Role is required');
-      }
-      
-      if (!formData.email.trim()) {
-        throw new Error('Email is required');
-      }
-      
-      // Check if we have account ID
-      if (!accountID) {
-        throw new Error('Account information not found. Please refresh the page.');
-      }
-      
-      // Use account ID - for Sophie, we know it's 1
-      const accountIdToUse = accountID === '1' ? 1 : parseInt(accountID);
-      
-      // If we have a staff ID, update existing record
+      const numericID = typeof accountID === 'string' ? parseInt(accountID, 10) : accountID;
+
       if (userData.staffID && userData.staffID !== 'N/A') {
-        await updateMedicalStaffRecord(accountIdToUse);
+        await updateMedicalStaffRecord(numericID);
       } else {
-        // No staff ID found, create a new medical staff record
-        await createMedicalStaffRecord(accountIdToUse);
+        await createMedicalStaffRecord(numericID);
       }
-      
-      // Update local storage and notify parent
-      updateLocalStorage(accountIdToUse);
-      
+
+      await refreshStaffList();
+
       if (onSave) {
-        onSave({
-          ...formData,
-          staffID: userData.staffID || 'NEW',
-          accountID: accountIdToUse,
-          hasMedicalStaffData: true
-        });
+        onSave({ ...formData, staffID: userData.staffID || 'NEW', accountID: numericID, hasMedicalStaffData: true });
       }
-      
-      setSuccess(true);
-      
-      // Close modal after successful save
-      setTimeout(() => {
-        close();
-      }, 1500);
-      
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      setError(error.message || 'Failed to update profile');
+
+      showSnackbar('Profile updated successfully!', 'success');
+      setTimeout(close, 1600);
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      // Parse the raw backend/network error into a user-friendly message
+      showSnackbar(parseFriendlyError(err.message), 'error');
     } finally {
       setLoading(false);
     }
   };
 
+  // ── API calls ──────────────────────────────────────────────────────────────
+
+  const buildPayload = (accountId) => ({
+    name:        formData.name,
+    role:        formData.role.toLowerCase(),
+    contactNo:   formData.phone,
+    specialty:   formData.specialization,
+    age:         formData.age ? parseInt(formData.age, 10) : null,
+    gender:      formData.gender || null,
+    department:  formData.department || 'General Medicine',
+    userAccount: { accountID: accountId },
+  });
+
   const updateMedicalStaffRecord = async (accountId) => {
-    const updateData = {
-      name: formData.name,
-      role: formData.role.toLowerCase(),
-      contactNo: formData.phone,
-      specialty: formData.specialization,
-      age: formData.age ? parseInt(formData.age) : null,
-      gender: formData.gender || null,
-      department: formData.department || 'General Medicine',  // Add department
-      userAccount: { 
-        accountID: accountId
-      }
-    };
-    
-    // console.log('Updating existing medical staff:', updateData);
-    
-    const response = await fetch(`http://localhost:8080/api/medicalstaff/update/${userData.staffID}`, {
+    const res = await fetch('http://localhost:8080/api/medicalstaff/update/' + userData.staffID, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(updateData)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(buildPayload(accountId)),
     });
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to update medical staff: ${response.status} - ${errorText}`);
+    if (!res.ok) {
+      const body = await res.text();
+      // Try to parse JSON error body for a message field
+      try {
+        const parsed = JSON.parse(body);
+        throw new Error(parsed.message || parsed.error || ('HTTP ' + res.status));
+      } catch (_) {
+        throw new Error('HTTP ' + res.status + ' ' + body);
+      }
     }
-    
-    return await response.json();
+    return res.json();
   };
 
   const createMedicalStaffRecord = async (accountId) => {
-    const newStaffData = {
-      name: formData.name,
-      role: formData.role.toLowerCase(),
-      contactNo: formData.phone,
-      specialty: formData.specialization,
-      age: formData.age ? parseInt(formData.age) : null,
-      gender: formData.gender || null,
-      department: formData.department || 'General Medicine',  // Add department
-      userAccount: { 
-        accountID: accountId
-      }
-    };
-    
-    // console.log('Creating new medical staff record:', newStaffData);
-    
-    const response = await fetch('http://localhost:8080/api/medicalstaff/add', {
+    const res = await fetch('http://localhost:8080/api/medicalstaff/add', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(newStaffData)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(buildPayload(accountId)),
     });
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to create medical staff record: ${response.status} - ${errorText}`);
-    }
-    
-    const newStaff = await response.json();
-    // console.log('✅ New medical staff created:', newStaff);
-    
-    // Update the staffID in localStorage for future updates
-    const updatedUserData = {
-      ...userData,
-      staffID: newStaff.id || newStaff.staffID,
-      accountID: accountId,
-      department: formData.department  // Add department
-    };
-    // localStorage.setItem('currentUser', JSON.stringify(updatedUserData));
-    
-    return newStaff;
-  };
-
-  const updateLocalStorage = (accountId) => {
-    try {
-      // Update current user data
-      const updatedUserData = {
-        ...userData,
-        name: formData.name,
-        role: formData.role,
-        specialization: formData.specialization,
-        department: formData.department,  // Add department
-        contactNo: formData.phone,
-        phone: formData.phone,
-        email: formData.email,
-        gender: formData.gender,
-        age: formData.age,
-        accountID: accountId,
-        hasMedicalStaffData: true
-      };
-      
-      // localStorage.setItem('currentUser', JSON.stringify(updatedUserData));
-      // console.log('✅ Updated currentUser in localStorage');
-      
-      // Fetch fresh staff list to update
-      updateStaffList();
-      
-    } catch (error) {
-      console.error('Error updating localStorage:', error);
-    }
-  };
-
-  const updateStaffList = async () => {
-    try {
-      // Fetch fresh staff list from API
-      const response = await fetch('http://localhost:8080/api/medicalstaff/all');
-      if (response.ok) {
-        const allStaff = await response.json();
-        // localStorage.setItem('staffList', JSON.stringify(allStaff));
-        console.log('✅ Updated staff list from API');
-        
-        // Dispatch storage event to notify other components
-        window.dispatchEvent(new Event('storage'));
+    if (!res.ok) {
+      const body = await res.text();
+      try {
+        const parsed = JSON.parse(body);
+        throw new Error(parsed.message || parsed.error || ('HTTP ' + res.status));
+      } catch (_) {
+        throw new Error('HTTP ' + res.status + ' ' + body);
       }
-    } catch (error) {
-      console.error('Error updating staff list:', error);
     }
+    return res.json();
   };
 
-  const handleCloseSnackbar = () => {
-    setSuccess(false);
-    setError(null);
+  const refreshStaffList = async () => {
+    try {
+      const res = await fetch('http://localhost:8080/api/medicalstaff/all');
+      if (res.ok) window.dispatchEvent(new Event('storage'));
+    } catch (_) { /* non-critical */ }
   };
 
-  const retryFetchAccount = () => {
-    setError(null);
-    fetchCurrentAccountID();
-  };
+  // ── Render ─────────────────────────────────────────────────────────────────
 
-  const manuallySetAccountID = () => {
-    // For Sophie Aloria, we know accountID is 1
-    setAccountID('1');
-    setError(null);
-  };
+  const isDisabled = fetchingAccount || loading;
+
+  const btnLabel = fetchingAccount
+    ? 'Loading account...'
+    : loading
+    ? 'Saving...'
+    : 'Save Changes';
 
   return (
-    <Box
-      sx={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: 'rgba(0,0,0,0.5)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1000
-      }}
-    >
+    <React.Fragment>
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+
+      {/* Backdrop */}
+      <Box
+        onClick={close}
+        sx={{
+          position: 'fixed', inset: 0,
+          background: 'rgba(0,0,0,0.45)',
+          backdropFilter: 'blur(2px)',
+          zIndex: 1000,
+        }}
+      />
+
+      {/* Modal */}
       <Box
         sx={{
+          position: 'fixed',
+          top: '50%', left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 1001,
           background: 'white',
           borderRadius: '16px',
-          padding: '32px',
-          width: '450px',
-          position: 'relative',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
-          maxHeight: '90vh',
-          overflowY: 'auto'
+          width: { xs: '92vw', sm: '460px' },
+          maxHeight: '92vh',
+          overflowY: 'auto',
+          boxShadow: '0 24px 60px rgba(68,0,13,0.18), 0 8px 24px rgba(0,0,0,0.1)',
+          border: '1px solid ' + BORDER,
+          '&::-webkit-scrollbar': { width: '4px' },
+          '&::-webkit-scrollbar-track': { background: 'transparent' },
+          '&::-webkit-scrollbar-thumb': { background: BORDER, borderRadius: '4px' },
         }}
       >
-        {/* Close Button */}
-        <IconButton
-          onClick={close}
+        {/* Top accent bar */}
+        <Box
           sx={{
-            position: 'absolute',
-            top: '16px',
-            right: '16px',
-            color: '#9ca3af',
-            '&:hover': {
-              color: '#4B0082',
-              background: '#F3F0FF'
-            }
+            height: '4px',
+            background: 'linear-gradient(90deg, #44000d 0%, #7a0018 50%, #b30026 100%)',
+            borderRadius: '16px 16px 0 0',
           }}
-        >
-          <X size={24} />
-        </IconButton>
+        />
 
-        {/* Modal Header */}
-        <Box sx={{ textAlign: 'center', marginBottom: '24px' }}>
-          <Box sx={{ position: 'relative', display: 'inline-block', marginBottom: '16px' }}>
-            <Box
-              sx={{
-                width: '80px',
-                height: '80px',
-                borderRadius: '50%',
-                background: '#4B0082',
-                margin: '0 auto',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                fontWeight: 700,
-                fontSize: '24px',
-                boxShadow: '0 4px 12px rgba(75,0,130,0.3)'
-              }}
-            >
-              <User size={32} />
-            </Box>
-          </Box>
-          
-          <Typography
-            variant="h5"
+        <Box sx={{ p: '28px 32px 32px' }}>
+          {/* Close button */}
+          <IconButton
+            onClick={close}
+            size="small"
             sx={{
-              fontWeight: 600,
-              color: '#4B0082',
-              margin: '0 0 8px 0',
-              fontFamily: '"Poppins", "Inter", sans-serif'
+              position: 'absolute', top: 16, right: 16,
+              color: '#9ca3af',
+              '&:hover': { color: ACCENT, background: BG_TINT },
             }}
           >
-            Edit Profile Details
-          </Typography>
-          
-          <Typography
-            variant="body2"
-            sx={{
-              color: '#6b7280',
-              margin: 0,
-              background: '#F3F0FF',
-              display: 'inline-block',
-              padding: '4px 12px',
-              borderRadius: '16px',
-              fontWeight: 600
-            }}
-          >
-            {userData.department}
-          </Typography>
-          
-          {fetchingAccount ? (
-            <Alert 
-              severity="info" 
-              sx={{ 
-                marginTop: '16px',
-                borderRadius: '8px',
-                fontSize: '0.875rem'
-              }}
-            >
-              Loading account information...
-            </Alert>
-          ) : accountID ? (
-            <>
-              {!userData.staffID || userData.staffID === 'N/A' ? (
-                <Alert 
-                  severity="info" 
-                  sx={{ 
-                    marginTop: '16px',
-                    borderRadius: '8px',
-                    fontSize: '0.875rem'
-                  }}
-                >
-                  No medical staff record found. A new record will be created.
-                </Alert>
-              ) : (
-                <Typography
-                  variant="caption"
-                  sx={{
-                    display: 'block',
-                    marginTop: '8px',
-                    color: '#9ca3af',
-                    fontSize: '12px'
-                  }}
-                >
-                  Staff ID: {userData.staffID} | Account ID: {accountID}
-                </Typography>
-              )}
-            </>
-          ) : (
-            <Alert 
-              severity="warning" 
-              sx={{ 
-                marginTop: '16px',
-                borderRadius: '8px',
-                fontSize: '0.875rem'
-              }}
-              action={
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <Button color="inherit" size="small" onClick={retryFetchAccount}>
-                    Retry
-                  </Button>
-                  {(userData.name === 'Sophie Aloria' || userData.email === 'sophie.aloria@gmail.com') && (
-                    <Button color="inherit" size="small" onClick={manuallySetAccountID}>
-                      Use Sophie (ID: 1)
-                    </Button>
-                  )}
-                </Box>
-              }
-            >
-              Unable to find account ID. Check localStorage for account information.
-            </Alert>
-          )}
-        </Box>
+            <X size={20} />
+          </IconButton>
 
-        {/* Form Fields */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <TextField
+          <ModalHeader
+            userData={userData}
+            accountID={accountID}
+            fetchingAccount={fetchingAccount}
+          />
+
+          <HRule />
+
+          {/* Personal Info */}
+          <SectionLabel>Personal Information</SectionLabel>
+
+          <FormTextField
+            label="Full Name"
             name="name"
             value={formData.name}
             onChange={handleChange}
-            label="Full Name"
-            size="small"
-            fullWidth
+            placeholder="e.g. Maria Santos"
             required
-            disabled={fetchingAccount}
-            InputProps={{
-              sx: {
-                borderRadius: '8px',
-                fontSize: '14px'
-              }
-            }}
+            disabled={isDisabled}
           />
-          
-          <TextField
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            label="Role (e.g., Doctor, Nurse)"
-            size="small"
-            fullWidth
-            required
-            disabled={fetchingAccount}
-            InputProps={{
-              sx: {
-                borderRadius: '8px',
-                fontSize: '14px'
-              }
-            }}
-          />
-          
-          <TextField
-            name="department"
-            value={formData.department}
-            onChange={handleChange}
-            label="Department"
-            size="small"
-            fullWidth
-            disabled={fetchingAccount}
-            InputProps={{
-              sx: {
-                borderRadius: '8px',
-                fontSize: '14px'
-              }
-            }}
-          />
-          
-          <TextField
-            name="specialization"
-            value={formData.specialization}
-            onChange={handleChange}
-            label="Specialization"
-            size="small"
-            fullWidth
-            disabled={fetchingAccount}
-            InputProps={{
-              sx: {
-                borderRadius: '8px',
-                fontSize: '14px'
-              }
-            }}
-          />
-          
-          <TextField
-            name="age"
-            value={formData.age}
-            onChange={handleChange}
-            label="Age"
-            size="small"
-            fullWidth
-            disabled={fetchingAccount}
-            InputProps={{
-              sx: {
-                borderRadius: '8px',
-                fontSize: '14px'
-              }
-            }}
-          />
-          
-          <TextField
-            name="gender"
-            value={formData.gender}
-            onChange={handleChange}
-            label="Gender"
-            size="small"
-            fullWidth
-            disabled={fetchingAccount}
-            InputProps={{
-              sx: {
-                borderRadius: '8px',
-                fontSize: '14px'
-              }
-            }}
-          />
-          
-          <TextField
+
+          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+            <FormTextField
+              label="Age"
+              name="age"
+              value={formData.age}
+              onChange={handleChange}
+              placeholder="e.g. 35"
+              type="number"
+              disabled={isDisabled}
+              mb={0}
+            />
+            <FormSelectField
+              label="Gender"
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              options={GENDER_OPTIONS}
+              disabled={isDisabled}
+              mb={0}
+            />
+          </Box>
+
+          <Box sx={{ mb: 2.5 }} />
+
+          <FormTextField
+            label="Contact Number"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            label="Contact Number"
-            size="small"
-            fullWidth
-            disabled={fetchingAccount}
-            InputProps={{
-              sx: {
-                borderRadius: '8px',
-                fontSize: '14px'
-              }
-            }}
+            placeholder="e.g. 09171234567"
+            disabled={isDisabled}
           />
-          
-          <TextField
+
+          <FormTextField
+            label="Email Address"
             name="email"
             value={formData.email}
             onChange={handleChange}
-            label="Email Address"
-            size="small"
-            fullWidth
+            placeholder="e.g. maria@medistream.ph"
+            type="email"
             required
-            disabled={fetchingAccount}
-            InputProps={{
-              sx: {
-                borderRadius: '8px',
-                fontSize: '14px'
-              }
-            }}
+            disabled={isDisabled}
           />
-        </Box>
 
-        {/* Debug Info - Remove in production */}
-        <Box sx={{ mt: 2, p: 1, background: '#f3f4f6', borderRadius: '8px' }}>
-          <Typography variant="caption" color="text.secondary">
-            Debug Info: {userData.email} | AccountID in props: {userData.accountID || 'Not found'}
-          </Typography>
-        </Box>
+          <HRule />
 
-        {/* Error Message */}
-        {error && (
-          <Alert 
-            severity="error" 
-            sx={{ 
-              marginTop: '16px',
-              borderRadius: '8px'
+          {/* Professional Details */}
+          <SectionLabel>Professional Details</SectionLabel>
+
+          <FormTextField
+            label="Role"
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            placeholder="e.g. Doctor, Nurse, Admin"
+            required
+            disabled={isDisabled}
+          />
+
+          <FormTextField
+            label="Department"
+            name="department"
+            value={formData.department}
+            onChange={handleChange}
+            placeholder="e.g. General Medicine"
+            disabled={isDisabled}
+          />
+
+          <FormTextField
+            label="Specialization"
+            name="specialization"
+            value={formData.specialization}
+            onChange={handleChange}
+            placeholder="e.g. Cardiology"
+            disabled={isDisabled}
+            mb={0}
+          />
+
+          {/* Save Button */}
+          <Button
+            onClick={handleSubmit}
+            disabled={isDisabled || !accountID}
+            fullWidth
+            disableElevation
+            sx={{
+              mt: 3, py: 1.4,
+              borderRadius: '8px',
+              background: 'linear-gradient(135deg, #44000d 0%, #6b000f 100%)',
+              color: 'white',
+              fontWeight: 700,
+              fontSize: '0.875rem',
+              fontFamily: '"Poppins", "Arimo", sans-serif',
+              letterSpacing: '0.02em',
+              textTransform: 'none',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 4px 14px rgba(68,0,13,0.25)',
+              '&:hover:not(:disabled)': {
+                background: 'linear-gradient(135deg, ' + ACCENT_ALT + ' 0%, #7a0011 100%)',
+                boxShadow: '0 6px 18px rgba(68,0,13,0.35)',
+                transform: 'translateY(-1px)',
+              },
+              '&:active:not(:disabled)': { transform: 'translateY(0)' },
+              '&.Mui-disabled': {
+                background: '#e5e7eb',
+                color: '#9ca3af',
+                boxShadow: 'none',
+              },
             }}
-            onClose={() => setError(null)}
           >
-            {error}
-          </Alert>
-        )}
-
-        {/* Save Button */}
-        <Button
-          onClick={handleSubmit}
-          disabled={loading || fetchingAccount || !accountID}
-          fullWidth
-          sx={{
-            padding: '12px',
-            borderRadius: '8px',
-            background: '#4B0082',
-            color: 'white',
-            fontWeight: 600,
-            marginTop: '24px',
-            textTransform: 'none',
-            fontSize: '0.875rem',
-            boxShadow: '0 3px 10px rgba(75,0,130,0.25)',
-            '&:hover': {
-              boxShadow: '0 5px 15px rgba(75,0,130,0.3)',
-              background: '#3A0066',
-            },
-            '&:disabled': {
-              background: '#9ca3af',
-              boxShadow: 'none'
-            }
-          }}
-        >
-          {fetchingAccount ? 'Loading...' : loading ? 'Saving...' : 'Save Changes'}
-        </Button>
+            {btnLabel}
+          </Button>
+        </Box>
       </Box>
 
-      {/* Success Snackbar */}
+      {/* Snackbar — all user feedback goes here, never raw errors */}
       <Snackbar
-        open={success}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
+        open={snackbar.open}
+        autoHideDuration={snackbar.severity === 'success' ? 2500 : 4500}
+        onClose={closeSnackbar}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert 
-          onClose={handleCloseSnackbar} 
-          severity="success" 
-          sx={{ width: '100%' }}
+        <Alert
+          onClose={closeSnackbar}
+          severity={snackbar.severity}
+          variant="filled"
+          sx={{
+            width: '100%',
+            fontFamily: '"Arimo", "Poppins", sans-serif',
+            fontWeight: 600,
+            fontSize: '0.875rem',
+            borderRadius: '10px',
+            ...(snackbar.severity === 'warning' && {
+              background: '#92400e',
+              color: 'white',
+              '& .MuiAlert-icon': { color: '#fde68a' },
+            }),
+            ...(snackbar.severity === 'success' && { background: '#166534' }),
+            ...(snackbar.severity === 'error'   && { background: ACCENT }),
+          }}
         >
-          Profile updated successfully!
+          {snackbar.message}
         </Alert>
       </Snackbar>
-    </Box>
+    </React.Fragment>
   );
 };
 

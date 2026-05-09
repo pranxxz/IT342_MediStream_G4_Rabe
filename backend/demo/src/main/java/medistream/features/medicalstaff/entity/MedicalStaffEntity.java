@@ -23,7 +23,7 @@ public class MedicalStaffEntity {
     @Column(length = 20)
     private String availability; // NULL by default
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "account_id", referencedColumnName = "accountID", unique = true)
     private UserAccountEntity userAccount;
 

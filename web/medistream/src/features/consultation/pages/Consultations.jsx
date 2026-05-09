@@ -6,7 +6,7 @@ import {
   Typography,
   Container,
   Paper,
-  Grid, 
+  Grid,
   TextField,
   MenuItem,
   Button,
@@ -21,6 +21,7 @@ import {
 import API from '../../../shared/services/api';
 import { queueService } from '../../patientqueue/services/queueService';
 import { staffService } from '../../medicalstaff/service/staffService';
+import { useAuth } from '../../authentication/hooks/useAuth';
 import {
   PersonOutline as PersonOutlineIcon,
   Group as GroupIcon,
@@ -28,8 +29,7 @@ import {
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
-// Matches the exact Oxblood Red from your Sidebar
-const maroonColor = '#4a0e0e'; 
+const maroonColor = '#4a0e0e';
 
 const MOCK_DOCTORS = ['Dr. Maria Cruz', 'Dr. John Santos', 'Dr. Anna Reyes'];
 
@@ -40,13 +40,13 @@ const QUICK_TEMPLATES = {
     prescription: 'Paracetamol 500mg, rest, fluids',
     remarks: 'Follow up if fever persists >3 days',
   },
-  'Headache': {
+  Headache: {
     symptoms: 'Throbbing headache, nausea, sensitivity to light',
     diagnosis: 'Migraine without aura',
     prescription: 'Ibuprofen 400mg, dark room rest',
     remarks: 'Avoid triggers, consider prophylaxis if frequent',
   },
-  'Hypertension': {
+  Hypertension: {
     symptoms: 'Asymptomatic, elevated BP reading',
     diagnosis: 'Essential hypertension',
     prescription: 'Amlodipine 5mg daily, low sodium diet',
@@ -56,6 +56,7 @@ const QUICK_TEMPLATES = {
 
 export default function Consultation() {
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const { getCurrentUser } = useAuth();
 
   // Data state
   const [patients, setPatients] = useState([]);
@@ -68,16 +69,16 @@ export default function Consultation() {
 
   // Form state
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const [doctor, setDoctor] = useState(''); 
+  const [doctor, setDoctor] = useState('');
   const [consultDate, setConsultDate] = useState(new Date());
   const [symptoms, setSymptoms] = useState('');
   const [diagnosis, setDiagnosis] = useState('');
   const [prescription, setPrescription] = useState('');
   const [remarks, setRemarks] = useState('');
 
+  const [currentDoctorId, setCurrentDoctorId] = useState(null);
   const [todaysConsultations, setTodaysConsultations] = useState([]);
 
-  // Use a ref to keep track of the currently selected patient for cleanup purposes
   const selectedPatientRef = useRef(null);
 
   const applyTemplate = (template) => {
@@ -97,8 +98,8 @@ export default function Consultation() {
       const resp = await API.get('/api/queue');
       const queues = resp.data || [];
       const patientsFromQueue = queues
-        .filter(q => q.patient != null)
-        .map(q => ({
+        .filter((q) => q.patient != null)
+        .map((q) => ({
           patientId: q.patient.patientId,
           firstName: q.patient.firstName,
           lastName: q.patient.lastName,
@@ -144,23 +145,42 @@ export default function Consultation() {
     }
   };
 
+  // Auto-populate doctor from logged-in user once staff is loaded
+  useEffect(() => {
+    if (staff.length > 0 && !doctor) {
+      const currentUser = getCurrentUser();
+      if (currentUser) {
+        // Try to match the logged-in user with a staff member
+        const matchedStaff = staff.find((s) => 
+          s.email === currentUser.email ||
+          s.name === currentUser.name ||
+          (currentUser.firstName && s.name && s.name.includes(currentUser.firstName)) ||
+          (currentUser.lastName && s.name && s.name.includes(currentUser.lastName))
+        );
+        
+        if (matchedStaff) {
+          setCurrentDoctorId(matchedStaff.id);
+          setDoctor(matchedStaff.id);
+        }
+      }
+    }
+  }, [staff]);
+
   useEffect(() => {
     loadPatients();
     loadStaff();
     loadConsultations();
 
-    // Cleanup function: If the doctor closes the tab/leaves the page while a patient is selected, revert them to WAITING
     return () => {
       const currentPatient = selectedPatientRef.current;
       if (currentPatient && (currentPatient.queueId || currentPatient.queueID)) {
         const qid = currentPatient.queueId || currentPatient.queueID;
-        queueService.updateQueueItem(qid, { status: 'WAITING' }).catch(e => console.error("Cleanup failed", e));
+        queueService.updateQueueItem(qid, { status: 'WAITING' }).catch((e) => console.error('Cleanup failed', e));
       }
     };
   }, []);
 
   const handlePatientSelect = async (event, newValue) => {
-    // 1. Revert the PREVIOUSLY selected patient back to WAITING (if they exist and changed their mind)
     if (selectedPatient && (selectedPatient.queueId || selectedPatient.queueID)) {
       try {
         const prevQid = selectedPatient.queueId || selectedPatient.queueID;
@@ -170,11 +190,9 @@ export default function Consultation() {
       }
     }
 
-    // 2. Set the NEW selected patient in state and ref
     setSelectedPatient(newValue);
     selectedPatientRef.current = newValue;
 
-    // 3. Update the NEW selected patient to CONSULTING
     if (newValue && (newValue.queueId || newValue.queueID)) {
       try {
         const newQid = newValue.queueId || newValue.queueID;
@@ -184,8 +202,7 @@ export default function Consultation() {
         setSnackbar({ open: true, message: 'Could not update queue status', severity: 'warning' });
       }
     }
-    
-    // Refresh the list so the UI captures the latest statuses
+
     loadPatients();
   };
 
@@ -223,7 +240,9 @@ export default function Consultation() {
         {
           id: savedConsult.id || Date.now(),
           patientId: savedConsult.patient?.patientId || selectedPatient.patientId || selectedPatient.id,
-          patientName: `${savedConsult.patient?.firstName || selectedPatient.firstName || selectedPatient.name} ${savedConsult.patient?.lastName || selectedPatient.lastName || ''}`.trim(),
+          patientName: `${savedConsult.patient?.firstName || selectedPatient.firstName || selectedPatient.name} ${
+            savedConsult.patient?.lastName || selectedPatient.lastName || ''
+          }`.trim(),
           doctor: savedConsult.medicalStaff?.name || staff.find((s) => s.id === doctor)?.name || '',
           date: new Date(savedConsult.consultationDate || consultDate).toISOString().split('T')[0],
           diagnosis: savedConsult.diagnosis || diagnosis,
@@ -234,27 +253,27 @@ export default function Consultation() {
         ...prev,
       ]);
 
-      // 4. Remove the patient from the queue permanently now that consultation is done
+      // Remove patient from queue (or mark as COMPLETED)
       try {
         const qid = selectedPatient?.queueId || selectedPatient?.queueID;
         if (qid) {
-          await queueService.deleteQueueItem(qid);
+          await queueService.updateQueueItem(qid, { status: 'COMPLETED' });
         }
       } catch (delErr) {
         console.error('Failed to remove patient from queue after consultation save', delErr);
       }
 
-      // Reset form
+      // Reset form – KEEP the doctor selection!
       setSymptoms('');
       setDiagnosis('');
       setPrescription('');
       setRemarks('');
-      setDoctor('');
+      // Do NOT clear doctor – keep the logged-in doctor selected
+      // setDoctor(''); // ← removed this line
       setConsultDate(new Date());
       setSelectedPatient(null);
-      selectedPatientRef.current = null; // Clear the ref
-      
-      // Reload the patients so the removed patient disappears from the dropdown
+      selectedPatientRef.current = null;
+
       loadPatients();
 
       setSnackbar({ open: true, message: 'Consultation saved successfully!', severity: 'success' });
@@ -272,25 +291,31 @@ export default function Consultation() {
     return consultations.filter((c) => c.patient?.patientId === patientId || c.patientId === patientId);
   }, [selectedPatient, consultations]);
 
-  const cardStyle = { 
-    borderRadius: 3, 
-    border: '1px solid #e0e0e0', 
-    boxShadow: 'none', 
+  const cardStyle = {
+    borderRadius: 3,
+    border: '1px solid #e0e0e0',
+    boxShadow: 'none',
     mb: 3,
-    overflow: 'hidden'
+    overflow: 'hidden',
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box sx={{ flexGrow: 1, minHeight: '100vh', backgroundColor: '#f9fafb', pb: 6 }}>
-        
-        <AppBar position="static" sx={{ bgcolor: 'transparent', boxShadow: 'none', color: maroonColor, pt: 4, px: { xs: 2, md: 5 } }}>
+        <AppBar
+          position="static"
+          sx={{ bgcolor: 'transparent', boxShadow: 'none', color: maroonColor, pt: 4, px: { xs: 2, md: 5 } }}
+        >
           <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <GroupIcon sx={{ fontSize: 32, display: { xs: 'none', sm: 'block' } }} />
               <Box>
-                <Typography variant="h5" sx={{ fontWeight: 800 }}>Consultation Notes</Typography>
-                <Typography variant="body2" sx={{ color: '#666' }}>Document patient consultations and prescriptions</Typography>
+                <Typography variant="h5" sx={{ fontWeight: 800 }}>
+                  Consultation Notes
+                </Typography>
+                <Typography variant="body2" sx={{ color: '#666' }}>
+                  Document patient consultations and prescriptions
+                </Typography>
               </Box>
             </Box>
           </Toolbar>
@@ -298,53 +323,97 @@ export default function Consultation() {
 
         <Container maxWidth="xl" sx={{ flexGrow: 1, py: 4, px: { xs: 2, md: 5 } }}>
           <Grid container spacing={4} sx={{ flexWrap: { xs: 'wrap', md: 'nowrap' } }}>
-            
             {/* LEFT COLUMN */}
             <Grid item xs={12} md={7} sx={{ minWidth: { md: '55%' } }}>
               <Paper sx={{ ...cardStyle, p: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
                   <PersonOutlineIcon sx={{ color: '#555' }} />
-                  <Typography variant="h6" sx={{ fontWeight: 700, color: '#222', fontSize: '1.1rem' }}>Patient Information</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 700, color: '#222', fontSize: '1.1rem' }}>
+                    Patient Information
+                  </Typography>
                 </Box>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>Enter or select patient details</Typography>
-                
-                <Typography variant="subtitle2" sx={{ mb: 1, color: '#333' }}>Patient Name</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                  Enter or select patient details
+                </Typography>
+
+                <Typography variant="subtitle2" sx={{ mb: 1, color: '#333' }}>
+                  Patient Name
+                </Typography>
                 <Autocomplete
                   options={patients}
-                  getOptionLabel={(option) => `${option.firstName || ''} ${option.lastName || option.name || ''}`.trim()}
+                  getOptionLabel={(option) =>
+                    `${option.firstName || ''} ${option.lastName || option.name || ''}`.trim()
+                  }
                   value={selectedPatient}
                   onChange={handlePatientSelect}
                   renderInput={(params) => (
-                    <TextField {...params} label={loadingPatients ? "Loading..." : ""} variant="outlined" size="small" fullWidth sx={{ mb: 3 }} />
+                    <TextField
+                      {...params}
+                      label={loadingPatients ? 'Loading...' : ''}
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                      sx={{ mb: 3 }}
+                    />
                   )}
                 />
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={6}>
-                    <Typography variant="subtitle2" sx={{ mb: 1, color: '#333' }}>Age</Typography>
-                    <TextField value={selectedPatient?.age || ''} size="small" InputProps={{ readOnly: true }} fullWidth variant="outlined" />
+                    <Typography variant="subtitle2" sx={{ mb: 1, color: '#333' }}>
+                      Age
+                    </Typography>
+                    <TextField
+                      value={selectedPatient?.age || ''}
+                      size="small"
+                      InputProps={{ readOnly: true }}
+                      fullWidth
+                      variant="outlined"
+                    />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <Typography variant="subtitle2" sx={{ mb: 1, color: '#333' }}>Gender</Typography>
-                    <TextField value={selectedPatient?.gender || ''} size="small" InputProps={{ readOnly: true }} fullWidth variant="outlined" />
+                    <Typography variant="subtitle2" sx={{ mb: 1, color: '#333' }}>
+                      Gender
+                    </Typography>
+                    <TextField
+                      value={selectedPatient?.gender || ''}
+                      size="small"
+                      InputProps={{ readOnly: true }}
+                      fullWidth
+                      variant="outlined"
+                    />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <Typography variant="subtitle2" sx={{ mb: 1, color: '#333' }}>Doctor</Typography>
+                    <Typography variant="subtitle2" sx={{ mb: 1, color: '#333' }}>
+                      Doctor
+                    </Typography>
                     <FormControl fullWidth size="small">
-                      <Select value={doctor} onChange={(e) => setDoctor(e.target.value)}>
+                      <Select
+                        value={doctor}
+                        onChange={(e) => setDoctor(e.target.value)}
+                        disabled={!!currentDoctorId}
+                      >
                         {loadingStaff ? (
                           <MenuItem value="">Loading doctors...</MenuItem>
                         ) : staff.length ? (
                           staff.map((person) => (
-                            <MenuItem key={person.id} value={person.id}>{person.name}</MenuItem>
+                            <MenuItem key={person.id} value={person.id}>
+                              {person.name}
+                            </MenuItem>
                           ))
                         ) : (
-                          MOCK_DOCTORS.map((d) => <MenuItem key={d} value={d}>{d}</MenuItem>)
+                          MOCK_DOCTORS.map((d) => (
+                            <MenuItem key={d} value={d}>
+                              {d}
+                            </MenuItem>
+                          ))
                         )}
                       </Select>
                     </FormControl>
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <Typography variant="subtitle2" sx={{ mb: 1, color: '#333' }}>Date</Typography>
+                    <Typography variant="subtitle2" sx={{ mb: 1, color: '#333' }}>
+                      Date
+                    </Typography>
                     <DatePicker
                       value={consultDate}
                       onChange={(newDate) => setConsultDate(newDate)}
@@ -357,21 +426,53 @@ export default function Consultation() {
               <Paper sx={{ ...cardStyle, p: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
                   <PersonOutlineIcon sx={{ color: '#555' }} />
-                  <Typography variant="h6" sx={{ fontWeight: 700, color: '#222', fontSize: '1.1rem' }}>Consultation Details</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 700, color: '#222', fontSize: '1.1rem' }}>
+                    Consultation Details
+                  </Typography>
                 </Box>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>Document symptoms, diagnosis, and treatment</Typography>
-                
-                <Typography variant="subtitle2" sx={{ mb: 1, color: '#333' }}>Symptoms</Typography>
-                <TextField multiline rows={2} fullWidth value={symptoms} onChange={(e) => setSymptoms(e.target.value)} sx={{ mb: 3 }} />
-                
-                <Typography variant="subtitle2" sx={{ mb: 1, color: '#333' }}>Diagnosis</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                  Document symptoms, diagnosis, and treatment
+                </Typography>
+
+                <Typography variant="subtitle2" sx={{ mb: 1, color: '#333' }}>
+                  Symptoms
+                </Typography>
+                <TextField
+                  multiline
+                  rows={2}
+                  fullWidth
+                  value={symptoms}
+                  onChange={(e) => setSymptoms(e.target.value)}
+                  sx={{ mb: 3 }}
+                />
+
+                <Typography variant="subtitle2" sx={{ mb: 1, color: '#333' }}>
+                  Diagnosis
+                </Typography>
                 <TextField fullWidth value={diagnosis} onChange={(e) => setDiagnosis(e.target.value)} sx={{ mb: 3 }} />
-                
-                <Typography variant="subtitle2" sx={{ mb: 1, color: '#333' }}>Prescription</Typography>
-                <TextField multiline rows={2} fullWidth value={prescription} onChange={(e) => setPrescription(e.target.value)} sx={{ mb: 3 }} />
-                
-                <Typography variant="subtitle2" sx={{ mb: 1, color: '#333' }}>Remarks</Typography>
-                <TextField multiline rows={2} fullWidth value={remarks} onChange={(e) => setRemarks(e.target.value)} />
+
+                <Typography variant="subtitle2" sx={{ mb: 1, color: '#333' }}>
+                  Prescription
+                </Typography>
+                <TextField
+                  multiline
+                  rows={2}
+                  fullWidth
+                  value={prescription}
+                  onChange={(e) => setPrescription(e.target.value)}
+                  sx={{ mb: 3 }}
+                />
+
+                <Typography variant="subtitle2" sx={{ mb: 1, color: '#333' }}>
+                  Remarks
+                </Typography>
+                <TextField
+                  multiline
+                  rows={2}
+                  fullWidth
+                  value={remarks}
+                  onChange={(e) => setRemarks(e.target.value)}
+                />
               </Paper>
             </Grid>
 
@@ -379,27 +480,48 @@ export default function Consultation() {
             <Grid item xs={12} md={5} sx={{ minWidth: { md: '40%' } }}>
               <Paper sx={{ ...cardStyle }}>
                 <Box sx={{ p: 2.5, pb: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                   <Typography variant="h6" sx={{ fontWeight: 700, color: '#222', fontSize: '1.1rem' }}>Past Consultations</Typography>
-                   <GroupIcon sx={{ color: '#888' }} />
+                  <Typography variant="h6" sx={{ fontWeight: 700, color: '#222', fontSize: '1.1rem' }}>
+                    Past Consultations
+                  </Typography>
+                  <GroupIcon sx={{ color: '#888' }} />
                 </Box>
                 {selectedPatient && pastConsults.length > 0 ? (
                   <>
-                    <Box sx={{ bgcolor: maroonColor, color: '#fff', px: 3, py: 1.5, display: 'flex', justifyContent: 'space-between' }}>
+                    <Box
+                      sx={{
+                        bgcolor: maroonColor,
+                        color: '#fff',
+                        px: 3,
+                        py: 1.5,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                      }}
+                    >
                       <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                         {`${selectedPatient.firstName || ''} ${selectedPatient.lastName || selectedPatient.name || ''}`.trim()}
+                        {`${selectedPatient.firstName || ''} ${selectedPatient.lastName || selectedPatient.name || ''}`.trim()}
                       </Typography>
-                      <Typography variant="caption" sx={{ opacity: 0.8 }}>ID: {selectedPatient.patientId || selectedPatient.id}</Typography>
+                      <Typography variant="caption" sx={{ opacity: 0.8 }}>
+                        ID: {selectedPatient.patientId || selectedPatient.id}
+                      </Typography>
                     </Box>
                     <List sx={{ pt: 0 }}>
                       {pastConsults.map((consult, index) => (
-                        <ListItem key={index} divider={index !== pastConsults.length - 1} sx={{ px: 3, py: 2 }}>
+                        <ListItem
+                          key={index}
+                          divider={index !== pastConsults.length - 1}
+                          sx={{ px: 3, py: 2 }}
+                        >
                           <Grid container sx={{ width: '100%' }}>
                             <Grid item xs={6}>
-                              <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#222' }}>{consult.doctorName || consult.doctor}</Typography>
+                              <Typography variant="subtitle2" sx={{ fontWeight: 600, color: '#222' }}>
+                                {consult.doctorName || consult.doctor}
+                              </Typography>
                             </Grid>
                             <Grid item xs={6} sx={{ textAlign: 'right' }}>
                               <Typography variant="body2" sx={{ color: '#666' }}>
-                                {consult.consultationDateTime ? new Date(consult.consultationDateTime).toISOString().split('T')[0] : consult.date}
+                                {consult.consultationDateTime
+                                  ? new Date(consult.consultationDateTime).toISOString().split('T')[0]
+                                  : consult.date}
                               </Typography>
                             </Grid>
                           </Grid>
@@ -409,13 +531,17 @@ export default function Consultation() {
                   </>
                 ) : (
                   <Box sx={{ p: 3, pt: 0 }}>
-                    <Typography variant="body2" color="text.secondary">No past consultations for this patient.</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      No past consultations for this patient.
+                    </Typography>
                   </Box>
                 )}
               </Paper>
 
               <Paper sx={{ ...cardStyle, p: 2.5 }}>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, color: '#222', fontSize: '1.1rem', mb: 2 }}>Quick Templates</Typography>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, color: '#222', fontSize: '1.1rem', mb: 2 }}>
+                  Quick Templates
+                </Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                   {Object.keys(QUICK_TEMPLATES).map((template) => (
                     <Box
@@ -426,41 +552,49 @@ export default function Consultation() {
                         borderRadius: 1.5,
                         p: 1.5,
                         cursor: 'pointer',
-                        '&:hover': { bgcolor: '#f9f9f9', borderColor: maroonColor }
+                        '&:hover': { bgcolor: '#f9f9f9', borderColor: maroonColor },
                       }}
                     >
-                      <Typography variant="body2" sx={{ color: '#444', fontWeight: 600 }}>{template}</Typography>
+                      <Typography variant="body2" sx={{ color: '#444', fontWeight: 600 }}>
+                        {template}
+                      </Typography>
                     </Box>
                   ))}
                 </Box>
               </Paper>
 
               <Paper sx={{ ...cardStyle, p: 2.5, textAlign: 'center' }}>
-                <Typography variant="h6" sx={{ fontWeight: 700, color: '#222', fontSize: '1.1rem', textAlign: 'left', mb: 2 }}>Today's Consultations</Typography>
+                <Typography
+                  variant="h6"
+                  sx={{ fontWeight: 700, color: '#222', fontSize: '1.1rem', textAlign: 'left', mb: 2 }}
+                >
+                  Today's Consultations
+                </Typography>
                 <Typography variant="h1" sx={{ fontWeight: 800, color: maroonColor, my: 2 }}>
                   {todaysConsultations.length}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>Consultations saved today</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  Consultations saved today
+                </Typography>
               </Paper>
 
-              <Button 
-                variant="contained" 
-                fullWidth 
+              <Button
+                variant="contained"
+                fullWidth
                 onClick={handleSave}
                 disabled={saving}
-                sx={{ 
-                  borderRadius: 2, 
+                sx={{
+                  borderRadius: 2,
                   bgcolor: maroonColor,
-                  color: 'white', 
+                  color: 'white',
                   py: 1.5,
                   fontWeight: 600,
-                  '&:hover': { bgcolor: '#3a0a0a' }
+                  '&:hover': { bgcolor: '#3a0a0a' },
                 }}
               >
                 {saving ? 'Saving...' : 'Save Consultation'}
               </Button>
             </Grid>
-
           </Grid>
         </Container>
 

@@ -2,6 +2,7 @@ package medistream.shared.security;
 
 import medistream.features.authentication.entity.UserAccountEntity;
 import medistream.features.authentication.repository.UserAccountRepository;
+import medistream.features.medicalstaff.entity.MedicalStaffEntity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -45,7 +46,16 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 user = new UserAccountEntity();
                 user.setUsername(email);
                 user.setPasswordHash("oauth2_" + System.currentTimeMillis());
-                user.setRole("patient");
+                user.setRole("staff");
+
+                MedicalStaffEntity medicalStaff = new MedicalStaffEntity();
+                medicalStaff.setName(name != null ? name : email);
+                medicalStaff.setRole("staff");
+                medicalStaff.setContactNo("");
+                medicalStaff.setSpecialty("");
+                medicalStaff.setUserAccount(user);
+                user.setMedicalStaff(medicalStaff);
+
                 user = userAccountRepository.save(user);
                 System.out.println("✅ New OAuth2 user created: " + email);
             } else {
@@ -61,7 +71,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString("http://localhost:3000/oauth/callback")
                     .queryParam("token", jwtToken)
                     .queryParam("email", email)
-                    .queryParam("role", user.getRole());
+                    .queryParam("role", user.getRole())
+                    .queryParam("name", name != null ? java.net.URLEncoder.encode(name, java.nio.charset.StandardCharsets.UTF_8.toString()) : "")
+                    .queryParam("accountId", user.getAccountID())
+                    .queryParam("staffId", user.getMedicalStaff() != null ? user.getMedicalStaff().getStaffID() : "");
         if (mode != null && !mode.isEmpty()) {
             builder.queryParam("mode", mode);
         }

@@ -1,4 +1,3 @@
-// frontend/src/hooks/useAuth.js
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -61,7 +60,6 @@ export const useAuth = () => {
         
         try {
             console.log('📤 Sending login request...');
-            
             const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
                 headers: {
@@ -72,30 +70,20 @@ export const useAuth = () => {
             });
 
             const data = await response.json();
-            console.log('📥 Login response status:', response.status);
-            // console.log('📥 Login response data:', data);
-
+            
             if (!response.ok || !data.success) {
                 throw new Error(data.message || `Login failed (${response.status})`);
             }
 
-            // Save user info to localStorage
             localStorage.setItem('user', JSON.stringify(data.user));
             localStorage.setItem('token', data.token);
             
-            // console.log('✅ Login successful! User:', data.user);
-            
-            
-            // Redirect to PatientQueue
             navigate('/PatientQueue');
-            
         } catch (error) {
             console.error('❌ Login error:', error);
             setError(error.message);
-            
-            // Show error for 5 seconds then clear
             setTimeout(() => setError(null), 5000);
-            throw error; // Re-throw for form to catch
+            throw error; 
         } finally {
             setLoading(false);
         }
@@ -107,9 +95,6 @@ export const useAuth = () => {
         setError(null);
         
         try {
-            console.log('📤 Sending registration request...', userData);
-            
-            // Optional: Check email first
             const emailExists = await checkEmailExists(userData.email);
             if (emailExists) {
                 throw new Error('Email already registered. Please use a different email.');
@@ -131,29 +116,20 @@ export const useAuth = () => {
             });
 
             const data = await response.json();
-            console.log('📥 Registration response status:', response.status);
-            console.log('📥 Registration response data:', data);
 
             if (!response.ok || !data.success) {
                 throw new Error(data.message || `Registration failed (${response.status})`);
             }
 
-            // Save user info to localStorage
             localStorage.setItem('user', JSON.stringify(data.user));
-            localStorage.setItem('token', 'clinicaflow-session');
+            localStorage.setItem('token', 'clinicaflow-session'); // Note: Replace with actual token from backend if available
             
-            console.log('✅ Registration successful! User:', data.user);
-
-            // Redirect to PatientQueue
             navigate('/PatientQueue');
-            
         } catch (error) {
             console.error('❌ Registration error:', error);
             setError(error.message);
-            
-            // Show error for 5 seconds then clear
             setTimeout(() => setError(null), 5000);
-            throw error; // Re-throw for form to catch
+            throw error; 
         } finally {
             setLoading(false);
         }
@@ -166,27 +142,18 @@ export const useAuth = () => {
         navigate('/login');
     };
 
-    // Check if user is authenticated
     const isAuthenticated = () => {
         return localStorage.getItem('user') !== null;
     };
 
-    // Get current user
     const getCurrentUser = () => {
         const userStr = localStorage.getItem('user');
         return userStr ? JSON.parse(userStr) : null;
     };
 
     return { 
-        login, 
-        register, 
-        logout, 
-        loading, 
-        error, 
-        checkEmailExists, // Export this too
-        testBackend,
-        healthCheck,
-        isAuthenticated,
-        getCurrentUser
+        login, register, logout, loading, error, 
+        checkEmailExists, testBackend, healthCheck, 
+        isAuthenticated, getCurrentUser
     };
 };

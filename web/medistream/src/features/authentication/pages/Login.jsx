@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, Typography, Paper, Container, Divider, Snackbar, Alert } from '@mui/material';
 import { 
   PasswordField, 
@@ -21,6 +22,7 @@ const loginValidation = (values) => {
 };
 
 export default function LoginPage({ onNavigate, onLogin }) {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -47,7 +49,11 @@ export default function LoginPage({ onNavigate, onLogin }) {
       
       const mode = localStorage.getItem('oauthMode');
       if (mode === 'register') {
-        onNavigate('register');
+        if (onNavigate) {
+          onNavigate('register');
+        } else {
+          navigate('/Register');
+        }
       }
       
       window.history.replaceState({}, document.title, window.location.pathname);
@@ -96,12 +102,19 @@ export default function LoginPage({ onNavigate, onLogin }) {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem('token', data.token);
+        if (data.user) {
+          localStorage.setItem('user', JSON.stringify(data.user));
+        }
         localStorage.setItem('userEmail', formData.email);
-        localStorage.setItem('userRole', data.role || 'patient');
+        localStorage.setItem('userRole', data.user?.role || data.role || 'patient');
         
         setShowSuccessMessage(true);
         setTimeout(() => {
-          onLogin();
+          if (onLogin) {
+            onLogin();
+          } else {
+            navigate('/PatientQueue');
+          }
         }, 1500);
       } else {
         const errorData = await response.json().catch(() => null);
@@ -229,7 +242,13 @@ export default function LoginPage({ onNavigate, onLogin }) {
             <Typography variant="body2" color="text.secondary">
               Don't have an account?{' '}
               <Button
-                onClick={() => onNavigate('register')}
+                onClick={() => {
+                  if (onNavigate) {
+                    onNavigate('register');
+                  } else {
+                    navigate('/Register');
+                  }
+                }}
                 sx={{
                   color: '#44000d',
                   fontWeight: 600,
