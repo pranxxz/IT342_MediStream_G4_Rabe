@@ -56,4 +56,61 @@ class PatientViewModel : ViewModel() {
         }
         _patientList.value = filtered
     }
+
+    fun createPatient(patient: PatientEntity) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+            try {
+                val response = repository.createPatient(patient)
+                if (response.isSuccessful) {
+                    fetchPatients() // refresh list after creation
+                } else {
+                    _errorMessage.value = "Failed to create patient: ${response.code()} ${response.message()}"
+                }
+            } catch (e: Exception) {
+                _errorMessage.value = "Network error: ${e.message}"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updatePatient(id: Int, patient: PatientEntity) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+            try {
+                val response = repository.updatePatient(id, patient)
+                if (response.isSuccessful) {
+                    fetchPatients()
+                } else {
+                    _errorMessage.value = "Failed to update patient: ${response.code()} ${response.message()}"
+                }
+            } catch (e: Exception) {
+                _errorMessage.value = "Network error: ${e.message}"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun deletePatient(id: Int) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+            try {
+                val response = repository.deletePatient(id)
+                if (response.isSuccessful) {
+                    fetchPatients()
+                } else {
+                    _errorMessage.value = "Failed to delete patient: ${response.code()} ${response.message()}"
+                }
+            } catch (e: Exception) {
+                _errorMessage.value = "Network error: ${e.message}"
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
 }

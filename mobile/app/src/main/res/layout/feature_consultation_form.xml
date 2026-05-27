@@ -4,204 +4,212 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pure_white"
+    android:background="@color/bg_page"
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_height="wrap_content">
 
-        <!-- Form Title Header -->
-        <TextView
-            android:id="@+id/tvFormTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_bold"
-            android:text="New Consultation Entry"
-            android:textColor="@color/brand_maroon"
-            android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- Selected Patient Demographics Card -->
+        <!-- Main Form Card Container -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardPatientHeader"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="0dp"
-            app:cardBackgroundColor="@color/surface_grey"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
             app:strokeWidth="1dp"
-            app:strokeColor="#EAEAEA"
+            app:strokeColor="@color/border_default"
+            app:cardBackgroundColor="@color/pure_white"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvFormTitle">
+            app:layout_constraintStart_toStartOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="14dp">
+                android:padding="20dp">
 
+                <!-- Form Title Header -->
                 <TextView
-                    android:id="@+id/tvPatientHeaderName"
+                    android:id="@+id/tvFormTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:textColor="@color/brand_maroon"
-                    android:textSize="15sp"
-                    tools:text="Patient: Juan Dela Cruz" />
+                    android:fontFamily="@font/poppins_bold"
+                    android:text="New Consultation"
+                    android:textColor="@color/brand_primary"
+                    android:textSize="18sp"
+                    android:layout_marginBottom="12dp" />
 
-                <TextView
-                    android:id="@+id/tvPatientHeaderId"
-                    android:layout_width="wrap_content"
+                <!-- Selected Patient Demographics Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardPatientHeader"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_regular"
-                    android:textColor="@color/text_grey_light"
-                    android:textSize="12sp"
-                    tools:text="Patient ID: #101" />
+                    android:layout_marginBottom="20dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/border_default"
+                    app:cardBackgroundColor="#FAF8F8">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <TextView
+                            android:id="@+id/tvPatientHeaderName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:textColor="@color/brand_primary"
+                            android:textSize="14sp"
+                            tools:text="Patient: Juan Dela Cruz" />
+
+                        <TextView
+                            android:id="@+id/tvPatientHeaderId"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_regular"
+                            android:textColor="@color/text_muted"
+                            android:textSize="12sp"
+                            android:layout_marginTop="2dp"
+                            tools:text="Patient ID: #101" />
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Inputs Form container -->
+                <LinearLayout
+                    android:id="@+id/layoutForm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Symptoms Input -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:hint="Symptoms *"
+                        app:boxStrokeColor="@color/brand_primary"
+                        app:hintTextColor="@color/brand_primary">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etSymptoms"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_regular"
+                            android:inputType="textMultiLine"
+                            android:gravity="top|start"
+                            android:minLines="3"
+                            android:textSize="14sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Diagnosis Input -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:hint="Diagnosis *"
+                        app:boxStrokeColor="@color/brand_primary"
+                        app:hintTextColor="@color/brand_primary">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etDiagnosis"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_regular"
+                            android:inputType="textMultiLine"
+                            android:gravity="top|start"
+                            android:minLines="3"
+                            android:textSize="14sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Prescription Input -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:hint="Prescription / Medications"
+                        app:boxStrokeColor="@color/brand_primary"
+                        app:hintTextColor="@color/brand_primary">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etPrescription"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_regular"
+                            android:inputType="textMultiLine"
+                            android:gravity="top|start"
+                            android:minLines="3"
+                            android:textSize="14sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Remarks Input -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:hint="Remarks"
+                        app:boxStrokeColor="@color/brand_primary"
+                        app:hintTextColor="@color/brand_primary">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etRemarks"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_regular"
+                            android:inputType="textMultiLine"
+                            android:gravity="top|start"
+                            android:minLines="2"
+                            android:textSize="14sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+                <!-- Action Buttons Stacked Vertically -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Submit Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSubmit"
+                        style="@style/MediStream.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:text="Save Consultation" />
+
+                    <!-- Cancel Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnCancel"
+                        style="@style/MediStream.Button.Outlined"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="12dp"
+                        android:text="Cancel" />
+
+                </LinearLayout>
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-
-        <!-- Inputs Form container -->
-        <LinearLayout
-            android:id="@+id/layoutForm"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/cardPatientHeader">
-
-            <!-- Symptoms Input -->
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:hint="Symptoms"
-                app:boxStrokeColor="@color/brand_maroon"
-                app:hintTextColor="@color/brand_maroon">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etSymptoms"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_regular"
-                    android:inputType="textMultiLine"
-                    android:gravity="top|start"
-                    android:minLines="3"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Diagnosis Input -->
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:hint="Diagnosis"
-                app:boxStrokeColor="@color/brand_maroon"
-                app:hintTextColor="@color/brand_maroon">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etDiagnosis"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_regular"
-                    android:inputType="textMultiLine"
-                    android:gravity="top|start"
-                    android:minLines="3"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Prescription Input -->
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:hint="Prescription / Medications"
-                app:boxStrokeColor="@color/brand_maroon"
-                app:hintTextColor="@color/brand_maroon">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPrescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_regular"
-                    android:inputType="textMultiLine"
-                    android:gravity="top|start"
-                    android:minLines="3"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Remarks Input -->
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:hint="Remarks"
-                app:boxStrokeColor="@color/brand_maroon"
-                app:hintTextColor="@color/brand_maroon">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etRemarks"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_regular"
-                    android:inputType="textMultiLine"
-                    android:gravity="top|start"
-                    android:minLines="2"
-                    android:textSize="14sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </LinearLayout>
-
-        <!-- Action Buttons -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            android:gravity="end"
-            app:layout_constraintTop_toBottomOf="@id/layoutForm">
-
-            <!-- Cancel Button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnCancel"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="12dp"
-                android:fontFamily="@font/poppins_medium"
-                android:text="Cancel"
-                android:textColor="@color/text_grey_light"
-                android:textSize="14sp" />
-
-            <!-- Submit Button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSubmit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_semibold"
-                android:text="Submit Consultation"
-                android:textColor="@color/pure_white"
-                android:textSize="14sp"
-                app:cornerRadius="6dp"
-                app:backgroundTint="@color/brand_maroon" />
-
-        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:indeterminateTint="@color/brand_maroon"
+            android:indeterminateTint="@color/brand_primary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

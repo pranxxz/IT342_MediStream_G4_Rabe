@@ -87,20 +87,41 @@ class PatientDetailDialogFragment : DialogFragment() {
         // Bind data
         binding.tvPatientName.text = fullName
         binding.tvPatientId.text = "ID: #$patientId"
-        binding.tvPatientAgeGender.text = "${age} yrs old, ${gender}"
+        binding.tvPatientAgeGender.text = "${age} yrs old · ${gender}"
         binding.tvPatientContact.text = if (contactNumber.isNotEmpty()) contactNumber else "No contact number"
         binding.tvPatientAddress.text = if (address.isNotEmpty()) address else "No address listed"
         binding.tvPatientDoctor.text = assignedDoctor
         binding.tvPatientStatus.text = status.uppercase()
 
-        // Badge styling based on status
-        val badgeColor = when (status.uppercase()) {
-            "ACTIVE", "DONE" -> resources.getColor(R.color.status_done, null)
-            "WAITING" -> resources.getColor(R.color.status_waiting, null)
-            "IN_PROGRESS", "IN PROGRESS" -> resources.getColor(R.color.status_in_progress, null)
-            else -> resources.getColor(R.color.brand_maroon, null)
+        val initials = if (fullName.isNotEmpty()) {
+            val parts = fullName.trim().split("\\s+".toRegex())
+            if (parts.size >= 2) {
+                "${parts[0][0]}${parts[1][0]}".uppercase()
+            } else {
+                "${parts[0][0]}".uppercase()
+            }
+        } else {
+            "P"
         }
-        binding.tvPatientStatus.backgroundTintList = ColorStateList.valueOf(badgeColor)
+        binding.tvAvatarInitials.text = initials
+
+        // Badge styling based on status
+        val context = binding.root.context
+        val badgeColor = when (status.uppercase()) {
+            "ACTIVE", "DONE", "COMPLETED" -> context.getColor(R.color.status_completed)
+            "WAITING" -> context.getColor(R.color.status_waiting)
+            "IN_PROGRESS", "IN PROGRESS", "CONSULTING" -> context.getColor(R.color.status_consulting)
+            else -> context.getColor(R.color.brand_primary)
+        }
+        val badgeColorBg = when (status.uppercase()) {
+            "ACTIVE", "DONE", "COMPLETED" -> context.getColor(R.color.status_completed_bg)
+            "WAITING" -> context.getColor(R.color.status_waiting_bg)
+            "IN_PROGRESS", "IN PROGRESS", "CONSULTING" -> context.getColor(R.color.status_consulting_bg)
+            else -> context.getColor(R.color.status_waiting_bg)
+        }
+        binding.tvPatientStatus.background = context.getDrawable(R.drawable.bg_status_badge)
+        binding.tvPatientStatus.backgroundTintList = ColorStateList.valueOf(badgeColorBg)
+        binding.tvPatientStatus.setTextColor(badgeColor)
 
         // Listeners
         binding.btnCloseDialog.setOnClickListener {

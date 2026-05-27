@@ -54,7 +54,7 @@ const MaroonStatCard = ({ label, value, icon }) => (
 // ─── Inline Patient Form Panel ────────────────────────────────────────────────
 const PatientFormPanel = ({ initialData, onSubmit, onCancel, patientId }) => {
   const [form, setForm] = useState({
-    firstName: '', lastName: '', contactNumber: '', age: '', gender: '', address: '', lastVisit: '',
+    firstName: '', lastName: '', contactNumber: '', age: '', gender: '', address: '',
   });
 
   const formatDateForInput = (dateString) => {
@@ -75,7 +75,6 @@ const PatientFormPanel = ({ initialData, onSubmit, onCancel, patientId }) => {
       age: initialData?.age || '', 
       gender: initialData?.gender || '', 
       address: initialData?.address || '', 
-      lastVisit: formatDateForInput(initialData?.lastVisit)
     });
   }, [initialData]);
 
@@ -142,11 +141,6 @@ const PatientFormPanel = ({ initialData, onSubmit, onCancel, patientId }) => {
       <div style={{ marginBottom: 18 }}>
         <label style={labelStyle}>Address*</label>
         <input name="address" value={form.address} onChange={handleChange} style={inputStyle} />
-      </div>
-
-      <div style={{ marginBottom: 24 }}>
-        <label style={labelStyle}>Last Visit</label>
-        <input name="lastVisit" type="date" value={form.lastVisit} onChange={handleChange} style={inputStyle} />
       </div>
 
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>

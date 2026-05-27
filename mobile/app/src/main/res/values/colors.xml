@@ -1,13 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="brand_maroon">#44000D</color>
-    <color name="brand_maroon_dark">#2C0008</color>
+    <!-- Brand -->
+    <color name="brand_primary">#3D080B</color>       <!-- was brand_maroon #44000D -->
+    <color name="brand_primary_dark">#2D0608</color>
+    <color name="brand_primary_light">#5C0C11</color>
+    <color name="brand_accent">#8B1A1A</color>
+    <color name="brand_logo_bg">#44000D</color>
+
+    <!-- Status -->
+    <color name="status_consulting">#FF6B6B</color>
+    <color name="status_consulting_bg">#FFE4E4</color>
+    <color name="status_waiting">#888888</color>
+    <color name="status_waiting_bg">#F0F0F0</color>
+    <color name="status_completed">#2ECC71</color>
+    <color name="status_completed_bg">#E8F8F0</color>
+
+    <!-- Surfaces -->
+    <color name="bg_page">#F5F5F7</color>
     <color name="pure_white">#FFFFFF</color>
-    <color name="text_grey_light">#757575</color>
-    <color name="input_placeholder_grey">#AD9C9C</color>
-    <color name="status_waiting">#FFA000</color>
-    <color name="status_in_progress">#1976D2</color>
-    <color name="status_done">#388E3C</color>
-    <color name="status_cancelled">#D32F2F</color>
-    <color name="surface_grey">#F5F5F5</color>
+
+    <!-- Text -->
+    <color name="text_primary">#1A1A1A</color>
+    <color name="text_muted">#666666</color>
+    <color name="text_sidebar_inactive">#B3FFFFFF</color>  <!-- rgba(255,255,255,0.7) -->
+
+    <!-- Borders -->
+    <color name="border_default">#E8E8E8</color>
+    <color name="input_placeholder">#AD9C9C</color>
+
+    <!-- Aliases for Backward Compatibility / Layout Mappings -->
+    <color name="brand_maroon">@color/brand_primary</color>
+    <color name="brand_maroon_dark">@color/brand_primary_dark</color>
+    <color name="brand_maroon_gradient_start">@color/brand_primary_light</color>
+    <color name="window_background">@color/bg_page</color>
+    <color name="surface_off_white">@color/pure_white</color>
+    <color name="surface_grey">@color/bg_page</color>
+    <color name="card_border_light">@color/border_default</color>
+    <color name="text_dark">@color/text_primary</color>
+    <color name="text_grey_light">@color/text_muted</color>
+    <color name="input_placeholder_grey">@color/input_placeholder</color>
+    
+    <color name="status_waiting_text">@color/text_muted</color>
+    <color name="status_consulting_text">@color/brand_primary</color>
+    <color name="status_in_progress">@color/status_consulting</color>
+    <color name="status_done">@color/status_completed</color>
+    <color name="status_cancelled">@color/status_waiting</color>
 </resources>

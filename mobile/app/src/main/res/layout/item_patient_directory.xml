@@ -4,105 +4,142 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
+    android:layout_marginStart="12dp"
     android:layout_marginTop="6dp"
-    android:layout_marginEnd="16dp"
+    android:layout_marginEnd="12dp"
     android:layout_marginBottom="6dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="1dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
     app:cardBackgroundColor="@color/pure_white"
     app:strokeWidth="1dp"
-    app:strokeColor="#F0F0F0">
+    app:strokeColor="@color/border_default">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="14dp">
 
-        <!-- Patient Avatar Icon -->
+        <!-- Left: Avatar Circle -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardIcon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            app:cardCornerRadius="20dp"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            app:cardCornerRadius="19dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="@color/surface_grey"
+            app:strokeWidth="0dp"
+            app:cardBackgroundColor="@color/brand_accent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="center"
-                android:src="@drawable/outline_person_outline_24"
-                app:tint="@color/brand_maroon" />
+            <TextView
+                android:id="@+id/tvAvatarInitials"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="P"
+                android:fontFamily="@font/poppins_bold"
+                android:textColor="@color/pure_white"
+                android:textSize="13sp" />
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Patient Name -->
-        <TextView
-            android:id="@+id/tvPatientName"
+        <!-- Middle Column: Name, demographics, contact, last visit -->
+        <LinearLayout
+            android:id="@+id/llPatientInfo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:layout_marginStart="12dp"
-            android:fontFamily="@font/poppins_semibold"
-            android:textColor="@color/brand_maroon"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toStartOf="@id/tvPatientId"
+            android:layout_marginEnd="8dp"
             app:layout_constraintStart_toEndOf="@id/cardIcon"
+            app:layout_constraintEnd_toStartOf="@id/llRightStatus"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Juana Dela Cruz" />
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- Patient ID -->
-        <TextView
-            android:id="@+id/tvPatientId"
+            <TextView
+                android:id="@+id/tvPatientName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_semibold"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                tools:text="Juana Dela Cruz" />
+
+            <TextView
+                android:id="@+id/tvPatientDemographics"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/poppins_regular"
+                android:textColor="@color/text_muted"
+                android:textSize="12sp"
+                tools:text="Female, 31 years old" />
+
+            <TextView
+                android:id="@+id/tvContact"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:fontFamily="@font/poppins_regular"
+                android:textColor="@color/text_muted"
+                android:textSize="12sp"
+                tools:text="Contact: 0917-123-4567" />
+
+            <TextView
+                android:id="@+id/tvLastVisit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/poppins_medium"
+                android:textColor="@color/text_muted"
+                android:textSize="11sp"
+                tools:text="Last visit: May 12, 2026" />
+        </LinearLayout>
+
+        <!-- Right Side: Status badge & ID & Chevron -->
+        <LinearLayout
+            android:id="@+id/llRightStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_medium"
-            android:textColor="@color/text_grey_light"
-            android:textSize="12sp"
+            android:orientation="vertical"
+            android:gravity="end"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="ID: #102" />
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- Patient Info String (Age, Gender) -->
-        <TextView
-            android:id="@+id/tvPatientDemographics"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:fontFamily="@font/poppins_regular"
-            android:textColor="@color/text_grey_light"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/tvPatientName"
-            app:layout_constraintTop_toBottomOf="@id/tvPatientName"
-            tools:text="Female, 31 years old" />
+            <TextView
+                android:id="@+id/tvStatusBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_status_badge"
+                android:textColor="@color/brand_primary"
+                android:fontFamily="@font/poppins_semibold"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:text="Waiting"
+                android:textSize="10sp"
+                android:layout_marginBottom="4dp" />
 
-        <TextView
-            android:id="@+id/tvContact"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:fontFamily="@font/poppins_regular"
-            android:textColor="@color/text_grey_light"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/tvPatientName"
-            app:layout_constraintTop_toBottomOf="@id/tvPatientDemographics"
-            tools:text="Contact: 0917-123-4567" />
+            <TextView
+                android:id="@+id/tvPatientId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:textColor="@color/text_muted"
+                android:textSize="11sp"
+                android:layout_marginBottom="4dp"
+                tools:text="ID: #102" />
 
-        <!-- Last Visit Badge -->
-        <TextView
-            android:id="@+id/tvLastVisit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/poppins_medium"
-            android:textColor="@color/brand_maroon"
-            android:textSize="11sp"
-            app:layout_constraintStart_toStartOf="@id/tvPatientName"
-            app:layout_constraintTop_toBottomOf="@id/tvContact"
-            tools:text="Last visit: May 12, 2026" />
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:srcCompat="@drawable/ic_chevron_right"
+                app:tint="@color/text_muted" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -4,88 +4,110 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pure_white"
+    android:background="@color/bg_page"
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="24dp">
+        android:layout_height="wrap_content">
 
-        <!-- Profile Card Container -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/profileCard"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="3dp"
-            app:cardBackgroundColor="@color/surface_grey"
-            app:strokeColor="#EAEAEA"
-            app:strokeWidth="1dp"
-            app:layout_constraintEnd_toEndOf="parent"
+        <!-- Top Header Band -->
+        <View
+            android:id="@+id/headerBand"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@color/brand_primary"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Overlapping Circular Avatar -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardAvatarWrapper"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:cardCornerRadius="40dp"
+            app:cardElevation="4dp"
+            app:strokeColor="@color/pure_white"
+            app:strokeWidth="3dp"
+            app:cardBackgroundColor="@color/brand_accent"
+            app:layout_constraintTop_toBottomOf="@id/headerBand"
+            app:layout_constraintBottom_toBottomOf="@id/headerBand"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:id="@+id/ivAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="center"
+                android:src="@drawable/outline_person_outline_24"
+                app:tint="@color/pure_white"
+                android:contentDescription="Profile Avatar" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Name -->
+        <TextView
+            android:id="@+id/tvProfileName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:fontFamily="@font/poppins_bold"
+            android:textColor="@color/text_primary"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@id/cardAvatarWrapper"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Dr. Evan Lee" />
+
+        <!-- Role Badge -->
+        <TextView
+            android:id="@+id/tvProfileRole"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/bottom_nav_icon_tint"
+            android:backgroundTint="#1A3D080B"
+            android:fontFamily="@font/poppins_semibold"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="4dp"
+            android:textColor="@color/brand_primary"
+            android:textSize="11sp"
+            app:layout_constraintTop_toBottomOf="@id/tvProfileName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="CARDIOLOGIST" />
+
+        <!-- Account Info Details Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="1dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/border_default"
+            app:cardBackgroundColor="@color/pure_white"
+            app:layout_constraintTop_toBottomOf="@id/tvProfileRole"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:gravity="center"
-                android:padding="24dp">
+                android:padding="20dp">
 
-                <!-- Circular Avatar Icon Wrapper -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    app:cardCornerRadius="40dp"
-                    app:cardElevation="0dp"
-                    app:strokeColor="@color/brand_maroon"
-                    app:strokeWidth="2dp"
-                    app:cardBackgroundColor="@color/pure_white"
-                    android:layout_marginBottom="16dp">
-
-                    <ImageView
-                        android:id="@+id/ivAvatar"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="center"
-                        android:src="@drawable/outline_person_outline_24"
-                        app:tint="@color/brand_maroon" />
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Name -->
                 <TextView
-                    android:id="@+id/tvProfileName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_bold"
-                    android:textColor="@color/brand_maroon"
-                    android:textSize="20sp"
-                    tools:text="Dr. Evan Lee" />
-
-                <!-- Role Badge -->
-                <TextView
-                    android:id="@+id/tvProfileRole"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:background="@drawable/button_background_maroon"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:paddingLeft="12dp"
-                    android:paddingRight="12dp"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp"
-                    android:textColor="@color/pure_white"
-                    android:textSize="11sp"
-                    tools:text="CARDIOLOGIST" />
-
-                <!-- Divider -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#DDDDDD"
-                    android:layout_marginTop="16dp"
+                    android:text="Account Overview"
+                    android:textColor="@color/brand_primary"
+                    android:textSize="15sp"
                     android:layout_marginBottom="16dp" />
 
                 <!-- Specialty Detail Row -->
@@ -93,23 +115,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
-
+                    android:layout_marginBottom="10dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_regular"
-                        android:text="Specialty: "
-                        android:textColor="@color/text_grey_light"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="Specialty"
+                        android:textColor="@color/text_muted"
                         android:textSize="13sp" />
-
                     <TextView
                         android:id="@+id/tvProfileSpecialty"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:fontFamily="@font/poppins_medium"
-                        android:textColor="@color/brand_maroon"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:textColor="@color/text_primary"
                         android:gravity="end"
                         android:textSize="13sp"
                         tools:text="Cardiovascular Medicine" />
@@ -120,23 +140,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
-
+                    android:layout_marginBottom="10dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_regular"
-                        android:text="Department: "
-                        android:textColor="@color/text_grey_light"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="Department"
+                        android:textColor="@color/text_muted"
                         android:textSize="13sp" />
-
                     <TextView
                         android:id="@+id/tvProfileDepartment"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:fontFamily="@font/poppins_medium"
-                        android:textColor="@color/brand_maroon"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:textColor="@color/text_primary"
                         android:gravity="end"
                         android:textSize="13sp"
                         tools:text="Cardiology Clinic" />
@@ -147,23 +165,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
-
+                    android:layout_marginBottom="10dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_regular"
-                        android:text="Age &amp; Gender: "
-                        android:textColor="@color/text_grey_light"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="Age &amp; Gender"
+                        android:textColor="@color/text_muted"
                         android:textSize="13sp" />
-
                     <TextView
                         android:id="@+id/tvProfileAgeGender"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:fontFamily="@font/poppins_medium"
-                        android:textColor="@color/brand_maroon"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:textColor="@color/text_primary"
                         android:gravity="end"
                         android:textSize="13sp"
                         tools:text="38 yrs, Male" />
@@ -174,26 +190,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
-
+                    android:layout_marginBottom="10dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_regular"
-                        android:text="Staff ID: "
-                        android:textColor="@color/text_grey_light"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="Staff ID"
+                        android:textColor="@color/text_muted"
                         android:textSize="13sp" />
-
                     <TextView
                         android:id="@+id/tvProfileStaffId"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:fontFamily="@font/poppins_medium"
-                        android:textColor="@color/brand_maroon"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:textColor="@color/text_primary"
                         android:gravity="end"
                         android:textSize="13sp"
-                        tools:text="101" />
+                        tools:text="#101" />
                 </LinearLayout>
 
                 <!-- Connected Email Row -->
@@ -201,23 +215,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
-
+                    android:layout_marginBottom="10dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_regular"
-                        android:text="Email: "
-                        android:textColor="@color/text_grey_light"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="Email"
+                        android:textColor="@color/text_muted"
                         android:textSize="13sp" />
-
                     <TextView
                         android:id="@+id/tvProfileEmail"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:fontFamily="@font/poppins_medium"
-                        android:textColor="@color/brand_maroon"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:textColor="@color/text_primary"
                         android:gravity="end"
                         android:textSize="13sp"
                         tools:text="evan.lee@medistream.com" />
@@ -228,44 +240,63 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="8dp">
-
+                    android:gravity="center_vertical">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_regular"
-                        android:text="Status: "
-                        android:textColor="@color/text_grey_light"
+                        android:fontFamily="@font/poppins_medium"
+                        android:text="Status"
+                        android:textColor="@color/text_muted"
                         android:textSize="13sp" />
-
                     <View
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
-
                     <TextView
                         android:id="@+id/tvProfileAvailabilityBadge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_semibold"
+                        android:fontFamily="@font/poppins_bold"
                         android:textColor="@color/pure_white"
                         android:textSize="11sp"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:paddingTop="2dp"
-                        android:paddingBottom="2dp"
-                        android:background="@drawable/button_background_maroon"
-                        android:backgroundTint="@color/status_done"
-                        android:text="AVAILABLE" />
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="4dp"
+                        android:background="@drawable/bg_status_badge"
+                        tools:text="AVAILABLE" />
                 </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-                <!-- Divider -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#DDDDDD"
-                    android:layout_marginTop="12dp"
+        <!-- Edit Profile Details Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/profileCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="1dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/border_default"
+            app:cardBackgroundColor="@color/pure_white"
+            app:layout_constraintTop_toBottomOf="@id/cardDetails"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_bold"
+                    android:text="Edit Details"
+                    android:textColor="@color/brand_primary"
+                    android:textSize="15sp"
                     android:layout_marginBottom="16dp" />
 
                 <!-- Full Name Input -->
@@ -275,11 +306,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:hint="Full Name"
-                    app:boxStrokeColor="@color/brand_maroon"
-                    app:hintTextColor="@color/brand_maroon"
-                    app:startIconDrawable="@drawable/outline_person_outline_24"
-                    app:startIconTint="@color/brand_maroon">
-
+                    app:boxStrokeColor="@color/brand_primary"
+                    app:hintTextColor="@color/brand_primary">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etProfileNameEdit"
                         android:layout_width="match_parent"
@@ -296,11 +324,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:hint="Specialty"
-                    app:boxStrokeColor="@color/brand_maroon"
-                    app:hintTextColor="@color/brand_maroon"
-                    app:startIconDrawable="@drawable/ic_medical"
-                    app:startIconTint="@color/brand_maroon">
-
+                    app:boxStrokeColor="@color/brand_primary"
+                    app:hintTextColor="@color/brand_primary">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etProfileSpecialtyEdit"
                         android:layout_width="match_parent"
@@ -317,11 +342,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:hint="Department"
-                    app:boxStrokeColor="@color/brand_maroon"
-                    app:hintTextColor="@color/brand_maroon"
-                    app:startIconDrawable="@drawable/ic_medical"
-                    app:startIconTint="@color/brand_maroon">
-
+                    app:boxStrokeColor="@color/brand_primary"
+                    app:hintTextColor="@color/brand_primary">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etProfileDepartmentEdit"
                         android:layout_width="match_parent"
@@ -338,11 +360,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:hint="Age"
-                    app:boxStrokeColor="@color/brand_maroon"
-                    app:hintTextColor="@color/brand_maroon"
-                    app:startIconDrawable="@drawable/ic_time"
-                    app:startIconTint="@color/brand_maroon">
-
+                    app:boxStrokeColor="@color/brand_primary"
+                    app:hintTextColor="@color/brand_primary">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etProfileAgeEdit"
                         android:layout_width="match_parent"
@@ -357,11 +376,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
-                    android:text="Gender:"
-                    android:textColor="@color/brand_maroon"
+                    android:text="Gender"
+                    android:textColor="@color/text_muted"
                     android:layout_marginBottom="4dp"
                     android:textSize="12sp" />
-
                 <Spinner
                     android:id="@+id/spinnerGenderEdit"
                     android:layout_width="match_parent"
@@ -377,11 +395,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:hint="Contact Number"
-                    app:boxStrokeColor="@color/brand_maroon"
-                    app:hintTextColor="@color/brand_maroon"
-                    app:startIconDrawable="@drawable/outline_email_24"
-                    app:startIconTint="@color/brand_maroon">
-
+                    app:boxStrokeColor="@color/brand_primary"
+                    app:hintTextColor="@color/brand_primary">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etProfileContact"
                         android:layout_width="match_parent"
@@ -396,30 +411,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
-                    android:text="Change Availability Status:"
-                    android:textColor="@color/brand_maroon"
+                    android:text="Change Availability Status"
+                    android:textColor="@color/text_muted"
                     android:layout_marginBottom="4dp"
                     android:textSize="12sp" />
-
                 <Spinner
                     android:id="@+id/spinnerAvailability"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="20dp"
                     android:background="@drawable/bg_spinner_background"
                     android:spinnerMode="dropdown" />
 
                 <!-- Save Changes Button -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSaveContact"
+                    style="@style/MediStream.Button"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Save Profile Updates"
-                    android:textColor="@color/pure_white"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/poppins_semibold"
-                    app:cornerRadius="8dp"
-                    app:backgroundTint="@color/brand_maroon" />
+                    android:layout_height="52dp"
+                    android:text="Save Profile Updates" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -427,17 +437,19 @@
         <!-- Logout Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="16dp"
-            android:padding="14dp"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="24dp"
             android:text="Sign Out"
-            android:textColor="@color/pure_white"
-            android:textSize="16sp"
-            android:fontFamily="@font/poppins_bold"
+            android:textColor="@color/status_consulting"
+            android:fontFamily="@font/poppins_semibold"
+            app:strokeColor="@color/status_consulting"
+            app:strokeWidth="1dp"
+            app:backgroundTint="@color/pure_white"
             app:cornerRadius="8dp"
-            app:backgroundTint="@color/status_cancelled"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/profileCard"

@@ -12,30 +12,33 @@
     app:cardElevation="2dp"
     app:cardBackgroundColor="@color/pure_white"
     app:strokeWidth="1dp"
-    app:strokeColor="#EAEAEA">
+    app:strokeColor="@color/border_default">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Avatar Icon -->
+        <!-- Avatar Icon (Circular) -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardIcon"
             android:layout_width="44dp"
             android:layout_height="44dp"
             app:cardCornerRadius="22dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="@color/surface_grey"
+            app:strokeWidth="0dp"
+            app:cardBackgroundColor="@color/brand_accent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="center"
                 android:src="@drawable/outline_person_outline_24"
-                app:tint="@color/brand_maroon" />
+                app:tint="@color/pure_white"
+                android:contentDescription="Staff Avatar" />
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Staff Name -->
@@ -45,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:fontFamily="@font/poppins_semibold"
-            android:textColor="@color/brand_maroon"
+            android:textColor="@color/text_primary"
             android:textSize="15sp"
             app:layout_constraintEnd_toStartOf="@id/tvStaffStatus"
             app:layout_constraintStart_toEndOf="@id/cardIcon"
@@ -57,43 +60,40 @@
             android:id="@+id/tvStaffStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_semibold"
-            android:paddingLeft="8dp"
-            android:paddingTop="2dp"
-            android:paddingRight="8dp"
-            android:paddingBottom="2dp"
-            android:background="@drawable/button_background_maroon"
-            android:backgroundTint="@color/status_done"
+            android:fontFamily="@font/poppins_bold"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
             android:textColor="@color/pure_white"
             android:textSize="10sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:text="AVAILABLE" />
 
-        <!-- Role / Specialty -->
+        <!-- Role / Specialty & Department -->
         <TextView
             android:id="@+id/tvStaffRole"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="4dp"
             android:fontFamily="@font/poppins_medium"
-            android:textColor="@color/text_grey_light"
+            android:textColor="@color/brand_primary"
             android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tvStaffStatus"
             app:layout_constraintStart_toStartOf="@id/tvStaffName"
             app:layout_constraintTop_toBottomOf="@id/tvStaffName"
             tools:text="Pediatrician | Pediatrics" />
 
-        <!-- Contact Info -->
+        <!-- Contact Info / Email -->
         <TextView
             android:id="@+id/tvStaffContact"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:fontFamily="@font/poppins_regular"
-            android:textColor="@color/text_grey_light"
+            android:textColor="@color/text_muted"
             android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tvStaffStatus"
             app:layout_constraintStart_toStartOf="@id/tvStaffName"
             app:layout_constraintTop_toBottomOf="@id/tvStaffRole"
             tools:text="Contact: 0917-234-5678" />
