@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../../../shared/services/api';
 import {
   Box,
   Card,
@@ -62,7 +63,7 @@ const QueueDashboard = () => {
   const fetchQueueData = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8080/api/queue');
+      const response = await fetch(`${API_BASE_URL}/api/queue`);
       if (response.ok) {
         const data = await response.json();
         setQueueList(data);

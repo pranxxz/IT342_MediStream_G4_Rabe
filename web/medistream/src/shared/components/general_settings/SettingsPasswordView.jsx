@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Lock, LogOut, Globe, Eye, EyeOff } from 'lucide-react';
 import { FeedbackModal } from "../FeedbackModal";
+import { API_BASE_URL } from '../../services/api';
 
 const SettingsPasswordView = () => {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -90,7 +91,7 @@ const SettingsPasswordView = () => {
       console.log('Changing password for account:', accountId);
       
       // Call API to change password
-      const response = await fetch('http://localhost:8080/api/useraccount/change-password', {
+      const response = await fetch(`${API_BASE_URL}/api/useraccount/change-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

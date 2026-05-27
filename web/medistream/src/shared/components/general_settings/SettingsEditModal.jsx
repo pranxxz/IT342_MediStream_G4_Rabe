@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import { FormTextField, FormSelectField } from './FormComponents';
+import { API_BASE_URL } from '../../services/api';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -282,7 +283,7 @@ const SettingsEditModal = ({ userData, close, onSave }) => {
   });
 
   const updateMedicalStaffRecord = async (accountId) => {
-    const res = await fetch('http://localhost:8080/api/medicalstaff/update/' + userData.staffID, {
+    const res = await fetch(`${API_BASE_URL}/api/medicalstaff/update/` + userData.staffID, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(buildPayload(accountId)),
@@ -301,7 +302,7 @@ const SettingsEditModal = ({ userData, close, onSave }) => {
   };
 
   const createMedicalStaffRecord = async (accountId) => {
-    const res = await fetch('http://localhost:8080/api/medicalstaff/add', {
+    const res = await fetch(`${API_BASE_URL}/api/medicalstaff/add`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(buildPayload(accountId)),
@@ -320,7 +321,7 @@ const SettingsEditModal = ({ userData, close, onSave }) => {
 
   const refreshStaffList = async () => {
     try {
-      const res = await fetch('http://localhost:8080/api/medicalstaff/all');
+      const res = await fetch(`${API_BASE_URL}/api/medicalstaff/all`);
       if (res.ok) window.dispatchEvent(new Event('storage'));
     } catch (_) { /* non-critical */ }
   };

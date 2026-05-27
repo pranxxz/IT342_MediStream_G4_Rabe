@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { API_BASE_URL } from '../../../shared/services/api';
 
 const OAuthCallback = () => {
   const [searchParams] = useSearchParams();
@@ -34,7 +35,7 @@ const OAuthCallback = () => {
       // 3. Smart Redirect Check
       const checkProfileAndRedirect = async () => {
         try {
-          const response = await fetch('http://localhost:8080/api/medicalstaff/all', {
+          const response = await fetch(`${API_BASE_URL}/api/medicalstaff/all`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'

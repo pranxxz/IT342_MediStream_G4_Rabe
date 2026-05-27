@@ -8,6 +8,7 @@ import PageHeader from '../components/PageHeader';
 import { COLORS } from '../components/Sidebar';
 import SettingsIcon from '@mui/icons-material/Settings';
 import axios from 'axios';
+import { API_BASE_URL } from '../services/api';
 
 const M = COLORS.primary;
 const M_LIGHT = '#7a0017';
@@ -141,7 +142,7 @@ const ChangePasswordForm = () => {
       const storedUser = localStorage.getItem('user') || sessionStorage.getItem('user');
       if (!storedUser) throw new Error('No user session found');
       const user = JSON.parse(storedUser);
-      const response = await fetch('http://localhost:8080/api/auth/change-password', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/change-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -362,7 +363,7 @@ const GeneralSettings = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:8080/api/users/${userData.accountID}/profile-picture`,
+        `${API_BASE_URL}/api/users/${userData.accountID}/profile-picture`,
         formData,
         {
           headers: {
@@ -435,7 +436,7 @@ const GeneralSettings = () => {
         let parsedUser;
         try { parsedUser = JSON.parse(storedUser); } catch { setUserData(getEmptyUserData()); return; }
         try {
-          const allStaffResponse = await fetch('http://localhost:8080/api/medicalstaff/all', {
+          const allStaffResponse = await fetch(`${API_BASE_URL}/api/medicalstaff/all`, {
             method: 'GET', headers: { 'Content-Type': 'application/json' }
           });
           if (!allStaffResponse.ok) throw new Error(`Failed to fetch medical staff: ${allStaffResponse.status}`);
@@ -513,7 +514,7 @@ const GeneralSettings = () => {
     try {
       if (!userData?.staffID || userData.staffID === 'N/A') return;
       setUpdatingAvailability(true);
-      const response = await fetch(`http://localhost:8080/api/medicalstaff/${userData.staffID}/availability`, {
+      const response = await fetch(`${API_BASE_URL}/api/medicalstaff/${userData.staffID}/availability`, {
         method: 'PUT', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ availability: newAvailability })
       });
@@ -537,7 +538,7 @@ const GeneralSettings = () => {
         gender: updatedData.gender || null, department: updatedData.department || 'General Medicine',
         availability, userAccount: { accountID: parseInt(userData.accountID) }
       };
-      const response = await fetch(`http://localhost:8080/api/medicalstaff/update/${userData.staffID}`, {
+      const response = await fetch(`${API_BASE_URL}/api/medicalstaff/update/${userData.staffID}`, {
         method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(backendPayload)
       });
       if (!response.ok) { const t = await response.text(); throw new Error(`Server responded with ${response.status}: ${t}`); }
@@ -655,9 +656,9 @@ const GeneralSettings = () => {
                         },
                       }}
                     >
-                      {previewUrl || (userData?.profilePicturePath ? `http://localhost:8080/api/users/${userData.accountID}/profile-picture?t=${avatarTimestamp}` : null) ? (
+                      {previewUrl || (userData?.profilePicturePath ? `${API_BASE_URL}/api/users/${userData.accountID}/profile-picture?t=${avatarTimestamp}` : null) ? (
                         <img
-                          src={previewUrl || (userData?.profilePicturePath ? `http://localhost:8080/api/users/${userData.accountID}/profile-picture?t=${avatarTimestamp}` : null)}
+                          src={previewUrl || (userData?.profilePicturePath ? `${API_BASE_URL}/api/users/${userData.accountID}/profile-picture?t=${avatarTimestamp}` : null)}
                           alt="Profile"
                           style={{
                             width: '100%',

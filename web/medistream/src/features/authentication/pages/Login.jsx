@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../../shared/services/api";
 import {
   Typography,
   Box,
@@ -64,7 +65,7 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8080/api/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -80,7 +81,7 @@ export default function LoginPage() {
         // Smart redirect checking for normal login
         const checkProfileAndRedirect = async () => {
           try {
-            const allStaffResponse = await fetch('http://localhost:8080/api/medicalstaff/all', {
+            const allStaffResponse = await fetch(`${API_BASE_URL}/api/medicalstaff/all`, {
               method: 'GET',
               headers: { 'Content-Type': 'application/json' }
             });
@@ -139,7 +140,7 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    window.location.href = `${API_BASE_URL}/oauth2/authorization/google`;
   };
 
   const handleNavigateToRegister = (e) => {

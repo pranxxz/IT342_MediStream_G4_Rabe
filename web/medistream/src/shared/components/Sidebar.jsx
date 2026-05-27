@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../features/authentication/hooks/useAuth';
+import { API_BASE_URL } from '../services/api';
 
 // ─── Shared Theme ─────────────────────────────────────────────────────────────
 export const COLORS = {
@@ -185,7 +186,7 @@ export const Sidebar = () => {
   // Construct dynamic picture path
   const accountID = currentUser?.id || currentUser?.accountID;
   const avatarSrc = currentUser?.profilePicturePath 
-    ? `http://localhost:8080/api/users/${accountID}/profile-picture?t=${avatarTimestamp}`
+    ? `${API_BASE_URL}/api/users/${accountID}/profile-picture?t=${avatarTimestamp}`
     : null;
 
   return (
