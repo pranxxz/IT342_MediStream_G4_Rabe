@@ -1,6 +1,7 @@
 import React from 'react';
-import { Box, Typography, TextField, MenuItem, IconButton, Button, InputAdornment } from '@mui/material';
-import { Visibility, VisibilityOff, Lock, Email, Person, Badge } from '@mui/icons-material';
+import { Box, TextField, MenuItem, IconButton, InputAdornment, FormControl, InputLabel, Select, Alert, Grid } from '@mui/material';
+import { Visibility, VisibilityOff, Lock, Email, Person, Badge, Mail } from '@mui/icons-material';
+import { MAROON, IconBox, StyledInput, StyledSelect } from './AuthStyledComp';
 
 // InputField Component
 export const InputField = ({
@@ -44,26 +45,30 @@ export const InputField = ({
       sx={{
         mb: 3,
         '& .MuiOutlinedInput-root': {
-          borderRadius: 2,
+          borderRadius: 2.65,
+          height: '46px',
           '& fieldset': {
-            borderColor: isError ? '#f44336' : '#44000d',
+            borderColor: isError ? '#f44336' : MAROON,
           },
           '&:hover fieldset': {
-            borderColor: isError ? '#f44336' : '#44000d',
+            borderColor: isError ? '#f44336' : MAROON,
           },
           '&.Mui-focused fieldset': {
-            borderColor: isError ? '#f44336' : '#44000d',
+            borderColor: isError ? '#f44336' : MAROON,
           },
         },
         '& .MuiOutlinedInput-input': {
           py: '12px',
           px: '10px',
           fontSize: '0.85rem',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center'
         },
         '& .MuiInputLabel-root': {
-          color: isError ? '#f44336' : '#44000d',
+          color: isError ? '#f44336' : MAROON,
           '&.Mui-focused': {
-            color: isError ? '#f44336' : '#44000d',
+            color: isError ? '#f44336' : MAROON,
           },
         },
         ...sx,
@@ -92,6 +97,7 @@ export const PasswordField = ({
     <InputField
       label={label}
       type={showPassword ? "text" : "password"}
+      placeholder="Enter your password"
       touched={touched}
       error={error}
       helperText={helperText}
@@ -99,7 +105,7 @@ export const PasswordField = ({
         <Lock 
           sx={{ 
             mr: 1,
-            color: isError ? '#f44336' : '#44000d',
+            color: isError ? '#f44336' : MAROON,
             fontSize: '1.2rem'
           }}
         />
@@ -109,7 +115,7 @@ export const PasswordField = ({
           onClick={onToggleVisibility}
           edge="end"
           sx={{
-            color: '#44000d',
+            color: MAROON,
             paddingRight: '13px',
           }}
         >
@@ -155,7 +161,7 @@ export const RoleSelectField = ({
         <Badge 
           sx={{ 
             mr: 1,
-            color: isError ? '#f44336' : '#44000d',
+            color: isError ? '#f44336' : MAROON,
             fontSize: '1.2rem'
           }}
         />
@@ -195,6 +201,7 @@ export const NameFieldsRow = ({
         <TextField
           label="First Name"
           variant="outlined"
+          placeholder="Enter your first name"
           value={firstName}
           onChange={onFirstNameChange}
           onBlur={onFirstNameBlur}
@@ -207,7 +214,7 @@ export const NameFieldsRow = ({
                 <Person 
                   sx={{ 
                     mr: 1,
-                    color: isFirstNameError ? '#f44336' : '#44000d',
+                    color: isFirstNameError ? '#f44336' : MAROON,
                     fontSize: '1.2rem'
                   }}
                 />
@@ -216,26 +223,30 @@ export const NameFieldsRow = ({
           }}
           sx={{
             '& .MuiOutlinedInput-root': {
-              borderRadius: 2,
+              borderRadius: 2.65,
+              height: '46px',
               '& fieldset': {
-                borderColor: isFirstNameError ? '#f44336' : '#44000d',
+                borderColor: isFirstNameError ? '#f44336' : MAROON,
               },
               '&:hover fieldset': {
-                borderColor: isFirstNameError ? '#f44336' : '#44000d',
+                borderColor: isFirstNameError ? '#f44336' : MAROON,
               },
               '&.Mui-focused fieldset': {
-                borderColor: isFirstNameError ? '#f44336' : '#44000d',
+                borderColor: isFirstNameError ? '#f44336' : MAROON,
               },
             },
             '& .MuiOutlinedInput-input': {
               py: '12px',
               px: '10px',
               fontSize: '0.85rem',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center'
             },
             '& .MuiInputLabel-root': {
-              color: isFirstNameError ? '#f44336' : '#44000d',
+              color: isFirstNameError ? '#f44336' : MAROON,
               '&.Mui-focused': {
-                color: isFirstNameError ? '#f44336' : '#44000d',
+                color: isFirstNameError ? '#f44336' : MAROON,
               },
             },
           }}
@@ -246,6 +257,7 @@ export const NameFieldsRow = ({
         <TextField
           label="Last Name"
           variant="outlined"
+          placeholder="Enter your last name"
           value={lastName}
           onChange={onLastNameChange}
           onBlur={onLastNameBlur}
@@ -258,7 +270,7 @@ export const NameFieldsRow = ({
                 <Person 
                   sx={{ 
                     mr: 1,
-                    color: isLastNameError ? '#f44336' : '#44000d',
+                    color: isLastNameError ? '#f44336' : MAROON,
                     fontSize: '1.2rem'
                   }}
                 />
@@ -267,26 +279,30 @@ export const NameFieldsRow = ({
           }}
           sx={{
             '& .MuiOutlinedInput-root': {
-              borderRadius: 2,
+              borderRadius: 2.65,
+              height: '46px',
               '& fieldset': {
-                borderColor: isLastNameError ? '#f44336' : '#44000d',
+                borderColor: isLastNameError ? '#f44336' : MAROON,
               },
               '&:hover fieldset': {
-                borderColor: isLastNameError ? '#f44336' : '#44000d',
+                borderColor: isLastNameError ? '#f44336' : MAROON,
               },
               '&.Mui-focused fieldset': {
-                borderColor: isLastNameError ? '#f44336' : '#44000d',
+                borderColor: isLastNameError ? '#f44336' : MAROON,
               },
             },
             '& .MuiOutlinedInput-input': {
               py: '12px',
               px: '10px',
               fontSize: '0.85rem',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center'
             },
             '& .MuiInputLabel-root': {
-              color: isLastNameError ? '#f44336' : '#44000d',
+              color: isLastNameError ? '#f44336' : MAROON,
               '&.Mui-focused': {
-                color: isLastNameError ? '#f44336' : '#44000d',
+                color: isLastNameError ? '#f44336' : MAROON,
               },
             },
           }}
@@ -296,22 +312,56 @@ export const NameFieldsRow = ({
   );
 };
 
-// ErrorAlert Component
-export const ErrorAlert = ({ message, sx = {} }) => {
-  if (!message) return null;
-  
+// RoleAndIdFieldsRow Component
+export const RoleAndIdFieldsRow = ({
+  role,
+  idNumber,
+  onRoleChange,
+  onIdNumberChange,
+  onRoleBlur,
+  onIdNumberBlur,
+  roleError,
+  idNumberError,
+  roleTouched,
+  idNumberTouched,
+}) => {
+  const isIdNumberError = idNumberTouched && !!idNumberError;
+
   return (
-    <Box sx={{
-      mb: 3,
-      p: 2,
-      borderRadius: 2,
-      backgroundColor: '#fee',
-      border: '1px solid #fcc',
-      color: '#c33',
-      fontSize: '0.875rem',
-      ...sx,
-    }}>
-      {message}
+    <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+      <Box sx={{ flex: 1, minWidth: 0 }}>
+        <RoleSelectField
+          value={role}
+          onChange={onRoleChange}
+          onBlur={onRoleBlur}
+          error={roleError}
+          helperText={roleError}
+          touched={roleTouched}
+          sx={{ mb: 0 }}
+        />
+      </Box>
+
+      <Box sx={{ flex: 1, minWidth: 0 }}>
+        <NumberField
+          label="ID Number"
+          placeholder="Enter ID number"
+          value={idNumber}
+          onChange={onIdNumberChange}
+          onBlur={onIdNumberBlur}
+          error={idNumberError}
+          helperText={idNumberError}
+          touched={idNumberTouched}
+          startAdornment={
+            <Badge 
+              sx={{ 
+                color: isIdNumberError ? '#f44336' : MAROON,
+                fontSize: '1.2rem'
+              }}
+            />
+          }
+          sx={{ mb: 0 }}
+        />
+      </Box>
     </Box>
   );
 };
@@ -346,7 +396,7 @@ export const EmailField = ({
           <Email 
             sx={{ 
               mr: 1,
-              color: isError ? '#f44336' : '#44000d',
+              color: isError ? '#f44336' : MAROON,
               fontSize: '1.2rem'
             }}
           />
@@ -360,7 +410,7 @@ export const EmailField = ({
             position: 'absolute', 
             right: 12, 
             top: '20px', 
-            color: '#44000d',
+            color: MAROON,
             fontSize: '0.75rem',
             fontWeight: 600
           }}
@@ -372,6 +422,7 @@ export const EmailField = ({
   );
 };
 
+// NumberField Component
 export const NumberField = ({
   label,
   value,
@@ -415,31 +466,65 @@ export const NumberField = ({
       sx={{
         mb: 3,
         '& .MuiOutlinedInput-root': {
-          borderRadius: 2,
+          borderRadius: 2.65,
+          height: '46px',
           '& fieldset': {
-            borderColor: isError ? '#f44336' : '#44000d',
+            borderColor: isError ? '#f44336' : MAROON,
           },
           '&:hover fieldset': {
-            borderColor: isError ? '#f44336' : '#44000d',
+            borderColor: isError ? '#f44336' : MAROON,
           },
           '&.Mui-focused fieldset': {
-            borderColor: isError ? '#f44336' : '#44000d',
+            borderColor: isError ? '#f44336' : MAROON,
           },
         },
         '& .MuiOutlinedInput-input': {
           py: '12px',
           px: '10px',
           fontSize: '0.85rem',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center'
         },
         '& .MuiInputLabel-root': {
-          color: isError ? '#f44336' : '#44000d',
+          color: isError ? '#f44336' : MAROON,
           '&.Mui-focused': {
-            color: isError ? '#f44336' : '#44000d',
+            color: isError ? '#f44336' : MAROON,
           },
         },
         ...sx,
       }}
       {...props}
     />
+  );
+};
+
+// LoginStyledInput with IconBox
+export const LoginStyledInput = ({ icon: Icon, ...props }) => {
+  return (
+    <StyledInput
+      {...props}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <IconBox>
+              <Icon sx={{ fontSize: 14 }} />
+            </IconBox>
+          </InputAdornment>
+        ),
+        ...props.InputProps
+      }}
+    />
+  );
+};
+
+// ErrorAlert Component
+export const ErrorAlert = ({ message, sx = {} }) => {
+  if (!message) return null;
+  
+  return (
+    <Alert severity="error" sx={{ mb: 3, borderRadius: '10px', ...sx }}>
+      {message}
+    </Alert>
   );
 };

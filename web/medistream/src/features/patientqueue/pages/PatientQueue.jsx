@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import API from '../../../shared/services/api';
-import { COLORS, Avatar } from '../../../shared/components/Sidebar'; 
+import { COLORS, Avatar } from '../../../shared/components/Sidebar';
+import PageHeader, { HeaderSearch } from '../../../shared/components/PageHeader';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 
 // ─── PatientQueue Specific Icons ──────────────────────────────────────────────
 const IconPlus = () => (
@@ -52,22 +54,22 @@ const IconCheckCircle = () => (
   </svg>
 );
 
-// ─── Design Tokens ────────────────────────────────────────────────────────────
+// ─── Design Tokens (synced with shared COLORS) ───────────────────────────────
 const C = {
-  maroon:       "#4a0e0e",
-  maroonDark:   "#3a0a0a",
-  maroonLight:  "#5c1212",
-  bg:           "#f5f5f5",
-  white:        "#ffffff",
-  border:       "#e8e8e8",
-  text:         "#1a1a1a",
-  textMuted:    "#888",
-  consulting:   "#c0392b",
-  consultingBg: "#fdecea",
-  waiting:      "#666",
-  waitingBg:    "#f0f0f0",
-  completed:    "#27ae60",
-  completedBg:  "#eafaf1",
+  maroon:       COLORS.primary,
+  maroonDark:   COLORS.primaryDark,
+  maroonLight:  COLORS.primaryLight,
+  bg:           COLORS.bg,
+  white:        COLORS.white,
+  border:       COLORS.border,
+  text:         COLORS.text,
+  textMuted:    COLORS.textMuted,
+  consulting:   COLORS.consulting,
+  consultingBg: COLORS.consultingBg,
+  waiting:      COLORS.waiting,
+  waitingBg:    COLORS.waitingBg,
+  completed:    COLORS.completed,
+  completedBg:  COLORS.completedBg,
 };
 
 // ─── Reusable Components ──────────────────────────────────────────────────────
@@ -92,14 +94,14 @@ const StatusBadge = ({ status }) => {
 
 const StatCard = ({ value, label, icon, borderRight }) => (
   <div style={{
-    flex: 1, textAlign: "center", padding: "32px 16px",
-    borderRight: borderRight ? "1px solid rgba(255,255,255,0.12)" : "none",
-    display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
+    flex: 1, textAlign: "center", padding: "25px 16px",
+    borderRight: borderRight ? "1px solid rgba(255,255,255,0.2)" : "none",
+    display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
   }}>
-    <div style={{ fontSize: 52, fontWeight: 800, color: "white", lineHeight: 1 }}>{value}</div>
+    <div style={{ fontSize: 44, fontWeight: 800, color: "white", lineHeight: 1 }}>{value}</div>
     <div style={{
       display: "flex", alignItems: "center", gap: 6,
-      color: "rgba(255,255,255,0.8)", fontSize: 13, fontWeight: 500,
+      color: "rgba(255,255,255,0.9)", fontSize: 13, fontWeight: 600,
     }}>
       <span>{label}</span>{icon}
     </div>
@@ -119,12 +121,11 @@ const PatientAvatar = ({ initials }) => (
   </div>
 );
 
-const PatientRow = ({ num, initials, name, id, age, status, doctor, time }) => {
-  const [menuOpen, setMenuOpen] = useState(false);
+const PatientRow = ({ num, initials, name, id, age, status, doctor, time, onDelete }) => {
   return (
     <tr style={{ borderBottom: `1.5px solid #e8d5d5`, background: "#ffffff" }}
-      onMouseEnter={e => e.currentTarget.style.background = "#fbfbfb"}
-      onMouseLeave={e => e.currentTarget.style.background = "#fdf8f8"}
+      onMouseEnter={e => e.currentTarget.style.background = "#faf0f0"}
+      onMouseLeave={e => e.currentTarget.style.background = "#ffffff"}
     >
       <td style={{ padding: "20px 8px 20px 28px", color: C.textMuted, fontSize: 14 }}>{num}</td>
       <td style={{ padding: "20px 8px" }}>
@@ -140,30 +141,39 @@ const PatientRow = ({ num, initials, name, id, age, status, doctor, time }) => {
       <td style={{ padding: "20px 8px" }}><StatusBadge status={status} /></td>
       <td style={{ padding: "20px 8px", fontSize: 14, fontWeight: 700, color: C.maroon }}>{doctor}</td>
       <td style={{ padding: "20px 8px", fontSize: 14, color: C.text }}>{time}</td>
-      <td style={{ padding: "20px 8px", position: "relative" }}>
-        <button onClick={() => setMenuOpen(o => !o)} style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}>
-          <IconDots />
+      <td style={{ padding: "20px 28px 20px 8px", textAlign: "right" }}>
+        <button 
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete();
+          }} 
+          style={{ 
+            background: "none", 
+            border: "none", 
+            cursor: "pointer", 
+            padding: "6px",
+            borderRadius: "50%",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#e74c3c",
+            transition: "all 0.2s ease",
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.background = "#fee2e2";
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.background = "none";
+          }}
+          title="Remove from queue"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
         </button>
-        {menuOpen && (
-          <div style={{
-            position: "absolute", right: 8, top: "100%", zIndex: 10,
-            background: C.white, borderRadius: 8, boxShadow: "0 4px 20px rgba(0,0,0,0.12)",
-            border: `1px solid ${C.border}`, minWidth: 140, overflow: "hidden",
-          }}>
-            {["View Details", "Edit", "Delete"].map(item => (
-              <div key={item} onClick={() => setMenuOpen(false)} style={{
-                padding: "10px 16px", fontSize: 13,
-                color: item === "Delete" ? "#e74c3c" : C.text,
-                cursor: "pointer", fontWeight: 500,
-              }}
-                onMouseEnter={e => e.currentTarget.style.background = C.bg}
-                onMouseLeave={e => e.currentTarget.style.background = C.white}
-              >
-                {item}
-              </div>
-            ))}
-          </div>
-        )}
       </td>
     </tr>
   );
@@ -225,6 +235,18 @@ const PatientQueueContent = () => {
     }
   };
 
+  const handleDeleteQueueItem = async (queueId) => {
+    if (window.confirm("Are you sure you want to remove this patient from the queue?")) {
+      try {
+        await API.delete(`/api/queue/${queueId}`);
+        await loadPatients();
+      } catch (error) {
+        console.error("Failed to delete queue item:", error);
+        alert("Failed to remove patient from queue.");
+      }
+    }
+  };
+
   const handleFormChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -277,59 +299,53 @@ const PatientQueueContent = () => {
   });
 
   return (
-    <div style={{ flex: 1, background: C.bg, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      {/* ── Header ── */}
-      <div style={{ padding: "24px 32px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <button
-            onClick={() => setModalOpen(true)}
-            style={{
-              width: 32, height: 32, borderRadius: 6, background: C.maroon,
-              display: "flex", alignItems: "center", justifyContent: "center", color: "white",
-              border: "none", cursor: "pointer",
-            }}
-            onMouseEnter={e => e.currentTarget.style.background = C.maroonDark}
-            onMouseLeave={e => e.currentTarget.style.background = C.maroon}
-          >
-            <IconPlus />
-          </button>
-          <div>
-            <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: C.text, letterSpacing: "-0.4px" }}>
-              Patient Queue
-            </h1>
-            <p style={{ margin: 0, fontSize: 12, color: C.textMuted }}>Real-time patient monitoring</p>
+    <div style={{ flex: 1, background: "#f5f5f7", display: "flex", flexDirection: "column", minHeight: "100vh", fontFamily: "'Segoe UI', system-ui, sans-serif" }}>
+      
+      {/* ── Content Header ── */}
+      <PageHeader
+        title="Patient Queue"
+        subtitle="Real-time patient monitoring"
+        icon={ListAltIcon}
+        right={
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <HeaderSearch value={search} onChange={setSearch} placeholder="Search patients, doctors..." />
+            <button 
+              onClick={() => setModalOpen(true)} 
+              style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 8, 
+                background: C.maroon, 
+                color: 'white', 
+                border: 'none', 
+                borderRadius: 10, 
+                padding: '10px 16px', 
+                fontWeight: 700, 
+                fontSize: 13, 
+                cursor: 'pointer', 
+                boxShadow: '0 4px 12px rgba(61, 8, 11, 0.2)',
+                transition: 'all 0.2s ease',
+                fontFamily: 'inherit'
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = '#520a0e'}
+              onMouseLeave={e => e.currentTarget.style.background = C.maroon}
+            >
+              <IconPlus />
+              Add to Queue
+            </button>
           </div>
-        </div>
+        }
+      />
 
-        {/* Search */}
+      <div style={{ padding: "0 40px 40px", flex: 1 }}>
+        {/* ── Stat Cards Bar ── */}
         <div style={{
-          display: "flex", alignItems: "center", gap: 8,
-          background: C.white, border: `1px solid ${C.border}`,
-          borderRadius: 8, padding: "8px 14px", width: 260,
-          boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-        }}>
-          <IconSearch />
-          <input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Search patients, doctors..."
-            style={{
-              border: "none", outline: "none", background: "transparent",
-              fontSize: 13, color: C.text, width: "100%", fontFamily: "inherit",
-            }}
-          />
-        </div>
-      </div>
-
-      <div style={{ padding: "0 32px 32px", flex: 1 }}>
-        {/* ── Stat Cards ── */}
-        <div style={{
-          background: C.maroon,
-          borderRadius: 14,
+          background: "#330608", // Very dark maroon bar
+          borderRadius: 15,
           display: "flex",
-          marginBottom: 24,
+          marginBottom: 30,
           overflow: "hidden",
-          boxShadow: "0 4px 20px rgba(74,14,14,0.3)",
+          boxShadow: '0 8px 25px rgba(68,0,13,0.15)',
         }}>
           <StatCard value={stats.total}      label="Total Patients" icon={<IconPatientCount />} borderRight />
           <StatCard value={stats.waiting}    label="Waiting"        icon={<IconClock />}        borderRight />
@@ -341,7 +357,7 @@ const PatientQueueContent = () => {
         <div style={{
           background: C.white,
           borderRadius: 12,
-          boxShadow: "0 2px 12px rgba(74,14,14,0.1)",
+          boxShadow: "0 8px 25px rgba(68,0,13,0.12)",
           border: `1.5px solid ${C.maroon}`,
           overflow: "hidden",
         }}>
@@ -421,7 +437,7 @@ const PatientQueueContent = () => {
                 
                 return (
                   <PatientRow
-                    key={p.patientId || i}
+                    key={p.queueId || i}
                     num={i + 1}
                     initials={initials}
                     name={name}
@@ -430,6 +446,7 @@ const PatientQueueContent = () => {
                     status={p.status}
                     doctor={p.assignedDoctor || '-'}
                     time={p.time}
+                    onDelete={() => handleDeleteQueueItem(p.queueId)}
                   />
                 );
               })}
@@ -531,10 +548,6 @@ const PatientQueueContent = () => {
 };
 
 // ─── Default Export ───────────────────────────────────────────────────────────
-export default function PatientQueue({ }) {
-  return (
-    <div style={{ display: "flex", fontFamily: "'Segoe UI', system-ui, sans-serif", minHeight: "100vh" }}>
-      <PatientQueueContent />
-    </div>
-  );
+export default function PatientQueue() {
+  return <PatientQueueContent />;
 }

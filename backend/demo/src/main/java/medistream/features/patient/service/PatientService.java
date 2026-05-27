@@ -49,4 +49,8 @@ public class PatientService {
     public void deletePatient(int id) {
         patientRepository.deleteById(id);
     }
+
+    public PatientEntity savePatient(PatientEntity patient) {
+        return patientRepository.save(patient);
+    }
 }

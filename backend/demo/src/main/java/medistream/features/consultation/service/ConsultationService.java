@@ -39,6 +39,16 @@ public class ConsultationService {
         consultation.setPatient(patient);
         consultation.setMedicalStaff(staff);
 
+        // Update patient's lastVisit to consultation's date!
+        if (consultation.getConsultationDate() != null) {
+            patient.setLastVisit(consultation.getConsultationDate().toLocalDate().toString());
+        } else {
+            java.time.OffsetDateTime now = java.time.OffsetDateTime.now();
+            consultation.setConsultationDate(now);
+            patient.setLastVisit(now.toLocalDate().toString());
+        }
+        patientService.savePatient(patient);
+
         // 4. Save and return
         return crepo.save(consultation);
     }
@@ -53,6 +63,11 @@ public class ConsultationService {
             existing.setConsultationDate(details.getConsultationDate());
             if (details.getStatus() != null) {
                 existing.setStatus(details.getStatus());
+            }
+            // Update patient's lastVisit too if the date is updated
+            if (existing.getPatient() != null && existing.getConsultationDate() != null) {
+                existing.getPatient().setLastVisit(existing.getConsultationDate().toLocalDate().toString());
+                patientService.savePatient(existing.getPatient());
             }
             return crepo.save(existing);
         }).orElseThrow(() -> new RuntimeException("Consultation not found with id " + id));

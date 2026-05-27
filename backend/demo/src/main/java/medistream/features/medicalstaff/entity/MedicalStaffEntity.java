@@ -8,7 +8,6 @@ import medistream.features.authentication.entity.UserAccountEntity;
 public class MedicalStaffEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int staffID;
 
     private String name;

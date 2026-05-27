@@ -49,15 +49,15 @@ const SettingsProfileView = ({ userData, availability, setAvailability }) => {
 
   // Get avatar color based on role or name
   const getAvatarColor = (role, name) => {
-    if (role && role.toLowerCase().includes('doctor')) return '#4B0082'; // Purple theme
-    if (role && role.toLowerCase().includes('nurse')) return '#4B0082'; // Purple theme
+    if (role && role.toLowerCase().includes('doctor')) return '#3d080b'; // Maroon theme
+    if (role && role.toLowerCase().includes('nurse')) return '#5c0c11'; // Maroon theme
     
-    // Fallback to name-based color (using theme purple)
+    // Fallback to name-based color (using theme maroon shades)
     const colors = [
-      '#4B0082', // Primary purple theme
-      '#4B0082', // Purple theme
-      '#4B0082', // Purple theme
-      '#4B0082', // Purple theme
+      '#3d080b', // Primary maroon
+      '#44000d', // brand_maroon
+      '#5c0c11', // primaryLight
+      '#8b1a1a', // accent
     ];
     
     if (!name || name === 'N/A') return colors[0];
@@ -119,7 +119,7 @@ const SettingsProfileView = ({ userData, availability, setAvailability }) => {
         fontWeight: 700,
         fontSize: '32px',
         boxShadow: `
-          0 8px 32px rgba(75,0,130,0.15),
+          0 8px 32px rgba(61,8,11,0.15),
           inset 0 0 0 3px rgba(255,255,255,0.8)
         `,
         position: 'relative',
@@ -175,7 +175,7 @@ const SettingsProfileView = ({ userData, availability, setAvailability }) => {
               <span style={{ 
                 marginLeft: '12px', 
                 fontSize: '12px', 
-                background: '#4B0082', // Purple theme
+                background: '#3d080b', // Maroon theme
                 color: 'white',
                 padding: '2px 8px',
                 borderRadius: '4px',
@@ -315,7 +315,7 @@ const SettingsProfileView = ({ userData, availability, setAvailability }) => {
             fontWeight: 600, 
             fontSize: '18px', 
             marginBottom: '32px', 
-            color: '#4B0082', // Purple theme
+            color: '#3d080b', // Maroon theme
             fontFamily: '"Poppins", "Inter", sans-serif',
             textTransform: 'uppercase',
             letterSpacing: '1px'
@@ -346,7 +346,7 @@ const SettingsProfileView = ({ userData, availability, setAvailability }) => {
               <div style={{ 
                 fontSize: '20px', 
                 fontWeight: 700, 
-                color: '#4B0082', // Purple theme
+                color: '#3d080b', // Maroon theme
                 fontFamily: '"Poppins", "Inter", sans-serif',
                 minHeight: '32px',
                 display: 'flex',
@@ -374,7 +374,7 @@ const SettingsProfileView = ({ userData, availability, setAvailability }) => {
               <div style={{ 
                 fontSize: '20px', 
                 fontWeight: 700, 
-                color: '#4B0082', // Purple theme
+                color: '#3d080b', // Maroon theme
                 fontFamily: '"Poppins", "Inter", sans-serif',
                 minHeight: '32px',
                 display: 'flex',
@@ -402,7 +402,7 @@ const SettingsProfileView = ({ userData, availability, setAvailability }) => {
               <div style={{ 
                 fontSize: '20px', 
                 fontWeight: 700, 
-                color: '#4B0082', // Purple theme
+                color: '#3d080b', // Maroon theme
                 fontFamily: '"Poppins", "Inter", sans-serif',
                 minHeight: '32px',
                 display: 'flex',
@@ -419,7 +419,7 @@ const SettingsProfileView = ({ userData, availability, setAvailability }) => {
             fontWeight: 600, 
             fontSize: '18px', 
             marginBottom: '24px', 
-            color: '#4B0082', // Purple theme
+            color: '#3d080b', // Maroon theme
             fontFamily: '"Poppins", "Inter", sans-serif',
             textTransform: 'uppercase',
             letterSpacing: '1px'
@@ -583,7 +583,7 @@ const SettingsProfileView = ({ userData, availability, setAvailability }) => {
                 width: '16px',
                 height: '16px',
                 border: '2px solid #6b7280',
-                borderTopColor: '#4B0082', // Purple theme
+                borderTopColor: '#3d080b', // Maroon theme
                 borderRadius: '50%',
                 animation: 'spin 1s linear infinite'
               }} />

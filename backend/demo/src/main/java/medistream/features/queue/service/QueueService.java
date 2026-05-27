@@ -66,7 +66,7 @@ public class QueueService {
     }
 
     public List<Queue> getAllQueues() {
-        return queueRepository.findAll();
+        return queueRepository.findAllActiveQueues();
     }
 
     @Transactional

@@ -71,7 +71,7 @@ const ConsultationModal = ({ open, onClose, data, isEditMode = false, onSave }) 
     outline: 'none'
   };
 
-  const iconColor = { color: '#4B0082', mr: 1, fontSize: '1.2rem', };
+  const iconColor = { color: '#44000d', mr: 1, fontSize: '1.2rem', };
   
   const rowStyle = { display: 'flex', gap: 2.5 };
   const colStyle = { flex: 1 };
@@ -86,7 +86,7 @@ const ConsultationModal = ({ open, onClose, data, isEditMode = false, onSave }) 
           <Typography
             variant="h5"
             sx={{ 
-              color: '#4B0082', 
+              color: '#44000d', 
               fontWeight: 700, 
               mb: 0.5, 
               fontFamily: '"Poppins", sans-serif'

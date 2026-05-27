@@ -35,6 +35,7 @@ class AuthControllerTest {
 
     // AuthController injects these directly — all three must be mocked
     @MockBean private UserAccountRepository userAccountRepository;
+    @MockBean private medistream.features.medicalstaff.repository.MedicalStaffRepository medicalStaffRepository;
     @MockBean private PasswordEncoder passwordEncoder;
     @MockBean private JwtUtils jwtUtils;
 

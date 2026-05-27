@@ -13,14 +13,16 @@ import FilterList from '@mui/icons-material/FilterList';
 import { FaUsers } from 'react-icons/fa';
 import { FeedbackModal } from "../../../shared/components/FeedbackModal";
 import { patientService } from "../services/patientService";
+import { COLORS } from '../../../shared/components/Sidebar';
+import PageHeader, { HeaderSearch } from '../../../shared/components/PageHeader';
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────
-const M = "#4a0e0e";
-const M_DARK = "#3a0a0a";
-const BORDER = "#e5e7eb";
-const BG = "#f9fafb";
-const TEXT = "#1f2937";
-const MUTED = "#6b7280";
+const M = COLORS.primary;
+const M_DARK = COLORS.primaryDark;
+const BORDER = COLORS.border;
+const BG = COLORS.bg;
+const TEXT = COLORS.text;
+const MUTED = COLORS.textMuted;
 const ROW_HOVER = "#fdf8f8";
 const ROW_BORDER = "#f0e8e8";
 
@@ -210,13 +212,29 @@ function PatientPage() {
   const handleFilterClose = () => setFilterAnchorEl(null);
   const handleGenderFilter = (gender) => { setFilters({ gender: gender === 'all' ? null : gender }); handleFilterClose(); };
 
-  const handlePatientMenuClick = (e, patient) => {
-    e.stopPropagation(); 
-    setPatientMenuAnchorEl(e.currentTarget);
+  const handleDirectDeleteClick = (e, patient) => {
+    e.stopPropagation(); // prevent opening form in edit mode
     setSelectedPatient(patient);
-    setSelectedPatientId(patient.patientId || patient.id);
+    const pid = patient.patientId || patient.id;
+    setSelectedPatientId(pid);
+    setFeedbackModal({
+      open: true, 
+      type: 'delete', 
+      title: 'Delete Record?',
+      message: `Are you sure you want to delete patient ${patient.firstName} ${patient.lastName}?`,
+      confirmText: 'Yes, Delete', 
+      onConfirm: async () => {
+        try {
+          await patientService.deletePatient(pid);
+          fetchPatients();
+          setFormPanel({ open: false, isEditing: false, data: null }); 
+          setFeedbackModal({ open: true, type: 'success', title: 'Deleted!', message: 'Patient removed.' });
+        } catch {
+          setFeedbackModal({ open: true, type: 'error', title: 'Delete Failed', message: 'Could not delete patient.' });
+        }
+      },
+    });
   };
-  const handlePatientMenuClose = () => { setPatientMenuAnchorEl(null); setSelectedPatient(null); };
 
   const handleRowClick = (patient) => {
     setSelectedPatient(patient);
@@ -230,11 +248,7 @@ function PatientPage() {
     setFormPanel({ open: true, isEditing: false, data: null });
   };
 
-  const handleEditPatient = () => {
-    if (!selectedPatient) return;
-    setFormPanel({ open: true, isEditing: true, data: { ...selectedPatient } });
-    handlePatientMenuClose();
-  };
+
 
   const handleFormSubmit = async (formData) => {
     try {
@@ -253,15 +267,7 @@ function PatientPage() {
     }
   };
 
-  const handleConfirmDelete = () => {
-    if (!selectedPatient) return;
-    setFeedbackModal({
-      open: true, type: 'delete', title: 'Delete Record?',
-      message: 'Are you sure you want to delete this patient?',
-      confirmText: 'Yes, Delete', onConfirm: performDelete,
-    });
-    handlePatientMenuClose();
-  };
+
 
   const performDelete = async () => {
     try {
@@ -281,49 +287,48 @@ function PatientPage() {
   return (
     <div style={{ background: BG, minHeight: "100vh", fontFamily: "'Segoe UI', system-ui, sans-serif" }}>
 
-      <div style={{
-        background: "white", borderBottom: `1px solid ${BORDER}`,
-        padding: "18px 32px",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <div style={{
-            width: 40, height: 40, borderRadius: 10, background: M,
-            display: "flex", alignItems: "center", justifyContent: "center",
-          }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
+      {/* ── Content Header ── */}
+      <PageHeader
+        title="Patients"
+        subtitle="Add, edit, and manage patient records"
+        icon={People}
+        right={
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <HeaderSearch value={searchTerm} onChange={setSearchTerm} placeholder="Search patients..." />
+            <button 
+              onClick={handleAddPatient} 
+              style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 8, 
+                background: M, 
+                color: 'white', 
+                border: 'none', 
+                borderRadius: 10, 
+                padding: '10px 16px', 
+                fontWeight: 700, 
+                fontSize: 13, 
+                cursor: 'pointer', 
+                boxShadow: '0 4px 12px rgba(61, 8, 11, 0.2)',
+                transition: 'all 0.2s ease',
+                fontFamily: 'inherit'
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = '#520a0e'}
+              onMouseLeave={e => e.currentTarget.style.background = M}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Patient
+            </button>
           </div>
-          <div>
-            <div style={{ fontWeight: 800, fontSize: 20, color: TEXT, letterSpacing: "-0.3px" }}>Patient Management</div>
-            <div style={{ fontSize: 13, color: MUTED }}>Add, edit, and manage patient records</div>
-          </div>
-        </div>
-        <button onClick={handleAddPatient} style={{
-          display: "flex", alignItems: "center", gap: 8,
-          padding: "10px 20px", borderRadius: 8, border: "none",
-          background: M, color: "white", fontWeight: 700, fontSize: 14,
-          cursor: "pointer", fontFamily: "inherit",
-        }}
-          onMouseEnter={e => e.currentTarget.style.background = M_DARK}
-          onMouseLeave={e => e.currentTarget.style.background = M}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-          </svg>
-          Add Patient
-        </button>
-      </div>
+        }
+      />
 
-      <div style={{ padding: "28px 32px", display: "grid", gridTemplateColumns: "1fr 320px", gap: 24, alignItems: "start" }}>
+      <div style={{ padding: "0 40px 40px", display: "grid", gridTemplateColumns: "1fr 320px", gap: 24, alignItems: "start" }}>
 
         <div style={{
           background: "white", borderRadius: 12,
           border: `1.5px solid ${M}`,
-          boxShadow: "0 2px 12px rgba(74,14,14,0.08)",
+          boxShadow: "0 8px 25px rgba(68,0,13,0.12)",
           overflow: "hidden",
         }}>
           <div style={{
@@ -400,13 +405,13 @@ function PatientPage() {
                     gridTemplateColumns: "48px 2fr 72px 2fr 1.4fr 56px",
                     padding: "16px 24px",
                     borderBottom: `1px solid ${ROW_BORDER}`,
-                    background: isSelected ? "#faf0f0" : "#fdf8f8",
+                    background: isSelected ? "#faf0f0" : "#ffffff",
                     alignItems: "center",
                     cursor: "pointer",
                     transition: "background 0.15s",
                   }}
-                  onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = ROW_HOVER; }}
-                  onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = "#fdf8f8"; }}
+                  onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = "#faf0f0"; }}
+                  onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = "#ffffff"; }}
                 >
                   <div style={{ fontSize: 13, color: MUTED, fontWeight: 600 }}>{i + 1}</div>
 
@@ -433,11 +438,32 @@ function PatientPage() {
 
                   <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <button
-                      onClick={e => handlePatientMenuClick(e, p)}
-                      style={{ background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 4 }}
+                      onClick={e => handleDirectDeleteClick(e, p)}
+                      style={{ 
+                        background: "none", 
+                        border: "none", 
+                        cursor: "pointer", 
+                        padding: 6, 
+                        borderRadius: "50%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#ef4444",
+                        transition: "all 0.2s ease"
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.background = "#fee2e2";
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.background = "none";
+                      }}
+                      title="Delete patient"
                     >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill={MUTED}>
-                        <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
                       </svg>
                     </button>
                   </div>
@@ -496,14 +522,7 @@ function PatientPage() {
         </div>
       </div>
 
-      <Menu anchorEl={patientMenuAnchorEl} open={Boolean(patientMenuAnchorEl)} onClose={handlePatientMenuClose}>
-        <MenuItem onClick={handleEditPatient}>
-          <EditIcon sx={{ fontSize: 16, mr: 1 }} /> Edit
-        </MenuItem>
-        <MenuItem onClick={handleConfirmDelete} sx={{ color: '#ef4444' }}>
-          <DeleteIcon sx={{ fontSize: 16, mr: 1 }} /> Delete
-        </MenuItem>
-      </Menu>
+
 
       <FeedbackModal
         open={feedbackModal.open}

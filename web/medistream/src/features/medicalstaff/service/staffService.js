@@ -116,6 +116,32 @@ export const staffService = {
     }
   },
 
+  // Create staff member (registers a user account and sets up staff profile)
+  addStaff: async (staffData) => {
+    try {
+      console.log('➕ Creating staff member:', staffData);
+      const response = await API.post('/api/auth/register', staffData);
+      console.log('✅ Staff member created:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Error creating staff member:', error);
+      throw error;
+    }
+  },
+
+  // Delete staff member (removes staff profile and cascades to delete user account)
+  deleteStaff: async (id) => {
+    try {
+      console.log(`🗑️ Deleting staff ${id}`);
+      const response = await API.delete(`/api/medicalstaff/delete/${id}`);
+      console.log('✅ Staff deleted successfully:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error(`❌ Error deleting staff ${id}:`, error);
+      throw error;
+    }
+  },
+
   // Search staff (client-side filtering) - No API call needed here, logic remains same
   searchStaff: (staffList, query) => {
     if (!query) return staffList;

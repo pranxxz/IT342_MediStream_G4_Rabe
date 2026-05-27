@@ -187,13 +187,13 @@ const SettingsPasswordView = () => {
               width: '60px',
               height: '60px',
               borderRadius: '50%',
-              background: '#F3F0FF',
+              background: '#fdf2f4',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               margin: '0 auto 16px auto'
             }}>
-              <Lock size={24} color="#4B0082" />
+              <Lock size={24} color="#3d080b" />
             </div>
             <h3 style={{ 
               fontWeight: 700, 
@@ -226,7 +226,7 @@ const SettingsPasswordView = () => {
                   padding: '12px 16px',
                   paddingRight: '40px',
                   borderRadius: '8px',
-                  border: currentFocused ? '1px solid #4B0082' : '1px solid #e5e7eb',
+                  border: currentFocused ? '1px solid #3d080b' : '1px solid #e5e7eb',
                   fontSize: '14px',
                   fontFamily: '"Arimo", "Poppins", "Inter", sans-serif',
                   color: '#1f2937',
@@ -234,7 +234,7 @@ const SettingsPasswordView = () => {
                   transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
                   outline: 'none',
                   boxSizing: 'border-box',
-                  boxShadow: currentFocused ? '0 0 0 3px rgba(75,0,130,0.1)' : 'none'
+                  boxShadow: currentFocused ? '0 0 0 3px rgba(61,8,11,0.1)' : 'none'
                 }}
                 onFocus={() => setCurrentFocused(true)}
                 onBlur={() => setCurrentFocused(false)}
@@ -274,7 +274,7 @@ const SettingsPasswordView = () => {
                   padding: '12px 16px',
                   paddingRight: '40px',
                   borderRadius: '8px',
-                  border: newFocused ? '1px solid #4B0082' : '1px solid #e5e7eb',
+                  border: newFocused ? '1px solid #3d080b' : '1px solid #e5e7eb',
                   fontSize: '14px',
                   fontFamily: '"Arimo", "Poppins", "Inter", sans-serif',
                   color: '#1f2937',
@@ -282,7 +282,7 @@ const SettingsPasswordView = () => {
                   transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
                   outline: 'none',
                   boxSizing: 'border-box',
-                  boxShadow: newFocused ? '0 0 0 3px rgba(75,0,130,0.1)' : 'none'
+                  boxShadow: newFocused ? '0 0 0 3px rgba(61,8,11,0.1)' : 'none'
                 }}
                 onFocus={() => setNewFocused(true)}
                 onBlur={() => setNewFocused(false)}
@@ -322,7 +322,7 @@ const SettingsPasswordView = () => {
                   padding: '12px 16px',
                   paddingRight: '40px',
                   borderRadius: '8px',
-                  border: confirmFocused ? '1px solid #4B0082' : '1px solid #e5e7eb',
+                  border: confirmFocused ? '1px solid #3d080b' : '1px solid #e5e7eb',
                   fontSize: '14px',
                   fontFamily: '"Arimo", "Poppins", "Inter", sans-serif',
                   color: '#1f2937',
@@ -330,7 +330,7 @@ const SettingsPasswordView = () => {
                   transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
                   outline: 'none',
                   boxSizing: 'border-box',
-                  boxShadow: confirmFocused ? '0 0 0 3px rgba(75,0,130,0.1)' : 'none'
+                  boxShadow: confirmFocused ? '0 0 0 3px rgba(61,8,11,0.1)' : 'none'
                 }}
                 onFocus={() => setConfirmFocused(true)}
                 onBlur={() => setConfirmFocused(false)}
@@ -366,7 +366,7 @@ const SettingsPasswordView = () => {
               width: '100%',
               padding: '12px',
               borderRadius: '8px',
-              background: loading ? '#9ca3af' : '#4B0082',
+              background: loading ? '#9ca3af' : '#3d080b',
               color: 'white',
               border: 'none',
               cursor: loading ? 'not-allowed' : 'pointer',
@@ -374,21 +374,21 @@ const SettingsPasswordView = () => {
               fontSize: '14px',
               fontFamily: '"Arimo", "Poppins", "Inter", sans-serif',
               marginTop: '24px',
-              boxShadow: '0 3px 10px rgba(75,0,130,0.25)',
+              boxShadow: '0 3px 10px rgba(61,8,11,0.25)',
               transition: 'all 0.2s ease',
               opacity: loading ? 0.7 : 1
             }}
             onMouseEnter={(e) => {
               if (!loading) {
-                e.target.style.background = '#3A0066';
-                e.target.style.boxShadow = '0 5px 15px rgba(75,0,130,0.3)';
+                e.target.style.background = '#2d0608';
+                e.target.style.boxShadow = '0 5px 15px rgba(61,8,11,0.3)';
                 e.target.style.transform = 'translateY(-1px)';
               }
             }}
             onMouseLeave={(e) => {
               if (!loading) {
-                e.target.style.background = '#4B0082';
-                e.target.style.boxShadow = '0 3px 10px rgba(75,0,130,0.25)';
+                e.target.style.background = '#3d080b';
+                e.target.style.boxShadow = '0 3px 10px rgba(61,8,11,0.25)';
                 e.target.style.transform = 'translateY(0)';
               }
             }}
@@ -423,13 +423,13 @@ const SettingsPasswordView = () => {
               width: '60px',
               height: '60px',
               borderRadius: '50%',
-              background: '#F3F0FF',
+              background: '#fdf2f4',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               margin: '0 auto 16px auto'
             }}>
-              <Globe size={24} color="#4B0082" />
+              <Globe size={24} color="#3d080b" />
             </div>
             <h3 style={{ 
               fontWeight: 700, 
@@ -456,14 +456,14 @@ const SettingsPasswordView = () => {
               width: '100%',
               padding: '12px',
               borderRadius: '8px',
-              background: '#4B0082',
+              background: '#3d080b',
               color: 'white',
               border: 'none',
               cursor: 'pointer',
               fontWeight: 600,
               fontSize: '14px',
               fontFamily: '"Arimo", "Poppins", "Inter", sans-serif',
-              boxShadow: '0 3px 10px rgba(75,0,130,0.25)',
+              boxShadow: '0 3px 10px rgba(61,8,11,0.25)',
               transition: 'all 0.2s ease',
               marginBottom: '16px',
               display: 'flex',
@@ -472,13 +472,13 @@ const SettingsPasswordView = () => {
               gap: '8px'
             }}
             onMouseEnter={(e) => {
-              e.target.style.background = '#3A0066';
-              e.target.style.boxShadow = '0 5px 15px rgba(75,0,130,0.3)';
+              e.target.style.background = '#2d0608';
+              e.target.style.boxShadow = '0 5px 15px rgba(61,8,11,0.3)';
               e.target.style.transform = 'translateY(-1px)';
             }}
             onMouseLeave={(e) => {
-              e.target.style.background = '#4B0082';
-              e.target.style.boxShadow = '0 3px 10px rgba(75,0,130,0.25)';
+              e.target.style.background = '#3d080b';
+              e.target.style.boxShadow = '0 3px 10px rgba(61,8,11,0.25)';
               e.target.style.transform = 'translateY(0)';
             }}
           >

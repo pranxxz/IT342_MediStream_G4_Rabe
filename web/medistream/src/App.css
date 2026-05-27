@@ -2,8 +2,8 @@
   text-align: center;
 }
 
-body {
-  font-family: 'Segoe UI', system-ui, sans-serif;
+body, input, select, button, textarea {
+  font-family: 'Poppins', sans-serif !important;
   margin: 0; /* Good practice to remove default browser margins */
 }
 

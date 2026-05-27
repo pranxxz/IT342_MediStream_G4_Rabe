@@ -31,8 +31,13 @@ export const useStaff = () => {
       const data = response.data || [];
       // console.log('✅ Staff data received:', data);  
       
-      // Map API data to staff format
-      const mappedStaff = data.map(staff => {
+      // Map API data to staff format (excluding admin roles)
+      const mappedStaff = data
+        .filter(staff => {
+          const role = (staff.role || '').toLowerCase();
+          return role !== 'admin' && role !== 'administrator';
+        })
+        .map(staff => {
         // Get email from userAccount relation
         const email = staff.userAccount?.username || '';
         

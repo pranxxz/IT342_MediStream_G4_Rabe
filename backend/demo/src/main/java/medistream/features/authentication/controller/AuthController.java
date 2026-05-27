@@ -6,6 +6,7 @@ import medistream.features.authentication.dto.response.AuthResponse;
 import medistream.features.authentication.entity.UserAccountEntity;
 import medistream.features.authentication.repository.UserAccountRepository;
 import medistream.features.medicalstaff.entity.MedicalStaffEntity;
+import medistream.features.medicalstaff.repository.MedicalStaffRepository;
 import medistream.shared.security.JwtUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class AuthController {
 
     @Autowired
     private UserAccountRepository userAccountRepository;
+
+    @Autowired
+    private MedicalStaffRepository medicalStaffRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -127,6 +131,19 @@ public class AuthController {
             // Build medical staff if not patient
             if (!role.equals("patient")) {
                 MedicalStaffEntity medicalStaff = new MedicalStaffEntity();
+                
+                int nextStaffId;
+                if (request.getIdNumber() != null && request.getIdNumber() > 0) {
+                    if (medicalStaffRepository.existsById(request.getIdNumber())) {
+                        return ResponseEntity.status(HttpStatus.CONFLICT)
+                            .body(AuthResponse.error("Staff ID already exists. Please use a unique Staff ID."));
+                    }
+                    nextStaffId = request.getIdNumber();
+                } else {
+                    nextStaffId = medicalStaffRepository.getMaxStaffID() + 1;
+                }
+                medicalStaff.setStaffID(nextStaffId);
+
                 String firstName = request.getFirstName() != null ? request.getFirstName().trim() : "";
                 String lastName = request.getLastName() != null ? request.getLastName().trim() : "";
                 medicalStaff.setName((firstName + " " + lastName).trim());
@@ -170,6 +187,7 @@ public class AuthController {
 
         if (user.getMedicalStaff() != null) {
             Map<String, Object> staffInfo = new HashMap<>();
+            staffInfo.put("staffID", user.getMedicalStaff().getStaffID());
             staffInfo.put("name", user.getMedicalStaff().getName());
             staffInfo.put("role", user.getMedicalStaff().getRole());
             staffInfo.put("specialty", user.getMedicalStaff().getSpecialty());

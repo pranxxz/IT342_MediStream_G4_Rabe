@@ -15,6 +15,7 @@ import Staff from './features/medicalstaff/pages/Staff.jsx';
 import GeneralSettings from './shared/pages/GeneralSettings';
 import QueueDashboard from './features/patientqueue/pages/QueueDashboard.jsx';
 import OAuthCallback from './features/authentication/pages/OAuthCallback.jsx';
+import PatientHistory from './features/consultation/pages/PatientHistory.jsx';
 
 function App() {
   return (
@@ -45,14 +46,14 @@ function App() {
             <Staff />
           </RoleBasedRoute>
         } /> 
+        <Route path="general-settings" element={<GeneralSettings />} />
       </Route>
-
-      <Route path="general-settings" element={<ProtectedRoute><GeneralSettings /></ProtectedRoute>} />
 
       <Route index element={<LandingPage />} />
       <Route path="/Register" element={<RegisterPage />} />
       <Route path="/Login" element={<LoginPage />} />
       <Route path="/QueueDashboard" element={<QueueDashboard />} />
+      <Route path="/PatientHistory" element={<PatientHistory />} />
       <Route path="/oauth/callback" element={<OAuthCallback />} />
     </Routes>
   );

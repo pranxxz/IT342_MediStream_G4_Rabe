@@ -6,6 +6,8 @@ import medistream.features.patient.entity.PatientEntity;
 import medistream.features.patient.repository.PatientRepository;
 import medistream.features.medicalstaff.entity.MedicalStaffEntity;
 import medistream.features.medicalstaff.repository.MedicalStaffRepository;
+import medistream.features.queue.entity.Queue;
+import medistream.features.queue.repository.QueueRepository;
 import medistream.shared.security.JwtUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,9 @@ public class ManualToAutomatedTest {
 
     @Autowired
     private MedicalStaffRepository medicalStaffRepository;
+
+    @Autowired
+    private QueueRepository queueRepository;
 
     private String adminToken;
     private String staffToken;
@@ -207,5 +212,38 @@ public class ManualToAutomatedTest {
                         .content("{\"status\":\"COMPLETED\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("COMPLETED"));
+    }
+
+    // TC-37: Completed/Done Queue items are removed from Active List
+    @Test
+    void tc37_completedOrDoneQueueRemovedFromActiveList() throws Exception {
+        // Create a test patient
+        PatientEntity patient = new PatientEntity();
+        patient.setFirstName("Queue");
+        patient.setLastName("Patient");
+        patient.setAge(25);
+        patient.setGender("Female");
+        patient = patientRepository.save(patient);
+
+        // Clear existing queues if any, or just ensure our new ones are added
+        queueRepository.deleteAll();
+
+        // Save three Queue entries: Waiting, Completed, Done (case-insensitive checks)
+        Queue qWaiting = new Queue("Q-001", "WAITING", patient, "09:00 AM", "Dr. Green");
+        Queue qCompleted = new Queue("Q-002", "completed", patient, "09:15 AM", "Dr. Green");
+        Queue qDone = new Queue("Q-003", "DONE", patient, "09:30 AM", "Dr. Green");
+
+        queueRepository.save(qWaiting);
+        queueRepository.save(qCompleted);
+        queueRepository.save(qDone);
+
+        // Fetch all active queues from /api/queue
+        mockMvc.perform(get("/api/queue")
+                        .header("Authorization", "Bearer " + staffToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].queueNumber").value("Q-001"))
+                .andExpect(jsonPath("$[0].status").value("WAITING"));
     }
 }

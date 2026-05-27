@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
   Card,
@@ -53,6 +53,7 @@ const getStatusStyle = (status) => {
 // ─── Main Component ────────────────────────────────────────────────────────────
 const QueueDashboard = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [queueList, setQueueList] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -87,9 +88,7 @@ const QueueDashboard = () => {
     completed: queueList.filter(q => q.status === 'COMPLETED').length,
   };
 
-  const currentServing =
-    queueList.find(q => q.status === 'CONSULTING') ||
-    queueList.find(q => q.status === 'WAITING');
+  const currentServing = queueList.find(q => q.status === 'CONSULTING');
   const servingNumber = currentServing ? currentServing.queueNumber : '--';
 
   return (
@@ -117,24 +116,30 @@ const QueueDashboard = () => {
         }}
       >
         {/* ── Brand header ─────────────────────────────────────────────── */}
-        <Stack direction="row" alignItems="center" spacing={1.5} mb={3}>
+        <Stack 
+          direction="row" 
+          alignItems="center" 
+          spacing={1.5} 
+          mb={3}
+          onClick={() => navigate('/')}
+          sx={{ cursor: 'pointer', userSelect: 'none', width: 'fit-content' }}
+        >
           <Box
             sx={{
               width: 40,
               height: 40,
-              bgcolor: 'rgba(68,0,13,0.08)',
-              border: '1.5px solid rgba(68,0,13,0.15)',
+              bgcolor: '#44000d',
+              border: '1.5px solid rgba(255, 255, 255, 0.2)',
               borderRadius: 2,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(68, 0, 13, 0.25)',
             }}
           >
-            <img
-              src="/logo (2).png"
-              alt="MediStream"
-              style={{ width: '65%', height: '65%', objectFit: 'contain' }}
-            />
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M2 12h5l2-7 3 14 3-10 2 3h5" />
+            </svg>
           </Box>
           <Typography
             fontWeight={800}
@@ -322,7 +327,7 @@ const PatientRow = ({ item }) => {
         borderBottom: '1px solid #f3f4f6',
         alignItems: 'center',
         '&:last-child': { borderBottom: 'none' },
-        '&:hover': { bgcolor: '#fafafa' },
+        '&:hover': { bgcolor: '#faf0f0' },
         transition: 'background 0.15s',
       }}
     >

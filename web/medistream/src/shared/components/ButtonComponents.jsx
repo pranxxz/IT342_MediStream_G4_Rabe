@@ -2,24 +2,29 @@ import React from 'react';
 import { Button } from '@mui/material';
 import { styled } from '@mui/system';
 
-// Gradient Button Component
+// Gradient Button Component (Styled like the 4th image "New Search" button)
 const StyledGradientButton = styled(Button)(({ theme }) => ({
-  background: '#6A0DAD',
+  background: 'linear-gradient(135deg, #7a0017 0%, #44000d 100%)',
   color: "#fff",
-  fontWeight: 600,
+  fontWeight: 700,
   textTransform: "none",
-  padding: "4px 20px",
-  borderRadius: 8,
-  fontSize: "0.9rem",
-  transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-  border: "1px solid rgba(255, 255, 255, 0.2)",
-  boxShadow: "0 4px 15px rgba(106, 13, 173, 0.4)",
+  padding: "10px 28px",
+  borderRadius: '40px',
+  fontSize: "0.95rem",
+  transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+  border: "1px solid rgba(255, 255, 255, 0.1)",
+  boxShadow: "0 6px 18px rgba(122, 0, 23, 0.25)",
   minWidth: "160px",
+  letterSpacing: "0.3px",
   "&:hover": {
-    background: "linear-gradient(135deg, #4B0082 0%, #6A0DAD 100%)",
+    background: "linear-gradient(135deg, #7a0017 0%, #44000d 100%)",
     transform: "translateY(-2px)",
-    boxShadow: "0 6px 20px rgba(106, 13, 173, 0.6)",
+    boxShadow: "0 8px 24px rgba(122, 0, 23, 0.35)",
   },
+  "&:disabled": {
+    opacity: 0.6,
+    color: "rgba(255, 255, 255, 0.8)",
+  }
 }));
 
 export function GradientButton({ children, sx = {}, ...props }) {
@@ -36,20 +41,21 @@ export function GradientButton({ children, sx = {}, ...props }) {
 
 // Outline Button Component
 const StyledOutlineButton = styled(Button)(({ theme }) => ({
-  color: "#6A0DAD",
-  fontWeight: 600,
+  color: "#44000d",
+  fontWeight: 700,
   textTransform: "none",
-  padding: "8px 32px",
-  borderRadius: 8,
-  border: "2px solid #6A0DAD",
+  padding: "10px 28px",
+  borderRadius: '40px',
+  border: "2px solid #44000d",
   backgroundColor: "transparent",
-  fontSize: "1rem",
-  transition: "all 0.3s ease",
+  fontSize: "0.95rem",
+  transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
   minWidth: "160px",
+  letterSpacing: "0.3px",
   "&:hover": {
-    backgroundColor: "rgba(106, 13, 173, 0.1)",
-    borderColor: "#4B0082",
-    color: "#4B0082",
+    backgroundColor: "rgba(68, 0, 13, 0.05)",
+    borderColor: "#7a0017",
+    color: "#7a0017",
     transform: "translateY(-2px)",
   },
 }));
@@ -107,14 +113,15 @@ const StyledNavSideButton = styled(Button)(({ theme }) => ({
   color: "white",
   fontWeight: 600,
   textTransform: "none",
-  borderRadius: '8px',
-  padding: "8px",
-  transition: "all 0.3s ease",
+  borderRadius: '40px',
+  padding: "8px 24px",
+  transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
   width: "130px",
   "&:hover": {
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
     borderColor: "white",
     transform: "translateY(-2px)",
+    boxShadow: "0 4px 12px rgba(255, 255, 255, 0.15)",
   },
 }));
 

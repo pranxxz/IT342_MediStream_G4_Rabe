@@ -15,9 +15,9 @@ const QueueModalForm = ({
     gender: '',
     contactNumber: '',
     address: '',
-    purpose: '',
   });
   const [errors, setErrors] = useState({});
+  const [warnings, setWarnings] = useState({});
   const firstNameInputRef = useRef(null);
 
   // Reset form when modal opens
@@ -30,9 +30,9 @@ const QueueModalForm = ({
         gender: '',
         contactNumber: '',
         address: '',
-        purpose: '',
       });
       setErrors({});
+      setWarnings({});
     }
   }, [open]);
 
@@ -68,7 +68,39 @@ const QueueModalForm = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    let updatedValue = value;
+    
+    if (name === 'age') {
+      const hasNonNumeric = /[^0-9]/.test(value);
+      if (hasNonNumeric) {
+        setWarnings(prev => ({ ...prev, age: 'Only numeric characters are allowed' }));
+        updatedValue = value.replace(/[^0-9]/g, '');
+      } else {
+        const ageNum = parseInt(value, 10);
+        if (value !== '' && (isNaN(ageNum) || ageNum < 0 || ageNum > 120)) {
+          setWarnings(prev => ({ ...prev, age: 'Age must be between 0 and 120' }));
+        } else {
+          setWarnings(prev => ({ ...prev, age: '' }));
+        }
+      }
+    }
+
+    if (name === 'contactNumber') {
+      const hasNonNumeric = /[^0-9]/.test(value);
+      if (hasNonNumeric) {
+        setWarnings(prev => ({ ...prev, contactNumber: 'Only numeric characters are allowed' }));
+        updatedValue = value.replace(/[^0-9]/g, '');
+      } else {
+        if (value.length > 11) {
+          setWarnings(prev => ({ ...prev, contactNumber: 'Contact number must not exceed 11 digits' }));
+          updatedValue = value.substring(0, 11);
+        } else {
+          setWarnings(prev => ({ ...prev, contactNumber: '' }));
+        }
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, [name]: updatedValue }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
@@ -76,30 +108,32 @@ const QueueModalForm = ({
 
   const validateForm = () => {
     const newErrors = {};
-    const { firstName, lastName, age, gender, contactNumber, address, purpose } = formData;
+    const { firstName, lastName, age, gender, contactNumber, address } = formData;
 
     if (!firstName.trim()) newErrors.firstName = 'First name is required';
     if (!lastName.trim()) newErrors.lastName = 'Last name is required';
     
     if (!age) {
       newErrors.age = 'Age is required';
-    } else if (isNaN(age) || age < 1 || age > 120) {
-      newErrors.age = 'Age must be a number between 1 and 120';
+    } else {
+      const ageNum = parseInt(age, 10);
+      if (isNaN(ageNum) || ageNum < 0 || ageNum > 120) {
+        newErrors.age = 'Age must be between 0 and 120';
+      }
     }
     
     if (!gender) newErrors.gender = 'Gender is required';
     
     if (!contactNumber.trim()) {
       newErrors.contactNumber = 'Contact number is required';
-    } else if (!/^[\d+\s-]+$/.test(contactNumber.trim())) {
-      newErrors.contactNumber = 'Please enter a valid contact number';
+    } else if (contactNumber.trim().length !== 11) {
+      newErrors.contactNumber = 'Contact number must be exactly 11 digits';
     }
     
     if (!address.trim()) newErrors.address = 'Address is required';
-    if (!purpose.trim()) newErrors.purpose = 'Purpose of visit is required';
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return Object.keys(newErrors).length === 0 && !Object.values(warnings).some(w => w !== '');
   };
 
   const handleSubmit = (e) => {
@@ -130,7 +164,6 @@ const QueueModalForm = ({
                 onChange={handleChange}
                 ref={firstNameInputRef}
                 className={errors.firstName ? 'error-input' : ''}
-                placeholder="Enter first name"
               />
               {errors.firstName && <span className="error-text">{errors.firstName}</span>}
             </div>
@@ -143,7 +176,6 @@ const QueueModalForm = ({
                 value={formData.lastName}
                 onChange={handleChange}
                 className={errors.lastName ? 'error-input' : ''}
-                placeholder="Enter last name"
               />
               {errors.lastName && <span className="error-text">{errors.lastName}</span>}
             </div>
@@ -153,16 +185,16 @@ const QueueModalForm = ({
             <div className="form-group">
               <label>Age <span className="required-star">*</span></label>
               <input
-                type="number"
+                type="text"
                 name="age"
                 value={formData.age}
                 onChange={handleChange}
-                className={errors.age ? 'error-input' : ''}
-                placeholder="Enter age"
-                min="1"
-                max="120"
+                className={(errors.age || warnings.age) ? 'error-input' : ''}
+                maxLength="3"
               />
-              {errors.age && <span className="error-text">{errors.age}</span>}
+              {(errors.age || warnings.age) && (
+                <span className="error-text">{errors.age || warnings.age}</span>
+              )}
             </div>
 
             <div className="form-group">
@@ -186,14 +218,16 @@ const QueueModalForm = ({
           <div className="form-group">
             <label>Contact Number <span className="required-star">*</span></label>
             <input
-              type="tel"
+              type="text"
               name="contactNumber"
               value={formData.contactNumber}
               onChange={handleChange}
-              className={errors.contactNumber ? 'error-input' : ''}
-              placeholder="Enter contact number"
+              className={(errors.contactNumber || warnings.contactNumber) ? 'error-input' : ''}
+              maxLength="11"
             />
-            {errors.contactNumber && <span className="error-text">{errors.contactNumber}</span>}
+            {(errors.contactNumber || warnings.contactNumber) && (
+              <span className="error-text">{errors.contactNumber || warnings.contactNumber}</span>
+            )}
           </div>
 
           <div className="form-group">
@@ -203,23 +237,9 @@ const QueueModalForm = ({
               value={formData.address}
               onChange={handleChange}
               className={errors.address ? 'error-input' : ''}
-              placeholder="Enter your full address"
               rows="3"
             />
             {errors.address && <span className="error-text">{errors.address}</span>}
-          </div>
-
-          <div className="form-group">
-            <label>Purpose of Visit <span className="required-star">*</span></label>
-            <input
-              type="text"
-              name="purpose"
-              value={formData.purpose}
-              onChange={handleChange}
-              className={errors.purpose ? 'error-input' : ''}
-              placeholder="Why are you visiting?"
-            />
-            {errors.purpose && <span className="error-text">{errors.purpose}</span>}
           </div>
 
           <div className="form-buttons">
@@ -240,157 +260,189 @@ const QueueModalForm = ({
           left: 0;
           right: 0;
           bottom: 0;
-          background-color: rgba(0, 0, 0, 0.6);
-          backdrop-filter: blur(4px);
+          background-color: rgba(68, 0, 13, 0.15);
+          backdrop-filter: blur(12px);
           display: flex;
           justify-content: center;
           align-items: center;
           z-index: 1000;
-          animation: fadeIn 0.2s ease-out;
+          animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
+ 
         @keyframes fadeIn {
           from { opacity: 0; }
           to { opacity: 1; }
         }
-
+ 
         .modal-container {
-          background: white;
-          border-radius: 24px;
+          background: #ffffff;
+          backdrop-filter: blur(25px);
+          -webkit-backdrop-filter: blur(25px);
+          border: 1px solid rgba(68, 0, 13, 0.1);
+          border-radius: 28px;
           width: 90%;
-          max-width: 680px;
+          max-width: 620px;
           max-height: 90vh;
           overflow-y: auto;
-          padding: 28px 32px;
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-          animation: slideUp 0.3s ease-out;
+          padding: 36px 40px;
+          box-shadow: 0 30px 60px -12px rgba(68, 0, 13, 0.15), 0 0 40px rgba(68, 0, 13, 0.05);
+          animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          color: #1f2937;
         }
-
+ 
         @keyframes slideUp {
-          from { transform: translateY(30px); opacity: 0; }
+          from { transform: translateY(40px); opacity: 0; }
           to { transform: translateY(0); opacity: 1; }
         }
-
+ 
         .modal-header {
-          margin-bottom: 24px;
-          border-bottom: 2px solid #f0f0f0;
-          padding-bottom: 16px;
+          margin-bottom: 28px;
+          border-bottom: 1px solid rgba(68, 0, 13, 0.08);
+          padding-bottom: 18px;
+          text-align: center;
         }
-
+ 
         .modal-header h2 {
-          font-size: 1.8rem;
-          color: #44000D;
-          font-weight: 700;
-          margin-bottom: 6px;
+          font-size: 2rem;
+          background: linear-gradient(135deg, #44000d 0%, #7a0017 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          font-weight: 800;
+          margin-bottom: 8px;
+          letter-spacing: -0.5px;
         }
-
+ 
         .modal-subtitle {
-          color: #666;
-          font-size: 0.9rem;
+          color: #4b5563;
+          font-size: 0.95rem;
+          font-weight: 500;
         }
-
+ 
         .form-row {
           display: flex;
-          gap: 20px;
+          gap: 24px;
           margin-bottom: 6px;
         }
-
+ 
         .form-group {
           flex: 1;
-          margin-bottom: 18px;
+          margin-bottom: 20px;
         }
-
+ 
         label {
           display: block;
           margin-bottom: 8px;
           font-weight: 600;
-          color: #333;
-          font-size: 0.9rem;
+          color: #374151;
+          font-size: 0.88rem;
+          letter-spacing: 0.2px;
         }
-
+ 
         .required-star {
-          color: #e53e3e;
+          color: #ff3355;
           margin-left: 4px;
         }
-
+ 
         input, select, textarea {
+          box-sizing: border-box;
           width: 100%;
-          padding: 12px 14px;
-          border: 1.5px solid #e2e8f0;
+          padding: 12px 16px;
+          border: 1.5px solid rgba(68, 0, 13, 0.18);
           border-radius: 12px;
-          font-size: 0.95rem;
-          transition: all 0.2s ease;
+          font-size: 0.92rem;
+          transition: all 0.2s ease-in-out;
           font-family: inherit;
-          background: #fafbfc;
+          background: #fcfcfc;
+          color: #1f2937;
         }
-
+ 
+        select option {
+          background-color: #ffffff;
+          color: #1f2937;
+        }
+ 
         input:focus, select:focus, textarea:focus {
           outline: none;
-          border-color: #44000D;
-          box-shadow: 0 0 0 3px rgba(68, 0, 13, 0.1);
-          background: white;
+          border-color: #7a0017;
+          box-shadow: 0 0 0 4px rgba(122, 0, 23, 0.12);
+          background: #ffffff;
         }
-
+ 
         .error-input {
-          border-color: #e53e3e;
-          background: #fff5f5;
+          border-color: #dc2626;
+          background: rgba(220, 38, 38, 0.02);
         }
-
+ 
         .error-text {
-          color: #e53e3e;
-          font-size: 0.75rem;
+          color: #dc2626;
+          font-size: 0.78rem;
           margin-top: 6px;
           display: block;
+          font-weight: 500;
         }
-
+ 
         .form-buttons {
           display: flex;
           justify-content: flex-end;
           gap: 16px;
-          margin-top: 24px;
-          padding-top: 8px;
-          border-top: 1px solid #f0f0f0;
+          margin-top: 32px;
+          padding-top: 18px;
+          border-top: 1px solid rgba(68, 0, 13, 0.08);
         }
-
+ 
         .cancel-btn, .submit-btn {
-          padding: 12px 28px;
+          padding: 14px 32px;
           border-radius: 40px;
-          font-weight: 600;
-          font-size: 0.9rem;
+          font-weight: 700;
+          font-size: 0.92rem;
           cursor: pointer;
           transition: all 0.2s ease;
           border: none;
         }
-
+ 
         .cancel-btn {
-          background: #f1f3f5;
-          color: #4a5568;
+          background: #f3f4f6;
+          color: #4b5563;
+          border: 1px solid rgba(0, 0, 0, 0.05);
         }
-
+ 
         .cancel-btn:hover {
-          background: #e2e8f0;
-          transform: translateY(-1px);
+          background: #e5e7eb;
+          color: #1f2937;
+          transform: translateY(-1.5px);
         }
-
+ 
         .submit-btn {
-          background: linear-gradient(135deg, #44000D 0%, #660014 100%);
+          background: linear-gradient(135deg, #7a0017 0%, #44000d 100%);
           color: white;
-          box-shadow: 0 4px 10px rgba(68, 0, 13, 0.3);
+          box-shadow: 0 6px 20px rgba(122, 0, 23, 0.25);
         }
-
+ 
         .submit-btn:hover:not(:disabled) {
-          transform: translateY(-1px);
-          box-shadow: 0 8px 20px rgba(68, 0, 13, 0.4);
+          transform: translateY(-1.5px);
+          box-shadow: 0 8px 25px rgba(122, 0, 23, 0.4);
         }
-
+ 
         .submit-btn:disabled {
-          opacity: 0.7;
+          opacity: 0.5;
           cursor: not-allowed;
         }
-
+ 
+        /* Custom scrollbar for modal-container */
+        .modal-container::-webkit-scrollbar {
+          width: 6px;
+        }
+        .modal-container::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .modal-container::-webkit-scrollbar-thumb {
+          background: rgba(68, 0, 13, 0.15);
+          border-radius: 10px;
+        }
+ 
         @media (max-width: 600px) {
           .modal-container {
-            padding: 20px;
+            padding: 24px;
             width: 95%;
           }
           .form-row {

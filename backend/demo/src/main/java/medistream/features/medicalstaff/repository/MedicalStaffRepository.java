@@ -39,4 +39,7 @@ public interface MedicalStaffRepository extends JpaRepository<MedicalStaffEntity
     List<MedicalStaffEntity> findByRoleAndAvailability(String role, String availability);
     
     List<MedicalStaffEntity> findByDepartmentAndAvailability(String department, String availability);
+
+    @org.springframework.data.jpa.repository.Query("SELECT COALESCE(MAX(m.staffID), 0) FROM MedicalStaffEntity m")
+    int getMaxStaffID();
 }

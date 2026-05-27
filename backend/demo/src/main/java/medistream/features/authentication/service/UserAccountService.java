@@ -57,6 +57,18 @@ public class UserAccountService {
             String role = registerRequest.getRole().toLowerCase();
             if ("doctor".equals(role) || "nurse".equals(role)) {
                 MedicalStaffEntity medicalStaff = new MedicalStaffEntity();
+                
+                int nextStaffId;
+                if (registerRequest.getIdNumber() != null && registerRequest.getIdNumber() > 0) {
+                    if (medicalStaffRepository.existsById(registerRequest.getIdNumber())) {
+                        return AuthResponse.error("Staff ID already exists");
+                    }
+                    nextStaffId = registerRequest.getIdNumber();
+                } else {
+                    nextStaffId = medicalStaffRepository.getMaxStaffID() + 1;
+                }
+                medicalStaff.setStaffID(nextStaffId);
+
                 medicalStaff.setName(registerRequest.getFirstName() + " " + registerRequest.getLastName());
                 medicalStaff.setRole(registerRequest.getRole());
                 medicalStaff.setSpecialty(""); 
@@ -192,6 +204,9 @@ public class UserAccountService {
         
         if (account.getMedicalStaff() != null) {
             MedicalStaffEntity medicalStaff = account.getMedicalStaff();
+            if (medicalStaff.getStaffID() <= 0) {
+                medicalStaff.setStaffID(medicalStaffRepository.getMaxStaffID() + 1);
+            }
             medicalStaff.setUserAccount(account);
         }
         
@@ -207,6 +222,7 @@ public class UserAccountService {
         }
         
         MedicalStaffEntity medicalStaff = new MedicalStaffEntity();
+        medicalStaff.setStaffID(medicalStaffRepository.getMaxStaffID() + 1);
         medicalStaff.setName(staffName);
         medicalStaff.setRole(staffRole);
         medicalStaff.setContactNo(contactNo);

@@ -56,6 +56,8 @@ public class ConsultationController {
                 m.put("consultationId", c.getConsultationId());
                 m.put("diagnosis", c.getDiagnosis());
                 m.put("remarks", c.getRemarks());
+                m.put("symptoms", c.getSymptoms());
+                m.put("medicinePrescribed", c.getMedicinePrescribed());
                 m.put("consultationDate", c.getConsultationDate() != null ? c.getConsultationDate().toString() : "No Date");
 
                 // Safely get Doctor Name
@@ -110,6 +112,8 @@ public class ConsultationController {
                 m.put("consultationId", c.getConsultationId());
                 m.put("diagnosis", c.getDiagnosis());
                 m.put("remarks", c.getRemarks());
+                m.put("symptoms", c.getSymptoms());
+                m.put("medicinePrescribed", c.getMedicinePrescribed());
                 m.put("consultationDate", c.getConsultationDate() != null ? c.getConsultationDate().toString() : "No Date");
 
                 String doctor = c.getDoctorName();

@@ -222,8 +222,8 @@ export function PatientFormModal({
                         required
                         fullWidth
                         labelSx={{ fontSize: '14px' }}
-                        error={!!errors.age}
-                        helperText={errors.age}
+                        error={!!errors.age || !!ageInput.warning}
+                        helperText={errors.age || ageInput.warning}
                         inputProps={{ maxLength: 3 }}
                     />
                     </Box>
@@ -247,8 +247,8 @@ export function PatientFormModal({
                         required
                         fullWidth
                         labelSx={{ fontSize: '14px' }}
-                        error={!!errors.contactNo}
-                        helperText={errors.contactNo}
+                        error={!!errors.contactNo || !!contactInput.warning}
+                        helperText={errors.contactNo || contactInput.warning}
                         inputProps={{ maxLength: 11 }}
                     />
                     </Box>
@@ -270,16 +270,16 @@ export function PatientFormModal({
                 <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 4 }}>
                 <GradientButton 
                     onClick={onClose}
-                    // Override gradient button styles for "Cancel" to look different if needed
-                    // Or use a simple Button component here
                     sx={{ 
-                        padding: "5px 24px !important",
+                        padding: "8px 24px !important",
                         minWidth: "auto",
                         fontSize: "14px",
-                        background: 'transparent',
-                        color: '#666',
-                        border: '1px solid #ccc',
-                        '&:hover': { background: '#f5f5f5' }
+                        borderRadius: "40px !important",
+                        background: 'transparent !important',
+                        color: '#666 !important',
+                        border: '1.5px solid #ccc !important',
+                        boxShadow: 'none !important',
+                        '&:hover': { background: '#f5f5f5 !important', borderColor: '#bbb !important' }
                     }}
                 >
                     Cancel
@@ -288,9 +288,10 @@ export function PatientFormModal({
                     type="submit"
                     disabled={isSubmitting}
                     sx={{ 
-                        padding: "5px 24px !important",
+                        padding: "8px 28px !important",
                         minWidth: "auto",
-                        fontSize: "14px"
+                        fontSize: "14px",
+                        borderRadius: "40px !important",
                     }}
                     >
                     {isSubmitting ? "Processing..." : submitLabel}

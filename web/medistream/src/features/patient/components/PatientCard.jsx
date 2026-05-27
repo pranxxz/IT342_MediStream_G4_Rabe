@@ -5,11 +5,11 @@ export const PatientCard = ({ patient, onMenuClick, ...props }) => (
     sx={{ 
       p: 3, 
       borderRadius: 3,
-      boxShadow: '0 2px 12px rgba(102, 126, 234, 0.08)',
+      boxShadow: '0 8px 25px rgba(68,0,13,0.15)',
       border: '1px solid rgba(102, 126, 234, 0.1)',
       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       '&:hover': {
-        boxShadow: '0 8px 25px rgba(102, 126, 234, 0.15)',
+        boxShadow: '0 12px 32px rgba(68,0,13,0.3)',
         transform: 'translateY(-2px)',
         borderColor: 'rgba(102, 126, 234, 0.2)',
       }

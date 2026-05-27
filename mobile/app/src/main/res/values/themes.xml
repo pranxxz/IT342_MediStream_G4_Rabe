@@ -1,10 +1,18 @@
 <resources>
     <style name="Theme.MediStream" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/brand_maroon</item>
-        <item name="colorSecondary">@color/brand_maroon</item>
+        <item name="colorPrimaryVariant">@color/brand_maroon_dark</item>
+        <item name="colorOnPrimary">@color/pure_white</item>
         <item name="android:statusBarColor">@color/brand_maroon</item>
-
-        <item name="fontFamily">@font/poppins_regular</item>
         <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="fontFamily">@font/poppins_regular</item>
+        <!-- Outlined input style -->
+        <item name="textInputStyle">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox</item>
+    </style>
+
+    <style name="CustomDialogTheme" parent="Theme.MaterialComponents.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
     </style>
 </resources>

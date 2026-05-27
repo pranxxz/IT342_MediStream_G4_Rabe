@@ -499,20 +499,20 @@ const SettingsEditModal = ({ userData, close, onSave }) => {
             disableElevation
             sx={{
               mt: 3, py: 1.4,
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, #44000d 0%, #6b000f 100%)',
+              borderRadius: '40px',
+              background: 'linear-gradient(135deg, #7a0017 0%, #44000d 100%)',
               color: 'white',
               fontWeight: 700,
               fontSize: '0.875rem',
               fontFamily: '"Poppins", "Arimo", sans-serif',
               letterSpacing: '0.02em',
               textTransform: 'none',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 4px 14px rgba(68,0,13,0.25)',
+              transition: 'all 0.25s ease',
+              boxShadow: '0 8px 25px rgba(122, 0, 23, 0.25)',
               '&:hover:not(:disabled)': {
-                background: 'linear-gradient(135deg, ' + ACCENT_ALT + ' 0%, #7a0011 100%)',
-                boxShadow: '0 6px 18px rgba(68,0,13,0.35)',
-                transform: 'translateY(-1px)',
+                background: 'linear-gradient(135deg, #7a0017 0%, #44000d 100%)',
+                boxShadow: '0 10px 30px rgba(122, 0, 23, 0.35)',
+                transform: 'translateY(-2px)',
               },
               '&:active:not(:disabled)': { transform: 'translateY(0)' },
               '&.Mui-disabled': {
@@ -532,7 +532,7 @@ const SettingsEditModal = ({ userData, close, onSave }) => {
         open={snackbar.open}
         autoHideDuration={snackbar.severity === 'success' ? 2500 : 4500}
         onClose={closeSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert
           onClose={closeSnackbar}

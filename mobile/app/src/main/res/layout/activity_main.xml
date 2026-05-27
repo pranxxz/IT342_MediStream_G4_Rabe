@@ -1,189 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:fillViewport="true">
+    android:background="@color/pure_white"
+    tools:context="com.medistream.core.MainActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <!-- Decorative Top Background Glow -->
+    <View
+        android:id="@+id/backgroundGlow"
+        android:layout_width="0dp"
+        android:layout_height="250dp"
+        android:background="@drawable/rounded_bottom_shape"
+        android:backgroundTint="@color/brand_maroon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <View
-            android:id="@+id/headerBackground"
-            android:layout_width="0dp"
-            android:layout_height="220dp"
-            android:background="@drawable/rounded_bottom_shape"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <!-- Centered Brand Logo & Description -->
+    <LinearLayout
+        android:id="@+id/brandContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/buttonsContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
 
-        <LinearLayout
-            android:id="@+id/logoContainer"
+        <!-- App Name -->
+        <TextView
+            android:id="@+id/tvAppName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="@id/headerBackground"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/headerBackground">
+            android:fontFamily="@font/poppins_black"
+            android:text="MediStream"
+            android:textColor="@color/brand_maroon"
+            android:textSize="42sp"
+            android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_semibold"
-                android:text="MediStream"
-                android:textColor="#FFFFFF"
-                android:textSize="32sp" />
+        <!-- Subtitle/Tagline -->
+        <TextView
+            android:id="@+id/tvTagline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/poppins_medium"
+            android:text="Hospital Queue &amp; Patient Management"
+            android:textColor="@color/text_grey_light"
+            android:textSize="14sp"
+            android:textAlignment="center" />
+    </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins"
-                android:text="Streamlined Healthcare"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
-        </LinearLayout>
+    <!-- Large Action Buttons Selection -->
+    <LinearLayout
+        android:id="@+id/buttonsContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="48dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/brandContainer">
 
-        <LinearLayout
-            android:id="@+id/formContainer"
+        <!-- I'm a Patient Card/Button -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btnPatient"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="24dp"
-            android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/headerBackground">
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/brand_maroon"
+            app:strokeColor="@color/brand_maroon_dark"
+            app:strokeWidth="1dp">
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:hint="First Name"
-                app:boxStrokeColor="#44000D"
-                app:hintTextColor="#44000D"
-                app:startIconDrawable="@drawable/outline_person_outline_24"
-                app:startIconTint="#44000D">
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="20dp">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etFirstName"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins"
-                    android:inputType="textPersonName" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="I'm a Patient"
+                    android:textColor="@color/pure_white"
+                    android:textSize="18sp" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:hint="Last Name"
-                app:boxStrokeColor="#44000D"
-                app:hintTextColor="#44000D"
-                app:startIconDrawable="@drawable/outline_person_outline_24"
-                app:startIconTint="#44000D">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etLastName"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins"
-                    android:inputType="textPersonName" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:text="Join the queue &amp; get estimated wait times"
+                    android:textColor="#CCCCCC"
+                    android:textSize="12sp"
+                    android:textAlignment="center" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:hint="Email"
-                app:boxStrokeColor="#44000D"
-                app:hintTextColor="#44000D"
-                app:startIconDrawable="@drawable/outline_email_24"
-                app:startIconTint="#44000D">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins"
-                    android:inputType="textEmailAddress" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:hint="Password"
-                app:boxStrokeColor="#44000D"
-                app:hintTextColor="#44000D"
-                app:passwordToggleEnabled="true"
-                app:startIconDrawable="@drawable/outline_person_outline_24"
-                app:startIconTint="#44000D">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etPassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins"
-                    android:inputType="textPassword" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:hint="Role"
-                app:boxStrokeColor="#44000D"
-                app:hintTextColor="#44000D"
-                app:startIconDrawable="@drawable/outline_account_box_24"
-                app:startIconTint="#44000D">
-
-                <AutoCompleteTextView
-                    android:id="@+id/spinnerRole"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins"
-                    android:inputType="none" />
-            </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnRegister"
-            android:layout_width="wrap_content"
+        <!-- Staff Login Card/Button -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btnStaffLogin"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/button_background_maroon"
-            android:fontFamily="@font/poppins_semibold"
-            android:minWidth="180dp"
-            android:text="Sign up"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            android:textSize="17sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/formContainer" />
+            android:clickable="true"
+            android:focusable="true"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@color/surface_grey"
+            app:strokeColor="#DDDDDD"
+            app:strokeWidth="1dp">
 
-        <TextView
-            android:id="@+id/tvToLogin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="32dp"
-            android:fontFamily="@font/poppins"
-            android:text="Already have an account? Login"
-            android:textColor="#44000D"
-            android:textStyle="italic"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnRegister" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="20dp">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="Staff Portal"
+                    android:textColor="@color/brand_maroon"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:text="Log in to manage queues, patients, and staff"
+                    android:textColor="@color/text_grey_light"
+                    android:textSize="12sp"
+                    android:textAlignment="center" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

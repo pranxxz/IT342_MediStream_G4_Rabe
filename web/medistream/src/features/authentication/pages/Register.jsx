@@ -1,140 +1,107 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Typography, Paper, Container, Divider, FormControl, InputLabel, Select, MenuItem, FormHelperText } from '@mui/material';
-import { Badge } from '@mui/icons-material';
-import GoogleIcon from '@mui/icons-material/Google';
-import { 
-  InputField, 
-  PasswordField, 
-  NameFieldsRow, 
-  EmailField, 
+import {
+  Typography,
+  Box,
+  Grid
+} from "@mui/material";
+import { Google } from '@mui/icons-material';
+import {
+  MAROON,
+  PrimaryButton,
+  NavSideButton,
+  GoogleButton,
+  DividerWithText
+} from "../components/AuthStyledComp";
+import {
   ErrorAlert,
+  PasswordField,
+  RoleSelectField,
+  NameFieldsRow,
+  RoleAndIdFieldsRow,
+  EmailField,
   NumberField
-} from '../components/RegisterFields';
+} from "../components/AuthFormsComp";
+import {
+  BackgroundShapes,
+  FloatingShapesCSS,
+  ToggleContainerCSS,
+  DecorativeCard,
+  SuccessSnackbar
+} from "../components/AuthUIComp";
 
-const basicValidation = (values) => {
-  const errors = {};
-
-  if (!values.firstName) {
-    errors.firstName = 'First name is required';
-  } else if (!/^[A-Za-z\s]+$/.test(values.firstName)) {
-    errors.firstName = 'First name should contain only letters';
-  } else if (values.firstName.length < 2) {
-    errors.firstName = 'First name must be at least 2 characters';
-  }
-
-  if (!values.lastName) {
-    errors.lastName = 'Last name is required';
-  } else if (!/^[A-Za-z\s]+$/.test(values.lastName)) {
-    errors.lastName = 'Last name should contain only letters';
-  } else if (values.lastName.length < 2) {
-    errors.lastName = 'Last name must be at least 2 characters';
-  }
-
-  if (!values.email) {
-    errors.email = 'Email is required';
-  } else if (!/\S+@\S+\.\S+/.test(values.email)) {
-    errors.email = 'Email is invalid';
-  }
-
-  if (!values.role) {
-    errors.role = 'Role is required';
-  }
-
-  // If registering as staff (not patient), require an ID number
-  const roleLower = values.role ? values.role.toLowerCase() : '';
-  if (roleLower && roleLower !== 'patient') {
-    if (!values.idNumber) {
-      errors.idNumber = 'ID number is required for staff';
-    } else if (!/^\d+$/.test(values.idNumber)) {
-      errors.idNumber = 'ID number must contain only numbers';
-    } else if (values.idNumber.length < 5) {
-      errors.idNumber = 'ID number must be at least 5 digits';
-    } else if (values.idNumber.length > 20) {
-      errors.idNumber = 'ID number must not exceed 20 digits';
-    }
-  }
-
-  if (!values.password) {
-    errors.password = 'Password is required';
-  } else if (values.password.length < 8) {
-    errors.password = 'Password must be at least 8 characters';
-  }
-
-  if (!values.confirmPassword) {
-    errors.confirmPassword = 'Please confirm your password';
-  } else if (values.password && values.confirmPassword && values.password !== values.confirmPassword) {
-    errors.confirmPassword = 'Passwords do not match';
-  }
-
-  return errors;
-};
-
-export default function RegisterPage({ onNavigate }) {
+export default function RegisterPage() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
-  const [formErrors, setFormErrors] = useState({});
-  const [formTouched, setFormTouched] = useState({});
+  const [isActive, setIsActive] = useState(true);
+  const [touched, setTouched] = useState({
+    firstName: false,
+    lastName: false,
+    email: false,
+    role: false,
+    idNumber: false,
+    password: false,
+    confirmPassword: false
+  });
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
-    role: '',
+    role: 'staff',
     idNumber: '',
     password: '',
     confirmPassword: ''
   });
+  const [formErrors, setFormErrors] = useState({});
+  const [error, setError] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
 
-  // handle oauth failure redirect back
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const error = params.get('error');
-    if (error) {
-      if (onNavigate) onNavigate('register');
-      else navigate('/Register');
-      window.history.replaceState({}, document.title, '/');
-    }
-  }, [onNavigate]);
+  const validateForm = () => {
+    const errors = {};
 
-  const handleChange = (field) => (e) => {
-    const value = e.target.value;
-    if (field === 'firstName' || field === 'lastName') {
-      const lettersOnly = value.replace(/[^A-Za-z\s]/g, '');
-      setFormData(prev => ({ ...prev, [field]: lettersOnly }));
-    } else if (field === 'idNumber') {
-      const numbersOnly = value.replace(/[^0-9]/g, '');
-      setFormData(prev => ({ ...prev, [field]: numbersOnly }));
-    } else {
-      setFormData(prev => ({ ...prev, [field]: value }));
-    }
-    if (formErrors[field]) {
-      setFormErrors(prev => ({ ...prev, [field]: '' }));
-    }
-  };
+    if (!formData.firstName) errors.firstName = 'First name is required';
+    if (!formData.lastName) errors.lastName = 'Last name is required';
 
-  const handleBlur = (field) => {
-    setFormTouched(prev => ({ ...prev, [field]: true }));
-    const errors = basicValidation(formData);
-    if (errors[field]) {
-      setFormErrors(prev => ({ ...prev, [field]: errors[field] }));
+    if (!formData.email) {
+      errors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = 'Email is invalid';
     }
+
+    if (!formData.role) errors.role = 'Role is required';
+    if (!formData.idNumber) errors.idNumber = 'ID number is required';
+
+    if (!formData.password) {
+      errors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
+    }
+
+    if (!formData.confirmPassword) {
+      errors.confirmPassword = 'Please confirm your password';
+    } else if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = 'Passwords do not match';
+    }
+
+    return errors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const allTouched = Object.keys(formData).reduce((acc, key) => {
-      acc[key] = true;
-      return acc;
-    }, {});
-    setFormTouched(allTouched);
-    
-    const errors = basicValidation(formData);
+    setError('');
+
+    const errors = validateForm();
     setFormErrors(errors);
-    
+
     if (Object.keys(errors).length > 0) {
+      // Mark all fields as touched to show errors
+      const allTouched = {};
+      Object.keys(touched).forEach(key => {
+        allTouched[key] = true;
+      });
+      setTouched(allTouched);
       return;
     }
 
@@ -147,232 +114,214 @@ export default function RegisterPage({ onNavigate }) {
       });
 
       if (response.ok) {
-        alert('Registration successful! Please log in.');
-        if (onNavigate) onNavigate('login');
-        else navigate('/Login');
+        setShowSuccess(true);
+        setTimeout(() => navigate('/Login'), 1500);
       } else {
-        const errorData = await response.json().catch(() => null);
-        setFormErrors({ submit: errorData?.message || 'Registration failed. Please try again.' });
+        const data = await response.json().catch(() => null);
+        setError(data?.message || 'Registration failed');
       }
-    } catch (error) {
-      setFormErrors({ submit: 'Registration failed. Please try again.' });
+    } catch (err) {
+      setError('Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGoogleRegister = () => {
-    setGoogleLoading(true);
-    localStorage.setItem('oauthMode', 'register');
-    // Redirect to backend helper which adds prompt
-    window.location.href = 'http://localhost:8080/api/auth/google?mode=register';
+  const handleGoogleLogin = () => {
+    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+  };
+
+  const handleNavigateToLogin = (e) => {
+    e.preventDefault();
+    setIsActive(false);
+    setTimeout(() => navigate('/Login'), 600);
+  };
+
+  const handleBlur = (field) => {
+    setTouched({ ...touched, [field]: true });
+  };
+
+  const handleFieldChange = (field, value) => {
+    let updatedValue = value;
+    if (field === 'idNumber') {
+      const hasNonNumeric = /[^0-9]/.test(value);
+      if (hasNonNumeric) {
+        setFormErrors(prev => ({ ...prev, idNumber: 'Only numeric characters are allowed' }));
+        updatedValue = value.replace(/[^0-9]/g, '');
+      } else {
+        setFormErrors(prev => ({ ...prev, idNumber: '' }));
+      }
+    }
+    
+    setFormData({ ...formData, [field]: updatedValue });
+    
+    // Clear error for other fields when user starts typing
+    if (field !== 'idNumber' && formErrors[field]) {
+      setFormErrors({ ...formErrors, [field]: '' });
+    }
   };
 
   return (
-    <Box
-      sx={{
-        width: '100vw',
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell"',
-        bgcolor: '#f5f5f5'
-      }}
-    >
-      <Container maxWidth="sm">
-        <Paper
-          elevation={3}
-          sx={{
-            p: { xs: 3, sm: 5 },
-            borderRadius: 3,
-            maxHeight: '80vh',
-            overflowY: 'auto',
-            maxWidth: '430px',
-          }}
-        >
-          <Typography variant="h5" align="center" gutterBottom fontWeight="bold" color="#1f2937" sx={{ mb: 4 }}>
-            Create an Account
-          </Typography>
+    <Box sx={{
+      width: '100vw',
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: '#fcfcfc',
+      overflow: 'hidden',
+      position: 'relative',
+      fontFamily: "'Poppins', sans-serif"
+    }}>
+      <FloatingShapesCSS />
+      <ToggleContainerCSS />
 
-          <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
-            <NameFieldsRow
-              firstName={formData.firstName}
-              lastName={formData.lastName}
-              onFirstNameChange={handleChange('firstName')}
-              onLastNameChange={handleChange('lastName')}
-              onFirstNameBlur={() => handleBlur('firstName')}
-              onLastNameBlur={() => handleBlur('lastName')}
-              firstNameError={formErrors.firstName}
-              lastNameError={formErrors.lastName}
-              firstNameTouched={formTouched.firstName}
-              lastNameTouched={formTouched.lastName}
-            />
+      <BackgroundShapes />
 
-            <EmailField
-              value={formData.email}
-              onChange={handleChange('email')}
-              onBlur={() => handleBlur('email')}
-              error={formErrors.email}
-              helperText={formErrors.email}
-              touched={formTouched.email}
-              disabled={loading || googleLoading}
-              type="text"  // Add this to override email validation
-              inputMode="numeric"
-            />
+      <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', zIndex: 100 }}>
+        <div className={`container ${isActive ? 'active' : ''}`}>
+          {/* FORM SECTION (Sign Up) */}
+          <div className="form-box register" >
+            <Box sx={{ width: '100%', maxWidth: '410px', p: 4 }}>
+              <Box sx={{ textAlign: 'center', mb: 3 }}>
+                <Typography variant="h3" sx={{ fontWeight: 800, fontSize: '2.5rem', color: MAROON, mb: 1.5, letterSpacing: '-1.5px' }}>
+                  Create Account
+                </Typography>
+                <Typography variant="body1" sx={{ color: '#666', fontSize: '0.95rem', fontWeight: 500 }}>
+                  Join the MediStream healthcare network
+                </Typography>
+              </Box>
 
-            <FormControl fullWidth margin="normal" error={!!(formTouched.role && formErrors.role)} disabled={loading || googleLoading}>
-              <InputLabel id="role-select-label">Role</InputLabel>
-              <Select
-                labelId="role-select-label"
-                id="role-select"
-                value={formData.role}
-                label="Role"
-                onChange={handleChange('role')}
-                onBlur={() => handleBlur('role')}
-              >
-                <MenuItem value="staff">Staff</MenuItem>
-                <MenuItem value="nurse">Nurse</MenuItem>
-                <MenuItem value="doctor">Doctor</MenuItem>
-              </Select>
-              {formTouched.role && formErrors.role && <FormHelperText>{formErrors.role}</FormHelperText>}
-            </FormControl>
-
-            <NumberField
-              label="Staff ID Number"
-              placeholder="Enter your staff ID (numbers only)"
-              startAdornment={
-                <Badge 
-                  sx={{ 
-                    mr: 1,
-                    color: formTouched.idNumber && formErrors.idNumber ? '#f44336' : '#44000d',
-                    fontSize: '1.2rem'
-                  }}
+              <form onSubmit={handleSubmit}>
+                {/* First Name & Last Name Row */}
+                <NameFieldsRow
+                  firstName={formData.firstName}
+                  lastName={formData.lastName}
+                  onFirstNameChange={(e) => handleFieldChange('firstName', e.target.value)}
+                  onLastNameChange={(e) => handleFieldChange('lastName', e.target.value)}
+                  onFirstNameBlur={() => handleBlur('firstName')}
+                  onLastNameBlur={() => handleBlur('lastName')}
+                  firstNameError={formErrors.firstName}
+                  lastNameError={formErrors.lastName}
+                  firstNameTouched={touched.firstName}
+                  lastNameTouched={touched.lastName}
                 />
-              }
-              value={formData.idNumber}
-              onChange={handleChange('idNumber')}
-              onBlur={() => handleBlur('idNumber')}
-              error={formErrors.idNumber}
-              helperText={formErrors.idNumber}
-              touched={formTouched.idNumber}
-              disabled={loading || googleLoading}
-            /> 
 
-            <PasswordField
-              label="Password"
-              value={formData.password}
-              onChange={handleChange('password')}
-              onBlur={() => handleBlur('password')}
-              error={formErrors.password}
-              helperText={formErrors.password}
-              touched={formTouched.password}
-              showPassword={showPassword}
-              onToggleVisibility={() => setShowPassword(!showPassword)}
-              placeholder="Enter password (min 8 characters)"
-              disabled={loading || googleLoading}
-            />
+                {/* Email Field */}
+                <EmailField
+                  value={formData.email}
+                  onChange={(e) => handleFieldChange('email', e.target.value)}
+                  onBlur={() => handleBlur('email')}
+                  error={formErrors.email}
+                  helperText={formErrors.email}
+                  touched={touched.email}
+                />
 
-            <PasswordField
-              label="Confirm Password"
-              value={formData.confirmPassword}
-              onChange={handleChange('confirmPassword')}
-              onBlur={() => handleBlur('confirmPassword')}
-              error={formErrors.confirmPassword}
-              helperText={formErrors.confirmPassword}
-              touched={formTouched.confirmPassword}
-              showPassword={showConfirmPassword}
-              onToggleVisibility={() => setShowConfirmPassword(!showConfirmPassword)}
-              placeholder="Confirm password"
-              disabled={loading || googleLoading}
-            />
+                {/* Role & ID Number Row */}
+                <RoleAndIdFieldsRow
+                  role={formData.role}
+                  idNumber={formData.idNumber}
+                  onRoleChange={(e) => handleFieldChange('role', e.target.value)}
+                  onIdNumberChange={(e) => handleFieldChange('idNumber', e.target.value)}
+                  onRoleBlur={() => handleBlur('role')}
+                  onIdNumberBlur={() => handleBlur('idNumber')}
+                  roleError={formErrors.role}
+                  idNumberError={formErrors.idNumber}
+                  roleTouched={touched.role}
+                  idNumberTouched={touched.idNumber}
+                />
 
-            <ErrorAlert message={formErrors.submit} />
+                {/* Password Field */}
+                <PasswordField
+                  label="Password"
+                  showPassword={showPassword}
+                  onToggleVisibility={() => setShowPassword(!showPassword)}
+                  value={formData.password}
+                  onChange={(e) => handleFieldChange('password', e.target.value)}
+                  onBlur={() => handleBlur('password')}
+                  error={formErrors.password}
+                  helperText={formErrors.password}
+                  touched={touched.password}
+                />
 
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              disabled={loading || googleLoading}
-              sx={{
-                mt: 2,
-                py: 1.5,
-                backgroundColor: '#44000d',
-                borderRadius: 2,
-                textTransform: 'none',
-                '&:hover': {
-                  backgroundColor: '#660013',
-                },
-                '&.Mui-disabled': {
-                  backgroundColor: '#44000d',
-                  opacity: 0.6,
-                }
-              }}
-            >
-              {loading ? 'Creating Account...' : 'Sign Up'}
-            </Button>
-          </Box>
+                {/* Confirm Password Field */}
+                <PasswordField
+                  label="Confirm Password"
+                  showPassword={showConfirmPassword}
+                  onToggleVisibility={() => setShowConfirmPassword(!showConfirmPassword)}
+                  value={formData.confirmPassword}
+                  onChange={(e) => handleFieldChange('confirmPassword', e.target.value)}
+                  onBlur={() => handleBlur('confirmPassword')}
+                  error={formErrors.confirmPassword}
+                  helperText={formErrors.confirmPassword}
+                  touched={touched.confirmPassword}
+                />
 
-           <Divider sx={{ my: 3 }}>
-            <Typography variant="body2" color="text.secondary">
-              OR
-            </Typography>
-          </Divider>
-          
-          <Button
-            fullWidth
-            variant="outlined"
-            onClick={handleGoogleRegister}
-            disabled={googleLoading || loading}
-            startIcon={<GoogleIcon />}
-            sx={{
-              py: 1.5,
-              borderRadius: 2,
-              textTransform: 'none',
-              borderColor: '#dadce0',
-              color: '#3c4043',
-              backgroundColor: '#fff',
-              '&:hover': {
-                backgroundColor: '#f8f9fa',
-                borderColor: '#dadce0',
-              },
-              '&.Mui-disabled': {
-                backgroundColor: '#f8f9fa',
-                opacity: 0.7,
-              }
-            }}
-          >
-            {googleLoading ? 'Connecting to Google...' : 'Continue with Google'}
-          </Button>
+                <ErrorAlert message={error} />
 
-          <Box sx={{ mt: 3, pt: 3, borderTop: '1px solid #f3f4f6', textAlign: 'center' }}>
-            <Typography variant="body2" color="text.secondary">
-              Already have an account?{' '}
-              <Button
-                onClick={() => {
-                  if (onNavigate) onNavigate('login');
-                  else navigate('/Login');
-                }}
-                sx={{
-                  color: '#44000d',
-                  fontWeight: 600,
-                  textDecoration: 'underline',
-                  textTransform: 'none',
-                  p: 0,
-                  minWidth: 'auto',
-                  '&:hover': {
-                    backgroundColor: 'transparent',
-                    textDecoration: 'underline',
-                  }
-                }}
-              >
-                Sign in
-              </Button>
-            </Typography>
-          </Box>
-          
-        </Paper>
-      </Container>
+                <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+                  <PrimaryButton type="submit" disabled={loading}>
+                    {loading ? 'Creating Account...' : 'Sign Up'}
+                  </PrimaryButton>
+
+                  <DividerWithText text="or" />
+
+                  <GoogleButton onClick={handleGoogleLogin}>
+                    <Google sx={{ fontSize: 18, color: '#DB4437' }} />
+                    Google
+                  </GoogleButton>
+                </Box>
+              </form>
+
+              <Box className="mobile-link" sx={{ textAlign: 'center', mt: 3, display: { md: 'none' } }}>
+                <Typography variant="body2" sx={{ color: '#6b7280' }}>
+                  Already have an account?{' '}
+                  <span onClick={handleNavigateToLogin} style={{ color: MAROON, fontWeight: 700, cursor: 'pointer' }}>
+                    Sign In
+                  </span>
+                </Typography>
+              </Box>
+            </Box>
+          </div>
+
+          {/* TOGGLE OVERLAY SECTION */}
+          <div className="toggle-container">
+            <div className="toggle">
+              <div className="toggle-panel toggle-left">
+                <Typography variant="h2" sx={{ fontWeight: 800, fontSize: '2.5rem', mb: 2, letterSpacing: '-1px', textAlign: 'center' }}>
+                  Hello There!
+                </Typography>
+                <Typography sx={{ mb: 4, opacity: 0.8, textAlign: 'center' }}>
+                  Enter your personal details to use all site features
+                </Typography>
+
+                <DecorativeCard />
+
+                <Typography variant="body2" sx={{ color: 'white', mb: 3, opacity: 0.7, textAlign: 'center' }}>
+                  Already have an account?
+                </Typography>
+                <NavSideButton onClick={handleNavigateToLogin}>
+                  Sign In
+                </NavSideButton>
+              </div>
+
+              <div className="toggle-panel toggle-right">
+                <Typography variant="h2" sx={{ fontWeight: 800, fontSize: '2.5rem', mb: 2, letterSpacing: '-1px', textAlign: 'center' }}>
+                  Welcome Back!
+                </Typography>
+                <Typography sx={{ mb: 4, opacity: 0.9, textAlign: 'center' }}>
+                  Enter your details to log in to your account.
+                </Typography>
+              </div>
+            </div>
+          </div>
+
+          <SuccessSnackbar
+            open={showSuccess}
+            message="Registration successful! Please log in."
+          />
+        </div>
+      </Box>
     </Box>
   );
 }

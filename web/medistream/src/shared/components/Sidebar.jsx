@@ -4,9 +4,9 @@ import { useAuth } from '../../features/authentication/hooks/useAuth';
 
 // ─── Shared Theme ─────────────────────────────────────────────────────────────
 export const COLORS = {
-  primary: "#4a0e0e",
-  primaryDark: "#3a0a0a",
-  primaryLight: "#6b1414",
+  primary: "#3d080b",
+  primaryDark: "#2d0608",
+  primaryLight: "#5c0c11",
   accent: "#8b1a1a",
   consulting: "#ff6b6b",
   consultingBg: "#ffe4e4",
@@ -19,19 +19,11 @@ export const COLORS = {
   text: "#1a1a1a",
   textMuted: "#666",
   border: "#e8e8e8",
-  sidebarText: "#ffffff",
-  sidebarTextMuted: "rgba(255,255,255,0.6)",
-  sidebarActive: "rgba(255,255,255,0.15)",
-  sidebarHover: "rgba(255,255,255,0.08)",
+  sidebarText: "rgba(255,255,255,0.7)",
+  sidebarActive: "#f5f5f7",
 };
 
-// ─── Sidebar Icons ────────────────────────────────────────────────────────────
-const IconHome = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-    <polyline points="9,22 9,12 15,12 15,22"/>
-  </svg>
-);
+// ─── Icons ────────────────────────────────────────────────────────────────────
 const IconQueue = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <rect x="2" y="3" width="6" height="18" rx="1"/>
@@ -81,7 +73,7 @@ const IconLogout = () => (
   </svg>
 );
 
-// ─── Reusable: Avatar ─────────────────────────────────────────────────────────
+// ─── Avatar ───────────────────────────────────────────────────────────────────
 export const Avatar = ({ initials, color = COLORS.primary, size = 38 }) => (
   <div style={{
     width: size, height: size, borderRadius: "50%",
@@ -94,109 +86,124 @@ export const Avatar = ({ initials, color = COLORS.primary, size = 38 }) => (
   </div>
 );
 
-// ─── Reusable: SidebarItem ────────────────────────────────────────────────────
+// ─── SidebarItem (unchanged) ─────────────────────────────────────────────────
 export const SidebarItem = ({ icon, label, active, onClick }) => (
-  <div
-    onClick={onClick}
-    style={{
+  <div style={{ position: 'relative' }}>
+    <div onClick={onClick} style={{
       display: "flex", alignItems: "center", gap: 12,
-      padding: "11px 20px", cursor: "pointer", borderRadius: 10,
-      margin: "2px 10px",
+      padding: "12px 25px", cursor: "pointer",
+      borderRadius: active ? "30px 0 0 30px" : "0",
       background: active ? COLORS.sidebarActive : "transparent",
-      color: active ? "white" : COLORS.sidebarTextMuted,
-      fontWeight: active ? 600 : 400,
-      fontSize: 14, transition: "all 0.18s ease",
+      color: active ? COLORS.primary : COLORS.sidebarText,
+      fontWeight: active ? 700 : 500,
+      fontSize: 14, transition: "all 0.2s ease",
       userSelect: "none",
-    }}
-    onMouseEnter={e => { if (!active) e.currentTarget.style.background = COLORS.sidebarHover; }}
-    onMouseLeave={e => { if (!active) e.currentTarget.style.background = "transparent"; }}
-  >
-    {icon}
-    <span>{label}</span>
+      marginLeft: active ? 15 : 0,
+      position: 'relative',
+      zIndex: 2,
+    }}>
+      {icon}
+      <span>{label}</span>
+    </div>
+    {active && (
+      <>
+        <div style={{ position: 'absolute', top: -20, right: 0, width: 20, height: 20, background: COLORS.sidebarActive, zIndex: 1 }}>
+          <div style={{ width: '100%', height: '100%', background: COLORS.primary, borderBottomRightRadius: 20 }} />
+        </div>
+        <div style={{ position: 'absolute', bottom: -20, right: 0, width: 20, height: 20, background: COLORS.sidebarActive, zIndex: 1 }}>
+          <div style={{ width: '100%', height: '100%', background: COLORS.primary, borderTopRightRadius: 20 }} />
+        </div>
+      </>
+    )}
   </div>
 );
 
-// ─── Reusable: Sidebar ────────────────────────────────────────────────────────
+// ─── Sidebar (FIXED VERSION) ─────────────────────────────────────────────────
 export const Sidebar = () => {
-  const location = useLocation(); 
+  const location = useLocation();
   const navigate = useNavigate();
   const { getCurrentUser, logout } = useAuth();
 
   const currentUser = getCurrentUser();
   const nameToDisplay = currentUser?.medicalStaff?.name || currentUser?.firstName || currentUser?.name || currentUser?.email?.split('@')[0] || "User";
   const roleToDisplay = currentUser?.medicalStaff?.role || currentUser?.role || "Staff";
-  
+
   const nameParts = nameToDisplay.trim().split(" ");
-  const initials = nameParts.length > 1 
+  const initials = nameParts.length > 1
     ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase()
     : nameParts[0].substring(0, 2).toUpperCase();
 
   const navItems = [
-    { path: "/PatientQueue", label: "Patient Queue", icon: <IconQueue /> },
-    { path: "/Patient", label: "Patient Records", icon: <IconUsers /> },
-    { path: "/Staff", label: "Medical Staff", icon: <IconStaff /> },
-    { path: "/Consultations", label: "Consultation", icon: <IconCalendar /> },
-    { path: "/MedicalHistory", label: "Medical History", icon: <IconClipboard /> },
+    { path: "/PatientQueue", label: "Patient Queue", icon: <IconQueue />, roles: ['nurse', 'staff', 'doctor', 'admin'] },
+    { path: "/Patient", label: "Patients", icon: <IconUsers />, roles: ['nurse', 'staff', 'doctor', 'admin'] },
+    { path: "/Staff", label: "Medical Staff", icon: <IconStaff />, roles: ['nurse', 'staff', 'doctor', 'admin'] },
+    { path: "/Consultations", label: "Consultation", icon: <IconCalendar />, roles: ['doctor', 'admin'] },
+    { path: "/MedicalHistory", label: "Medical History", icon: <IconClipboard />, roles: ['nurse', 'staff', 'doctor', 'admin'] },
     { path: "/general-settings", label: "Settings", icon: <IconSettings /> },
   ];
 
+  const userRole = (roleToDisplay || '').toLowerCase();
+  const visibleNavItems = navItems.filter(item => {
+    if (!item.roles) return true;
+    return item.roles.includes(userRole);
+  });
+
   return (
     <div style={{
-      width: 250, flexShrink: 0,
+      width: 240,
+      position: 'fixed',           // FIXED: stays in place on scroll
+      top: 0,
+      left: 0,
+      height: '100vh',
       background: COLORS.primary,
-      display: "flex", flexDirection: "column",
-      height: "100vh", position: "sticky", top: 0,
+      display: "flex",
+      flexDirection: "column",
+      overflow: 'hidden',
+      zIndex: 100,
     }}>
       {/* Logo */}
-      <div style={{ padding: "24px 20px 20px", display: "flex", alignItems: "center", gap: 12 }}>
-        <div style={{
-          width: 36, height: 36, borderRadius: 8,
-          background: "rgba(255,255,255,0.15)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-        }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/>
+      <div onClick={() => navigate('/')} style={{ padding: "40px 25px 30px", display: "flex", alignItems: "center", gap: 15, cursor: "pointer", userSelect: "none" }}>
+        <div style={{ width: 40, height: 40, borderRadius: 8, background: "#44000d", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(68, 0, 13, 0.25)", border: "1.5px solid rgba(255,255,255,0.2)" }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M2 12h5l2-7 3 14 3-10 2 3h5" />
           </svg>
         </div>
         <div>
-          <div style={{ color: "white", fontWeight: 800, fontSize: 16, letterSpacing: "-0.3px" }}>MediStream</div>
-          <div style={{ color: COLORS.sidebarTextMuted, fontSize: 11 }}>Medical Management</div>
+          <div style={{ color: "white", fontWeight: 800, fontSize: 18, letterSpacing: "-0.5px" }}>MediStream</div>
+          <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 11 }}>Medical Management</div>
         </div>
       </div>
 
-      {/* Nav */}
-      <nav style={{ flex: 1, paddingTop: 8 }}>
-        {navItems.map(item => (
+      {/* Navigation – internal scroll */}
+      <nav style={{
+        flex: 1,
+        minHeight: 0,
+        overflowY: 'auto',
+        paddingTop: 20,
+      }}>
+        {visibleNavItems.map(item => (
           <SidebarItem
             key={item.label}
             icon={item.icon}
             label={item.label}
-            active={location.pathname === item.path} 
-            onClick={() => navigate(item.path)}  
+            active={location.pathname === item.path}
+            onClick={() => navigate(item.path)}
           />
         ))}
       </nav>
 
-      <div style={{ height: 1, background: "rgba(255,255,255,0.1)", margin: "0 20px" }} />
-
       {/* Footer */}
-      <div style={{ padding: "16px 20px", display: "flex", alignItems: "center", gap: 10 }}>
-        <Avatar initials={initials} size={34} color={COLORS.accent} />
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ color: "white", fontWeight: 600, fontSize: 13, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={nameToDisplay}>{nameToDisplay}</div>
-          <div style={{ color: COLORS.sidebarTextMuted, fontSize: 11, textTransform: "capitalize" }}>{roleToDisplay}</div>
+      <div style={{ padding: "20px 25px 30px", borderTop: "1px solid rgba(255,255,255,0.1)", marginTop: "auto", flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <Avatar initials={initials} size={36} color={COLORS.accent} />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ color: "white", fontWeight: 700, fontSize: 14, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{nameToDisplay}</div>
+            <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, textTransform: "capitalize" }}>{roleToDisplay}</div>
+          </div>
+          <button onClick={logout} style={{ background: "none", border: "none", cursor: "pointer", color: "white", opacity: 0.7, padding: 4, display: "flex" }}>
+            <IconLogout />
+          </button>
         </div>
-        <button
-          onClick={logout}
-          title="Logout"
-          style={{
-            background: "none", border: "none", cursor: "pointer",
-            color: COLORS.sidebarTextMuted, padding: 4, borderRadius: 4,
-            display: "flex", alignItems: "center",
-          }}
-        >
-          <IconLogout />
-        </button>
       </div>
     </div>
   );

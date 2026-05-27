@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pure_white"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp">
+
+        <!-- Profile Card Container -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/profileCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="3dp"
+            app:cardBackgroundColor="@color/surface_grey"
+            app:strokeColor="#EAEAEA"
+            app:strokeWidth="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="24dp">
+
+                <!-- Circular Avatar Icon Wrapper -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    app:cardCornerRadius="40dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/brand_maroon"
+                    app:strokeWidth="2dp"
+                    app:cardBackgroundColor="@color/pure_white"
+                    android:layout_marginBottom="16dp">
+
+                    <ImageView
+                        android:id="@+id/ivAvatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="center"
+                        android:src="@drawable/outline_person_outline_24"
+                        app:tint="@color/brand_maroon" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Name -->
+                <TextView
+                    android:id="@+id/tvProfileName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_bold"
+                    android:textColor="@color/brand_maroon"
+                    android:textSize="20sp"
+                    tools:text="Dr. Evan Lee" />
+
+                <!-- Role Badge -->
+                <TextView
+                    android:id="@+id/tvProfileRole"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/button_background_maroon"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:textColor="@color/pure_white"
+                    android:textSize="11sp"
+                    tools:text="CARDIOLOGIST" />
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#DDDDDD"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Specialty Detail Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:text="Specialty: "
+                        android:textColor="@color/text_grey_light"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tvProfileSpecialty"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textColor="@color/brand_maroon"
+                        android:gravity="end"
+                        android:textSize="13sp"
+                        tools:text="Cardiovascular Medicine" />
+                </LinearLayout>
+
+                <!-- Department Detail Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:text="Department: "
+                        android:textColor="@color/text_grey_light"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tvProfileDepartment"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textColor="@color/brand_maroon"
+                        android:gravity="end"
+                        android:textSize="13sp"
+                        tools:text="Cardiology Clinic" />
+                </LinearLayout>
+
+                <!-- Age / Gender Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:text="Age &amp; Gender: "
+                        android:textColor="@color/text_grey_light"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tvProfileAgeGender"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textColor="@color/brand_maroon"
+                        android:gravity="end"
+                        android:textSize="13sp"
+                        tools:text="38 yrs, Male" />
+                </LinearLayout>
+
+                <!-- Connected Staff ID Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:text="Staff ID: "
+                        android:textColor="@color/text_grey_light"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tvProfileStaffId"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textColor="@color/brand_maroon"
+                        android:gravity="end"
+                        android:textSize="13sp"
+                        tools:text="101" />
+                </LinearLayout>
+
+                <!-- Connected Email Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:text="Email: "
+                        android:textColor="@color/text_grey_light"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tvProfileEmail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textColor="@color/brand_maroon"
+                        android:gravity="end"
+                        android:textSize="13sp"
+                        tools:text="evan.lee@medistream.com" />
+                </LinearLayout>
+
+                <!-- Current Availability Display Badge -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:text="Status: "
+                        android:textColor="@color/text_grey_light"
+                        android:textSize="13sp" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/tvProfileAvailabilityBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:textColor="@color/pure_white"
+                        android:textSize="11sp"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp"
+                        android:background="@drawable/button_background_maroon"
+                        android:backgroundTint="@color/status_done"
+                        android:text="AVAILABLE" />
+                </LinearLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#DDDDDD"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Full Name Input -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:hint="Full Name"
+                    app:boxStrokeColor="@color/brand_maroon"
+                    app:hintTextColor="@color/brand_maroon"
+                    app:startIconDrawable="@drawable/outline_person_outline_24"
+                    app:startIconTint="@color/brand_maroon">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etProfileNameEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:inputType="textPersonName"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Specialty Input -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:hint="Specialty"
+                    app:boxStrokeColor="@color/brand_maroon"
+                    app:hintTextColor="@color/brand_maroon"
+                    app:startIconDrawable="@drawable/ic_medical"
+                    app:startIconTint="@color/brand_maroon">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etProfileSpecialtyEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:inputType="text"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Department Input -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:hint="Department"
+                    app:boxStrokeColor="@color/brand_maroon"
+                    app:hintTextColor="@color/brand_maroon"
+                    app:startIconDrawable="@drawable/ic_medical"
+                    app:startIconTint="@color/brand_maroon">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etProfileDepartmentEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:inputType="text"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Age Input -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:hint="Age"
+                    app:boxStrokeColor="@color/brand_maroon"
+                    app:hintTextColor="@color/brand_maroon"
+                    app:startIconDrawable="@drawable/ic_time"
+                    app:startIconTint="@color/brand_maroon">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etProfileAgeEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:inputType="number"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Gender Selection Spinner -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="Gender:"
+                    android:textColor="@color/brand_maroon"
+                    android:layout_marginBottom="4dp"
+                    android:textSize="12sp" />
+
+                <Spinner
+                    android:id="@+id/spinnerGenderEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@drawable/bg_spinner_background"
+                    android:spinnerMode="dropdown" />
+
+                <!-- Contact Number Input -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:hint="Contact Number"
+                    app:boxStrokeColor="@color/brand_maroon"
+                    app:hintTextColor="@color/brand_maroon"
+                    app:startIconDrawable="@drawable/outline_email_24"
+                    app:startIconTint="@color/brand_maroon">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etProfileContact"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:inputType="phone"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Availability Status Selector Spinner -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="Change Availability Status:"
+                    android:textColor="@color/brand_maroon"
+                    android:layout_marginBottom="4dp"
+                    android:textSize="12sp" />
+
+                <Spinner
+                    android:id="@+id/spinnerAvailability"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_spinner_background"
+                    android:spinnerMode="dropdown" />
+
+                <!-- Save Changes Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSaveContact"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Save Profile Updates"
+                    android:textColor="@color/pure_white"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/poppins_semibold"
+                    app:cornerRadius="8dp"
+                    app:backgroundTint="@color/brand_maroon" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Logout Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLogout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            android:padding="14dp"
+            android:text="Sign Out"
+            android:textColor="@color/pure_white"
+            android:textSize="16sp"
+            android:fontFamily="@font/poppins_bold"
+            app:cornerRadius="8dp"
+            app:backgroundTint="@color/status_cancelled"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profileCard"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
