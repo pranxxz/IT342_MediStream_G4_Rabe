@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="brand_maroon">#44000D</color>
-
+    <color name="brand_maroon_dark">#2C0008</color>
     <color name="pure_white">#FFFFFF</color>
     <color name="text_grey_light">#757575</color>
     <color name="input_placeholder_grey">#AD9C9C</color>
+    <color name="status_waiting">#FFA000</color>
+    <color name="status_in_progress">#1976D2</color>
+    <color name="status_done">#388E3C</color>
+    <color name="status_cancelled">#D32F2F</color>
+    <color name="surface_grey">#F5F5F5</color>
 </resources>

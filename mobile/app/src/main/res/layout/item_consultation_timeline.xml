@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="12dp">
+
+    <!-- Timeline indicator elements -->
+    <View
+        android:id="@+id/timelineLine"
+        android:layout_width="2dp"
+        android:layout_height="0dp"
+        android:background="#DCDCDC"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="9dp" />
+
+    <View
+        android:id="@+id/timelineDot"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:background="@drawable/button_background_maroon"
+        android:backgroundTint="@color/brand_maroon"
+        app:layout_constraintTop_toTopOf="@id/cardTimeline"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="20dp" />
+
+    <!-- Details Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardTimeline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="1dp"
+        app:cardBackgroundColor="@color/pure_white"
+        app:strokeWidth="1dp"
+        app:strokeColor="#F0F0F0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/timelineDot"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="14dp">
+
+            <!-- Title & Date -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tvTimelineDoctor"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:textColor="@color/brand_maroon"
+                    android:textSize="14sp"
+                    tools:text="Dr. Alice Smith" />
+
+                <TextView
+                    android:id="@+id/tvTimelineDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:textColor="@color/text_grey_light"
+                    android:textSize="11sp"
+                    tools:text="May 12, 2026" />
+            </LinearLayout>
+
+            <!-- Symptoms -->
+            <TextView
+                android:id="@+id/tvTimelineSymptoms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/poppins_regular"
+                android:textColor="#333333"
+                android:textSize="13sp"
+                tools:text="Symptoms: Cold, fever, coughing for 3 days." />
+
+            <!-- Diagnosis -->
+            <TextView
+                android:id="@+id/tvTimelineDiagnosis"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/poppins_regular"
+                android:textColor="#333333"
+                android:textSize="13sp"
+                tools:text="Diagnosis: Mild influenza." />
+
+            <!-- Prescription -->
+            <TextView
+                android:id="@+id/tvTimelinePrescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/poppins_medium"
+                android:textColor="@color/brand_maroon"
+                android:textSize="13sp"
+                tools:text="Prescription: Paracetamol 500mg 3x a day." />
+
+            <!-- Remarks -->
+            <TextView
+                android:id="@+id/tvTimelineRemarks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/poppins_regular"
+                android:textColor="@color/text_grey_light"
+                android:textSize="12sp"
+                tools:text="Remarks: Rest for 3 days and drink plenty of water." />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

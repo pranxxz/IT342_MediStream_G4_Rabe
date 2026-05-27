@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@color/pure_white"
+    app:strokeWidth="1dp"
+    app:strokeColor="#EAEAEA">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Queue Number Badge -->
+        <TextView
+            android:id="@+id/tvQueueNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_background_maroon"
+            android:fontFamily="@font/poppins_bold"
+            android:paddingLeft="12dp"
+            android:paddingTop="6dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="6dp"
+            android:text="Q-001"
+            android:textColor="@color/pure_white"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Status Badge -->
+        <TextView
+            android:id="@+id/tvQueueStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:background="#FFF3CD"
+            android:fontFamily="@font/poppins_semibold"
+            android:paddingLeft="8dp"
+            android:paddingTop="3dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="3dp"
+            android:text="WAITING"
+            android:textColor="@color/status_waiting"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="@id/tvQueueNumber"
+            app:layout_constraintStart_toEndOf="@id/tvQueueNumber"
+            app:layout_constraintTop_toTopOf="@id/tvQueueNumber" />
+
+        <!-- Patient Name -->
+        <TextView
+            android:id="@+id/tvPatientName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:textColor="@color/brand_maroon"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvQueueNumber"
+            tools:text="Juan Dela Cruz" />
+
+        <!-- Demographics (Age / Gender) -->
+        <TextView
+            android:id="@+id/tvPatientDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/poppins_regular"
+            android:textColor="@color/text_grey_light"
+            android:textSize="13sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvPatientName"
+            tools:text="Male, 28 years old" />
+        <!-- Info Row: Arrival Time -->
+        <ImageView
+            android:id="@+id/ivTime"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="12dp"
+            android:src="@drawable/ic_time"
+            app:tint="@color/text_grey_light"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvPatientDetails" />
+
+        <TextView
+            android:id="@+id/tvArrivalTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:fontFamily="@font/poppins_regular"
+            android:textColor="@color/text_grey_light"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/ivTime"
+            app:layout_constraintStart_toEndOf="@id/ivTime"
+            app:layout_constraintTop_toTopOf="@id/ivTime"
+            tools:text="Arr: 10:15 AM" />
+
+        <!-- Info Row: Doctor -->
+        <ImageView
+            android:id="@+id/ivDoctor"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/outline_person_outline_24"
+            app:tint="@color/text_grey_light"
+            app:layout_constraintBottom_toBottomOf="@id/ivTime"
+            app:layout_constraintStart_toEndOf="@id/tvArrivalTime"
+            android:layout_marginStart="24dp"
+            app:layout_constraintTop_toTopOf="@id/ivTime" />
+
+        <TextView
+            android:id="@+id/tvAssignedDoctor"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:fontFamily="@font/poppins_regular"
+            android:textColor="@color/text_grey_light"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/ivDoctor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivDoctor"
+            app:layout_constraintTop_toTopOf="@id/ivDoctor"
+            tools:text="Dr. Alice Smith" />
+
+        <!-- Dynamic Action Buttons (shown conditionally) -->
+        <LinearLayout
+            android:id="@+id/layoutActions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:gravity="end"
+            app:layout_constraintTop_toBottomOf="@id/tvArrivalTime">
+
+            <!-- Primary Action Button (e.g. Consult, Log Visit) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnPrimaryAction"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_semibold"
+                android:textSize="12sp"
+                app:cornerRadius="6dp"
+                app:strokeColor="@color/brand_maroon"
+                android:textColor="@color/brand_maroon"
+                tools:text="Start Consultation" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
