@@ -22,6 +22,9 @@ public class UserAccountEntity {
     @Column(nullable = false)
     private String role;
 
+    @Column(name = "profile_picture_path", nullable = true)
+    private String profilePicturePath;
+
     @OneToOne(mappedBy = "userAccount", cascade = CascadeType.ALL)
     @JsonIgnore 
     private MedicalStaffEntity medicalStaff;
@@ -64,5 +67,13 @@ public class UserAccountEntity {
 
     public void setMedicalStaff(MedicalStaffEntity medicalStaff) {
         this.medicalStaff = medicalStaff;
+    }
+
+    public String getProfilePicturePath() {
+        return profilePicturePath;
+    }
+
+    public void setProfilePicturePath(String profilePicturePath) {
+        this.profilePicturePath = profilePicturePath;
     }
 }

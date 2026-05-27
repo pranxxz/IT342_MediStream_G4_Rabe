@@ -74,17 +74,36 @@ const IconLogout = () => (
 );
 
 // ─── Avatar ───────────────────────────────────────────────────────────────────
-export const Avatar = ({ initials, color = COLORS.primary, size = 38 }) => (
-  <div style={{
-    width: size, height: size, borderRadius: "50%",
-    background: color, color: "white",
-    display: "flex", alignItems: "center", justifyContent: "center",
-    fontSize: size * 0.34, fontWeight: 700, flexShrink: 0,
-    fontFamily: "inherit", letterSpacing: "0.5px",
-  }}>
-    {initials}
-  </div>
-);
+export const Avatar = ({ initials, color = COLORS.primary, size = 38, src }) => {
+  const [imgError, setImgError] = React.useState(false);
+
+  // Reset img error status if src changes
+  React.useEffect(() => {
+    setImgError(false);
+  }, [src]);
+
+  return (
+    <div style={{
+      width: size, height: size, borderRadius: "50%",
+      background: color, color: "white",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      fontSize: size * 0.34, fontWeight: 700, flexShrink: 0,
+      fontFamily: "inherit", letterSpacing: "0.5px",
+      overflow: "hidden",
+    }}>
+      {src && !imgError ? (
+        <img 
+          src={src} 
+          alt="Avatar" 
+          style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+          onError={() => setImgError(true)} 
+        />
+      ) : (
+        initials
+      )}
+    </div>
+  );
+};
 
 // ─── SidebarItem (unchanged) ─────────────────────────────────────────────────
 export const SidebarItem = ({ icon, label, active, onClick }) => (
@@ -123,6 +142,21 @@ export const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { getCurrentUser, logout } = useAuth();
+  
+  const [avatarTimestamp, setAvatarTimestamp] = React.useState(Date.now());
+
+  // Listen to profile updates to refresh sidebar avatar dynamically
+  React.useEffect(() => {
+    const handleSync = () => {
+      setAvatarTimestamp(Date.now());
+    };
+    window.addEventListener('storage', handleSync);
+    window.addEventListener('userProfileUpdated', handleSync);
+    return () => {
+      window.removeEventListener('storage', handleSync);
+      window.removeEventListener('userProfileUpdated', handleSync);
+    };
+  }, []);
 
   const currentUser = getCurrentUser();
   const nameToDisplay = currentUser?.medicalStaff?.name || currentUser?.firstName || currentUser?.name || currentUser?.email?.split('@')[0] || "User";
@@ -147,6 +181,12 @@ export const Sidebar = () => {
     if (!item.roles) return true;
     return item.roles.includes(userRole);
   });
+
+  // Construct dynamic picture path
+  const accountID = currentUser?.id || currentUser?.accountID;
+  const avatarSrc = currentUser?.profilePicturePath 
+    ? `http://localhost:8080/api/users/${accountID}/profile-picture?t=${avatarTimestamp}`
+    : null;
 
   return (
     <div style={{
@@ -173,7 +213,7 @@ export const Sidebar = () => {
           <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 11 }}>Medical Management</div>
         </div>
       </div>
-
+ 
       {/* Navigation – internal scroll */}
       <nav style={{
         flex: 1,
@@ -191,11 +231,11 @@ export const Sidebar = () => {
           />
         ))}
       </nav>
-
+ 
       {/* Footer */}
       <div style={{ padding: "20px 25px 30px", borderTop: "1px solid rgba(255,255,255,0.1)", marginTop: "auto", flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <Avatar initials={initials} size={36} color={COLORS.accent} />
+          <Avatar initials={initials} size={36} color={COLORS.accent} src={avatarSrc} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ color: "white", fontWeight: 700, fontSize: 14, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{nameToDisplay}</div>
             <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, textTransform: "capitalize" }}>{roleToDisplay}</div>

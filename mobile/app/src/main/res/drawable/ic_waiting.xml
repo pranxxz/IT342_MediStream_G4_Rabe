@@ -1,0 +1,32 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Person head -->
+    <path
+        android:fillColor="#44000d"
+        android:pathData="M8,2 A3,3 0 1,1 8,8 A3,3 0 0,1 8,2 Z" />
+
+    <!-- Person body -->
+    <path
+        android:fillColor="#44000d"
+        android:pathData="M2,20 C2,16.7 4.7,14 8,14 C9.2,14 10.4,14.4 11.3,15 C11.1,15.6 11,16.3 11,17 L2,17 Z" />
+
+    <!-- Clock circle -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#44000d"
+        android:strokeWidth="1.8"
+        android:pathData="M17,10 A5,5 0 1,1 17,20 A5,5 0 0,1 17,10 Z" />
+
+    <!-- Clock hands -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#44000d"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:pathData="M17,12.5 L17,15 L19,16.5" />
+
+</vector>

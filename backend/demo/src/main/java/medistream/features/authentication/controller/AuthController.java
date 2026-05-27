@@ -184,6 +184,12 @@ public class AuthController {
         response.put("email", user.getUsername());
         response.put("role", user.getRole());
         response.put("username", user.getUsername());
+        response.put("profilePicturePath", user.getProfilePicturePath());
+        if (user.getProfilePicturePath() != null) {
+            response.put("profilePictureUrl", "/api/users/" + user.getAccountID() + "/profile-picture");
+        } else {
+            response.put("profilePictureUrl", null);
+        }
 
         if (user.getMedicalStaff() != null) {
             Map<String, Object> staffInfo = new HashMap<>();

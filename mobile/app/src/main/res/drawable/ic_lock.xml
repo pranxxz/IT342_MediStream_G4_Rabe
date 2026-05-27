@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Lock body -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#44000d"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M5,11 Q5,9 7,9 L17,9 Q19,9 19,11 L19,20 Q19,21 18,21 L6,21 Q5,21 5,20 Z" />
+
+    <!-- Lock shackle -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#44000d"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M8,9 L8,6 A4,4 0 0,1 16,6 L16,9" />
+
+    <!-- Keyhole dot (using path instead of circle) -->
+    <path
+        android:fillColor="#44000d"
+        android:pathData="M12,13.5 A1.5,1.5 0 1,1 12,16.5 A1.5,1.5 0 0,1 12,13.5 Z" />
+
+</vector>

@@ -9,7 +9,6 @@ import com.medistream.core.network.TokenManager
 import com.medistream.core.ui.BaseActivity
 import com.medistream.databinding.ActivityLoginBinding
 import com.medistream.auth.register.RegisterActivity
-import com.medistream.staff.home.StaffHomeActivity
 
 class LoginActivity : BaseActivity() {
 
@@ -82,7 +81,7 @@ class LoginActivity : BaseActivity() {
 
                     showSnackbar("Login successful!")
                     
-                    val intent = Intent(this, StaffHomeActivity::class.java).apply {
+                    val intent = Intent(this, MainActivity::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     }
                     startActivity(intent)

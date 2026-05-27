@@ -1,157 +1,301 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pure_white"
-    tools:context="com.medistream.core.MainActivity">
+    android:background="#f0eeee">
 
-    <!-- Decorative Top Background Glow -->
-    <View
-        android:id="@+id/backgroundGlow"
-        android:layout_width="0dp"
-        android:layout_height="250dp"
-        android:background="@drawable/rounded_bottom_shape"
-        android:backgroundTint="@color/brand_maroon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Centered Brand Logo & Description -->
+    <!-- ===== Maroon Header Banner (rounded bottom corners only) ===== -->
     <LinearLayout
-        android:id="@+id/brandContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:gravity="center"
+        android:id="@+id/headerBanner"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@drawable/bg_header_rounded_bottom"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/buttonsContainer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:gravity="center"
+        android:paddingTop="40dp"
+        android:paddingBottom="32dp"
+        android:paddingHorizontal="24dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- App Name -->
         <TextView
             android:id="@+id/tvAppName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_black"
             android:text="MediStream"
-            android:textColor="@color/brand_maroon"
-            android:textSize="42sp"
-            android:textStyle="bold" />
+            android:textColor="#ffffff"
+            android:textSize="32sp"
+            android:fontFamily="sans-serif-black" />
 
-        <!-- Subtitle/Tagline -->
         <TextView
             android:id="@+id/tvTagline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/poppins_medium"
-            android:text="Hospital Queue &amp; Patient Management"
-            android:textColor="@color/text_grey_light"
+            android:layout_marginTop="4dp"
+            android:text="Streamlined Healthcare"
+            android:textColor="#cc8899"
             android:textSize="14sp"
-            android:textAlignment="center" />
+            android:fontFamily="sans-serif" />
+
     </LinearLayout>
 
-    <!-- Large Action Buttons Selection -->
-    <LinearLayout
-        android:id="@+id/buttonsContainer"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="48dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+    <!-- ===== Scrollable Body ===== -->
+    <ScrollView
+        android:id="@+id/scrollBody"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/headerBanner"
+        app:layout_constraintBottom_toTopOf="@id/btnJoinQueue"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/brandContainer">
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- I'm a Patient Card/Button -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/btnPatient"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:clickable="true"
-            android:focusable="true"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/brand_maroon"
-            app:strokeColor="@color/brand_maroon_dark"
-            app:strokeWidth="1dp">
+            android:orientation="vertical"
+            android:paddingTop="36dp"
+            android:paddingBottom="24dp"
+            android:paddingHorizontal="20dp">
 
-            <LinearLayout
+            <!-- ===== Tagline Text ===== -->
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:text="Step into the virtual waiting room.\nJoin the queue."
+                android:textColor="#212529"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-medium"
                 android:gravity="center"
-                android:padding="20dp">
+                android:lineSpacingMultiplier="1.3"
+                android:layout_marginBottom="32dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="I'm a Patient"
-                    android:textColor="@color/pure_white"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:fontFamily="@font/poppins_regular"
-                    android:text="Join the queue &amp; get estimated wait times"
-                    android:textColor="#CCCCCC"
-                    android:textSize="12sp"
-                    android:textAlignment="center" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Staff Login Card/Button -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/btnStaffLogin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/surface_grey"
-            app:strokeColor="#DDDDDD"
-            app:strokeWidth="1dp">
-
-            <LinearLayout
+            <!-- ===== Patient Queue Dark Card ===== -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:padding="20dp">
+                app:cardCornerRadius="18dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#44000d">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="Staff Portal"
-                    android:textColor="@color/brand_maroon"
-                    android:textSize="18sp" />
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:fontFamily="@font/poppins_regular"
-                    android:text="Log in to manage queues, patients, and staff"
-                    android:textColor="@color/text_grey_light"
-                    android:textSize="12sp"
-                    android:textAlignment="center" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                    <!-- Queue Title -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Patient Queue"
+                        android:textColor="#ffffff"
+                        android:textSize="17sp"
+                        android:fontFamily="sans-serif-black"
+                        android:layout_marginBottom="14dp" />
 
-    </LinearLayout>
+                    <!-- Patient Row 1 — Consulting -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#ffffff">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="14dp">
+
+                            <!-- Circle Avatar -->
+                            <TextView
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:text="1"
+                                android:textColor="#ffffff"
+                                android:textSize="15sp"
+                                android:fontFamily="sans-serif-black"
+                                android:gravity="center"
+                                android:background="@drawable/bg_circle_maroon"
+                                android:layout_marginEnd="14dp" />
+
+                            <!-- Shimmer placeholder lines -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <View
+                                    android:layout_width="120dp"
+                                    android:layout_height="12dp"
+                                    android:background="@drawable/bg_placeholder_line"
+                                    android:layout_marginBottom="6dp" />
+
+                                <View
+                                    android:layout_width="80dp"
+                                    android:layout_height="10dp"
+                                    android:background="@drawable/bg_placeholder_line_light" />
+                            </LinearLayout>
+
+                            <!-- Badge -->
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_badge_outline"
+                                android:paddingHorizontal="14dp"
+                                android:paddingVertical="6dp"
+                                android:text="Consulting"
+                                android:textColor="#6c757d"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-medium" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Patient Row 2 — Waiting -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#ffffff">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="14dp">
+
+                            <TextView
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:text="2"
+                                android:textColor="#ffffff"
+                                android:textSize="15sp"
+                                android:fontFamily="sans-serif-black"
+                                android:gravity="center"
+                                android:background="@drawable/bg_circle_maroon"
+                                android:layout_marginEnd="14dp" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <View
+                                    android:layout_width="120dp"
+                                    android:layout_height="12dp"
+                                    android:background="@drawable/bg_placeholder_line"
+                                    android:layout_marginBottom="6dp" />
+
+                                <View
+                                    android:layout_width="80dp"
+                                    android:layout_height="10dp"
+                                    android:background="@drawable/bg_placeholder_line_light" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_badge_outline"
+                                android:paddingHorizontal="14dp"
+                                android:paddingVertical="6dp"
+                                android:text="Waiting"
+                                android:textColor="#6c757d"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-medium" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Patient Row 3 — Waiting -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#ffffff">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="14dp">
+
+                            <TextView
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:text="3"
+                                android:textColor="#ffffff"
+                                android:textSize="15sp"
+                                android:fontFamily="sans-serif-black"
+                                android:gravity="center"
+                                android:background="@drawable/bg_circle_maroon"
+                                android:layout_marginEnd="14dp" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <View
+                                    android:layout_width="120dp"
+                                    android:layout_height="12dp"
+                                    android:background="@drawable/bg_placeholder_line"
+                                    android:layout_marginBottom="6dp" />
+
+                                <View
+                                    android:layout_width="80dp"
+                                    android:layout_height="10dp"
+                                    android:background="@drawable/bg_placeholder_line_light" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_badge_outline"
+                                android:paddingHorizontal="14dp"
+                                android:paddingVertical="6dp"
+                                android:text="Waiting"
+                                android:textColor="#6c757d"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-medium" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- ===== Join Queue Button (bottom, standalone) ===== -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnJoinQueue"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginHorizontal="48dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/bg_button_maroon_rounded"
+        android:text="Join Queue"
+        android:textAllCaps="false"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
