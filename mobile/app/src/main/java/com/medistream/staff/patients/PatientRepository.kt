@@ -14,4 +14,16 @@ class PatientRepository {
     suspend fun getPatients(): Response<List<PatientEntity>> = withContext(Dispatchers.IO) {
         apiService.getPatients()
     }
+
+    suspend fun createPatient(patient: PatientEntity): Response<PatientEntity> = withContext(Dispatchers.IO) {
+        apiService.createPatient(patient)
+    }
+
+    suspend fun updatePatient(id: Int, patient: PatientEntity): Response<PatientEntity> = withContext(Dispatchers.IO) {
+        apiService.updatePatient(id, patient)
+    }
+
+    suspend fun deletePatient(id: Int): Response<Void> = withContext(Dispatchers.IO) {
+        apiService.deletePatient(id)
+    }
 }

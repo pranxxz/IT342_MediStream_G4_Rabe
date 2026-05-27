@@ -39,6 +39,10 @@ class PatientListFragment : Fragment() {
         setupSearch()
         setupObservers()
 
+        binding.fabAddPatient.setOnClickListener {
+            AddPatientDialogFragment().show(childFragmentManager, "AddPatientDialog")
+        }
+
         viewModel.fetchPatients()
     }
 
@@ -74,6 +78,16 @@ class PatientListFragment : Fragment() {
     private fun setupObservers() {
         viewModel.patientList.observe(viewLifecycleOwner) { list ->
             adapter.submitList(list)
+            
+            // Dynamic stats update
+            val total = list?.size ?: 0
+            val male = list?.count { it.gender?.equals("Male", ignoreCase = true) == true } ?: 0
+            val female = list?.count { it.gender?.equals("Female", ignoreCase = true) == true } ?: 0
+            
+            binding.tvStatTotal.text = total.toString()
+            binding.tvStatMale.text = male.toString()
+            binding.tvStatFemale.text = female.toString()
+
             if (list.isNullOrEmpty()) {
                 binding.rvPatients.visibility = View.GONE
                 binding.emptyStateView.visibility = View.VISIBLE

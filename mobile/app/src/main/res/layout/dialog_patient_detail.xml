@@ -5,17 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="8dp"
-    app:cardBackgroundColor="@color/pure_white"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="0dp"
     app:strokeWidth="1dp"
-    app:strokeColor="#E5E5E5">
+    app:strokeColor="@color/border_default"
+    app:cardBackgroundColor="@color/pure_white">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="24dp">
 
         <!-- Top Header with Close Button -->
         <RelativeLayout
@@ -31,7 +31,7 @@
                 android:layout_toStartOf="@id/btnCloseDialog"
                 android:fontFamily="@font/poppins_semibold"
                 android:text="Patient Demographics"
-                android:textColor="@color/brand_maroon"
+                android:textColor="@color/brand_primary"
                 android:textSize="18sp" />
 
             <ImageButton
@@ -42,7 +42,7 @@
                 android:layout_centerVertical="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@android:drawable/ic_menu_close_clear_cancel"
-                app:tint="@color/text_grey_light"
+                app:tint="@color/text_muted"
                 tools:ignore="ContentDescription" />
         </RelativeLayout>
 
@@ -51,7 +51,7 @@
             android:layout_height="1dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="16dp"
-            android:background="#E5E5E5" />
+            android:background="@color/border_default" />
 
         <!-- Patient Header Info (Avatar, Name, ID, Status) -->
         <LinearLayout
@@ -59,21 +59,25 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="20dp">
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 app:cardCornerRadius="28dp"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/surface_grey">
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/brand_primary">
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="center"
-                    android:src="@drawable/outline_person_outline_24"
-                    app:tint="@color/brand_maroon" />
+                <TextView
+                    android:id="@+id/tvAvatarInitials"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="P"
+                    android:textColor="@color/pure_white"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/poppins_bold" />
             </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
@@ -88,7 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_bold"
-                    android:textColor="@color/brand_maroon"
+                    android:textColor="@color/brand_primary"
                     android:textSize="18sp"
                     tools:text="Juana Dela Cruz" />
 
@@ -97,7 +101,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
-                    android:textColor="@color/text_grey_light"
+                    android:textColor="@color/text_muted"
                     android:textSize="12sp"
                     tools:text="ID: #102" />
             </LinearLayout>
@@ -107,144 +111,142 @@
                 android:id="@+id/tvPatientStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="10dp"
+                android:paddingHorizontal="12dp"
                 android:paddingVertical="4dp"
                 android:background="@drawable/bg_status_badge"
-                android:textColor="@color/pure_white"
+                android:textColor="@color/brand_primary"
                 android:textSize="11sp"
                 android:fontFamily="@font/poppins_semibold"
-                tools:text="ACTIVE" />
+                tools:text="WAITING" />
         </LinearLayout>
 
-        <!-- Demographic Details Grid/List -->
+        <!-- Details Grid/List -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/surface_grey"
-            android:padding="12dp"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="24dp">
 
-            <!-- Age & Gender -->
+            <!-- Age / Gender -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="8dp">
-
+                android:paddingVertical="8dp">
                 <TextView
-                    android:layout_width="80dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="Age / Sex:"
-                    android:textColor="@color/brand_maroon"
-                    android:textSize="13sp" />
-
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="AGE &amp; GENDER"
+                    android:textColor="@color/text_muted"
+                    android:textSize="11sp" />
                 <TextView
                     android:id="@+id/tvPatientAgeGender"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:fontFamily="@font/poppins_regular"
-                    android:textColor="@android:color/black"
-                    android:textSize="13sp"
-                    tools:text="31 yrs old, Female" />
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    tools:text="31 yrs old · Female" />
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/border_default" />
 
             <!-- Contact Number -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="8dp">
-
+                android:paddingVertical="8dp">
                 <TextView
-                    android:layout_width="80dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="Contact:"
-                    android:textColor="@color/brand_maroon"
-                    android:textSize="13sp" />
-
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="CONTACT NUMBER"
+                    android:textColor="@color/text_muted"
+                    android:textSize="11sp" />
                 <TextView
                     android:id="@+id/tvPatientContact"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:fontFamily="@font/poppins_regular"
-                    android:textColor="@android:color/black"
-                    android:textSize="13sp"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
                     tools:text="0917-123-4567" />
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/border_default" />
 
             <!-- Address -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="8dp">
-
+                android:paddingVertical="8dp">
                 <TextView
-                    android:layout_width="80dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="Address:"
-                    android:textColor="@color/brand_maroon"
-                    android:textSize="13sp" />
-
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="ADDRESS"
+                    android:textColor="@color/text_muted"
+                    android:textSize="11sp" />
                 <TextView
                     android:id="@+id/tvPatientAddress"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/poppins_regular"
-                    android:textColor="@android:color/black"
-                    android:textSize="13sp"
-                    tools:text="123 Street, Manila, Philippines" />
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    tools:text="123 Street, Manila" />
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/border_default" />
 
             <!-- Assigned Doctor -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
+                android:orientation="horizontal"
+                android:paddingVertical="8dp">
                 <TextView
-                    android:layout_width="80dp"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:text="Doctor:"
-                    android:textColor="@color/brand_maroon"
-                    android:textSize="13sp" />
-
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="ASSIGNED DOCTOR"
+                    android:textColor="@color/text_muted"
+                    android:textSize="11sp" />
                 <TextView
                     android:id="@+id/tvPatientDoctor"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:fontFamily="@font/poppins_regular"
-                    android:textColor="@android:color/black"
-                    android:textSize="13sp"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
                     tools:text="Dr. Evan Lee" />
             </LinearLayout>
         </LinearLayout>
 
         <!-- Actions -->
-        <LinearLayout
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnViewHistory"
+            style="@style/MediStream.Button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="end">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnViewHistory"
-                style="@style/Widget.MaterialComponents.Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_semibold"
-                android:text="View Consultation History"
-                android:textAllCaps="false"
-                android:textColor="@color/pure_white"
-                app:backgroundTint="@color/brand_maroon"
-                app:cornerRadius="8dp" />
-        </LinearLayout>
+            android:layout_height="52dp"
+            android:text="View Consultation History"
+            android:textSize="14sp" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

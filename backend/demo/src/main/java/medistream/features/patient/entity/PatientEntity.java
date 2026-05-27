@@ -54,7 +54,15 @@ public class PatientEntity {
     }
 
     public void setFullName(String fullName) {
-        this.fullName = firstName + " " + lastName;
+        this.fullName = fullName;
+    }
+
+    @PrePersist
+    @PreUpdate
+    public void computeFullName() {
+        if (firstName != null && lastName != null) {
+            this.fullName = firstName + " " + lastName;
+        }
     }
 
     public String getLastName() {

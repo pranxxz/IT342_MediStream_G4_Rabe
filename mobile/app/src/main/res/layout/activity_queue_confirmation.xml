@@ -1,85 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pure_white"
-    android:padding="24dp">
+    android:background="@color/bg_page">
 
-    <!-- Top Success Check Header -->
-    <ImageView
-        android:id="@+id/ivSuccessCheck"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="48dp"
-        android:src="@android:drawable/checkbox_on_background"
-        app:tint="@color/status_done"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tvSuccessTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/poppins_bold"
-        android:text="Successfully Joined!"
-        android:textColor="@color/status_done"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ivSuccessCheck" />
-
-    <!-- Queue Card -->
+    <!-- Card container centered -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/queueCard"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp"
-        app:cardBackgroundColor="@color/surface_grey"
-        app:strokeColor="#EAEAEA"
-        app:strokeWidth="1dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="32dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="6dp"
+        app:strokeWidth="0dp"
+        app:cardBackgroundColor="@color/pure_white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnDone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvSuccessTitle">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.4">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:padding="32dp">
+            android:padding="28dp">
+
+            <!-- Green checkmark icon (✓) in circle -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                app:cardCornerRadius="32dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/status_completed_bg"
+                android:layout_marginBottom="16dp">
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    app:srcCompat="@drawable/ic_success"
+                    app:tint="@color/status_completed" />
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_medium"
+                android:text="You're in the queue!"
+                android:textSize="22sp"
+                android:textColor="@color/brand_primary"
+                android:fontFamily="@font/poppins_bold"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="YOUR QUEUE NUMBER"
-                android:textColor="@color/text_grey_light"
-                android:textSize="12sp"
-                android:letterSpacing="0.1" />
+                android:textColor="@color/text_muted"
+                android:textSize="11sp"
+                android:fontFamily="@font/poppins_medium"
+                android:letterSpacing="0.05"
+                android:layout_marginBottom="2dp"/>
 
             <TextView
                 android:id="@+id/tvQueueNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:fontFamily="@font/poppins_black"
                 android:text="Q-001"
-                android:textColor="@color/brand_maroon"
-                android:textSize="64sp"
-                android:textStyle="bold" />
+                android:textSize="48sp"
+                android:textColor="@color/brand_primary"
+                android:fontFamily="@font/poppins_bold"
+                android:layout_marginBottom="16dp" />
 
-            <!-- Divider -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#DDDDDD"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp" />
+                android:background="@color/border_default"
+                android:layout_marginBottom="16dp" />
 
             <!-- Details -->
             <TableLayout
@@ -92,15 +93,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_regular"
-                        android:text="Patient Name:  "
-                        android:textColor="@color/text_grey_light" />
+                        android:text="Patient Name"
+                        android:textColor="@color/text_muted"
+                        android:textSize="13sp" />
                     <TextView
                         android:id="@+id/tvPatientName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_semibold"
                         android:text="John Doe"
-                        android:textColor="@color/brand_maroon"
+                        android:textColor="@color/text_primary"
+                        android:textSize="13sp"
                         android:gravity="end" />
                 </TableRow>
 
@@ -109,9 +112,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_regular"
-                        android:text="Status: "
-                        android:textColor="@color/text_grey_light" />
-                    <!-- Pill Badge inside Table -->
+                        android:text="Queue Status"
+                        android:textColor="@color/text_muted"
+                        android:textSize="13sp" />
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -120,15 +123,16 @@
                             android:id="@+id/tvQueueStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@color/status_waiting"
+                            android:background="@drawable/bg_status_badge"
+                            android:backgroundTint="@color/status_waiting_bg"
+                            android:textColor="@color/status_waiting"
                             android:fontFamily="@font/poppins_semibold"
-                            android:paddingLeft="12dp"
-                            android:paddingRight="12dp"
-                            android:paddingTop="4dp"
-                            android:paddingBottom="4dp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:paddingTop="3dp"
+                            android:paddingBottom="3dp"
                             android:text="Waiting"
-                            android:textColor="@color/pure_white"
-                            android:textSize="12sp" />
+                            android:textSize="11sp" />
                     </LinearLayout>
                 </TableRow>
 
@@ -137,15 +141,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_regular"
-                        android:text="Est. Waiting Time:  "
-                        android:textColor="@color/text_grey_light" />
+                        android:text="Est. Waiting Time"
+                        android:textColor="@color/text_muted"
+                        android:textSize="13sp" />
                     <TextView
                         android:id="@+id/tvEstTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_semibold"
-                        android:text="25 mins"
-                        android:textColor="@color/brand_maroon"
+                        android:text="15 mins"
+                        android:textColor="@color/brand_primary"
+                        android:textSize="13sp"
                         android:gravity="end" />
                 </TableRow>
             </TableLayout>
@@ -153,19 +159,19 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Done Button -->
+    <!-- Done button at bottom -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnDone"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        style="@style/MediStream.Button"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
-        android:padding="12dp"
         android:text="Done"
-        android:textColor="@color/pure_white"
-        android:textSize="16sp"
-        app:cornerRadius="8dp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

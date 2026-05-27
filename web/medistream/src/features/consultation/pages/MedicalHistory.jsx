@@ -100,7 +100,6 @@ export default function MedicalHistory() {
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterDoctor, setFilterDoctor] = useState('All Doctors');
-  const [filterDiagnosis, setFilterDiagnosis] = useState('All Diagnoses');
   const [doctorDropOpen, setDoctorDropOpen] = useState(false);
   const [diagnosisDropOpen, setDiagnosisDropOpen] = useState(false);
   const [page, setPage] = useState(0);
@@ -160,7 +159,6 @@ export default function MedicalHistory() {
   }, []);
 
   const doctors = ['All Doctors', ...new Set(consultations.map(c => c.doctor).filter(Boolean))];
-  const diagnoses = ['All Diagnoses', ...new Set(consultations.map(c => c.diagnosis).filter(Boolean))];
 
   const filtered = consultations.filter(c => {
     const term = searchTerm.toLowerCase();
@@ -169,8 +167,7 @@ export default function MedicalHistory() {
       (c.doctor || '').toLowerCase().includes(term) ||
       (c.diagnosis || '').toLowerCase().includes(term);
     const matchDoctor = filterDoctor === 'All Doctors' || c.doctor === filterDoctor;
-    const matchDiagnosis = filterDiagnosis === 'All Diagnoses' || c.diagnosis === filterDiagnosis;
-    return matchSearch && matchDoctor && matchDiagnosis;
+    return matchSearch && matchDoctor;
   });
 
   const paginated = filtered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
@@ -242,7 +239,6 @@ export default function MedicalHistory() {
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <Dropdown open={doctorDropOpen} setOpen={setDoctorDropOpen} value={filterDoctor} setValue={setFilterDoctor} options={doctors} label="All Doctors" />
-              <Dropdown open={diagnosisDropOpen} setOpen={setDiagnosisDropOpen} value={filterDiagnosis} setValue={setFilterDiagnosis} options={diagnoses} label="All Diagnoses" />
               <div style={{ display: "flex", alignItems: "center", gap: 8, border: `1px solid ${BORDER}`, borderRadius: 8, padding: "7px 14px", background: WHITE }}>
                 <IconSearch />
                 <input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search records..." style={{ border: "none", outline: "none", fontSize: 13, color: TEXT, fontFamily: "inherit", width: 220, background: "transparent" }} />
@@ -311,7 +307,7 @@ export default function MedicalHistory() {
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'rgba(240, 240, 240, 0.20)',   // light color instead of reddish
+            background: 'rgba(240, 240, 240, 0.10)',   
             backdropFilter: 'blur(8px)',
             display: 'flex',
             alignItems: 'center',

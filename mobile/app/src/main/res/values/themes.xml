@@ -1,18 +1,46 @@
-<resources>
+<resources xmlns:tools="http://tools.android.com/tools">
     <style name="Theme.MediStream" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/brand_maroon</item>
-        <item name="colorPrimaryVariant">@color/brand_maroon_dark</item>
+        <item name="colorPrimary">@color/brand_primary</item>
+        <item name="colorPrimaryVariant">@color/brand_primary_dark</item>
         <item name="colorOnPrimary">@color/pure_white</item>
-        <item name="android:statusBarColor">@color/brand_maroon</item>
+        <item name="colorAccent">@color/brand_accent</item>
+        <item name="android:windowBackground">@color/window_background</item>
+        <item name="android:statusBarColor">@color/brand_primary</item>
+        <item name="android:navigationBarColor">@color/pure_white</item>
         <item name="android:fontFamily">@font/poppins_regular</item>
         <item name="fontFamily">@font/poppins_regular</item>
-        <!-- Outlined input style -->
         <item name="textInputStyle">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox</item>
+        <item name="materialButtonStyle">@style/MediStream.Button</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
+    <!-- Reusable button style matching web's primary button -->
+    <style name="MediStream.Button" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/brand_primary</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="android:textColor">@color/pure_white</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <!-- Outlined / secondary button -->
+    <style name="MediStream.Button.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/brand_primary</item>
+        <item name="android:textColor">@color/brand_primary</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
+    </style>
+
+    <!-- Dialog theme (keep existing but tighten) -->
     <style name="CustomDialogTheme" parent="Theme.MaterialComponents.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
+        <item name="colorPrimary">@color/brand_primary</item>
+    </style>
+
+    <style name="ToolbarTitle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:textSize">18sp</item>
     </style>
 </resources>

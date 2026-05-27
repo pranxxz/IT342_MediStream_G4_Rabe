@@ -8,7 +8,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/pure_white">
+        android:background="@color/bg_page">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_bold"
                 android:text="Welcome, Doctor!"
-                android:textColor="@color/brand_maroon"
+                android:textColor="@color/brand_primary"
                 android:textSize="22sp" />
 
             <TextView
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_regular"
                 android:text="Here is your hospital overview for today."
-                android:textColor="@color/text_grey_light"
+                android:textColor="@color/text_muted"
                 android:textSize="13sp"
                 android:layout_marginBottom="20dp" />
 
@@ -54,8 +54,8 @@
                     android:layout_margin="6dp"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="2dp"
-                    app:cardBackgroundColor="@color/surface_grey"
-                    app:strokeColor="#EAEAEA"
+                    app:cardBackgroundColor="@color/pure_white"
+                    app:strokeColor="@color/border_default"
                     app:strokeWidth="1dp">
 
                     <LinearLayout
@@ -65,22 +65,29 @@
                         android:gravity="center"
                         android:padding="16dp">
 
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            app:srcCompat="@drawable/ic_people"
+                            app:tint="@color/brand_primary"
+                            android:layout_marginBottom="8dp" />
+
                         <TextView
                             android:id="@+id/tvTotalPatientsCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_bold"
                             android:text="0"
-                            android:textColor="@color/brand_maroon"
-                            android:textSize="26sp" />
+                            android:textColor="@color/brand_primary"
+                            android:textSize="28sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:fontFamily="@font/poppins_medium"
                             android:text="Total Patients"
-                            android:textColor="@color/text_grey_light"
+                            android:textColor="@color/text_muted"
                             android:textSize="11sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -94,8 +101,8 @@
                     android:layout_margin="6dp"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="2dp"
-                    app:cardBackgroundColor="@color/surface_grey"
-                    app:strokeColor="#EAEAEA"
+                    app:cardBackgroundColor="@color/pure_white"
+                    app:strokeColor="@color/border_default"
                     app:strokeWidth="1dp">
 
                     <LinearLayout
@@ -105,22 +112,29 @@
                         android:gravity="center"
                         android:padding="16dp">
 
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            app:srcCompat="@drawable/ic_queue"
+                            app:tint="@color/brand_primary"
+                            android:layout_marginBottom="8dp" />
+
                         <TextView
                             android:id="@+id/tvInQueueCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_bold"
                             android:text="0"
-                            android:textColor="@color/brand_maroon"
-                            android:textSize="26sp" />
+                            android:textColor="@color/brand_primary"
+                            android:textSize="28sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:fontFamily="@font/poppins_medium"
                             android:text="In Queue"
-                            android:textColor="@color/text_grey_light"
+                            android:textColor="@color/text_muted"
                             android:textSize="11sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -134,8 +148,8 @@
                     android:layout_margin="6dp"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="2dp"
-                    app:cardBackgroundColor="@color/surface_grey"
-                    app:strokeColor="#EAEAEA"
+                    app:cardBackgroundColor="@color/pure_white"
+                    app:strokeColor="@color/border_default"
                     app:strokeWidth="1dp">
 
                     <LinearLayout
@@ -145,22 +159,29 @@
                         android:gravity="center"
                         android:padding="16dp">
 
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            app:srcCompat="@drawable/ic_time"
+                            app:tint="@color/brand_primary"
+                            android:layout_marginBottom="8dp" />
+
                         <TextView
                             android:id="@+id/tvConsultationsCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_bold"
                             android:text="0"
-                            android:textColor="@color/brand_maroon"
-                            android:textSize="26sp" />
+                            android:textColor="@color/brand_primary"
+                            android:textSize="28sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:fontFamily="@font/poppins_medium"
                             android:text="Consultations"
-                            android:textColor="@color/text_grey_light"
+                            android:textColor="@color/text_muted"
                             android:textSize="11sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -174,8 +195,8 @@
                     android:layout_margin="6dp"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="2dp"
-                    app:cardBackgroundColor="@color/surface_grey"
-                    app:strokeColor="#EAEAEA"
+                    app:cardBackgroundColor="@color/pure_white"
+                    app:strokeColor="@color/border_default"
                     app:strokeWidth="1dp">
 
                     <LinearLayout
@@ -185,22 +206,29 @@
                         android:gravity="center"
                         android:padding="16dp">
 
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            app:srcCompat="@drawable/ic_staff"
+                            app:tint="@color/brand_primary"
+                            android:layout_marginBottom="8dp" />
+
                         <TextView
                             android:id="@+id/tvStaffCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_bold"
                             android:text="0"
-                            android:textColor="@color/brand_maroon"
-                            android:textSize="26sp" />
+                            android:textColor="@color/brand_primary"
+                            android:textSize="28sp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="2dp"
                             android:fontFamily="@font/poppins_medium"
                             android:text="Medical Staff"
-                            android:textColor="@color/text_grey_light"
+                            android:textColor="@color/text_muted"
                             android:textSize="11sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -213,7 +241,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_bold"
                 android:text="Recent Queue Items"
-                android:textColor="@color/brand_maroon"
+                android:textColor="@color/brand_primary"
                 android:textSize="18sp"
                 android:layout_marginBottom="12dp" />
 
@@ -231,7 +259,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
                     android:text="No patients in queue"
-                    android:textColor="@color/text_grey_light"
+                    android:textColor="@color/text_muted"
                     android:textSize="14sp" />
             </LinearLayout>
 

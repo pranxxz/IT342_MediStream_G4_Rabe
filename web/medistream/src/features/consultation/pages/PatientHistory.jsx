@@ -67,9 +67,6 @@ export default function PatientHistory() {
           </div>
           <span>MediStream</span>
         </div>
-        <button className="back-landing-btn" onClick={() => navigate('/')}>
-          Back to Landing
-        </button>
       </header>
 
       <main className="content-container">
@@ -245,7 +242,7 @@ export default function PatientHistory() {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 20px 48px;
+          padding: 20px 20px;
           border-bottom: 1px solid rgba(68, 0, 13, 0.08);
           background: rgba(255, 255, 255, 0.8);
           backdrop-filter: blur(8px);
@@ -258,9 +255,10 @@ export default function PatientHistory() {
           align-items: center;
           gap: 10px;
           cursor: pointer;
+          margin-left: 20px;   /* Added left padding to logo */
         }
  
-         .logo-icon {
+        .logo-icon {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -280,28 +278,10 @@ export default function PatientHistory() {
           -webkit-text-fill-color: transparent;
         }
  
-        .back-landing-btn {
-          background: rgba(68, 0, 13, 0.05);
-          border: 1px solid rgba(68, 0, 13, 0.1);
-          color: #44000d;
-          padding: 8px 20px;
-          border-radius: 30px;
-          font-size: 0.88rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.25s ease;
-        }
- 
-        .back-landing-btn:hover {
-          background: rgba(68, 0, 13, 0.1);
-          color: #44000d;
-          transform: translateY(-1px);
-        }
- 
         .content-container {
           max-width: 800px;
           margin: 0 auto;
-          padding: 80px 24px;
+          padding: 40px 24px;   /* Reduced from 80px 24px to 40px 24px */
           position: relative;
           z-index: 5;
         }

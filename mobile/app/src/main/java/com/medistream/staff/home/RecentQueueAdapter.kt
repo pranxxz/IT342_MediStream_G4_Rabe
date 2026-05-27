@@ -37,6 +37,15 @@ class RecentQueueAdapter(private var items: List<QueueItem> = emptyList()) :
             
             val p = item.patient
             binding.tvPatientName.text = if (p != null) "${p.firstName} ${p.lastName}" else "Unknown Patient"
+            
+            val initials = if (p != null) {
+                val fn = if (p.firstName.isNotEmpty()) p.firstName[0].toString() else "P"
+                val ln = if (p.lastName.isNotEmpty()) p.lastName[0].toString() else "N"
+                (fn + ln).uppercase()
+            } else {
+                "UP"
+            }
+            binding.tvAvatarInitials.text = initials
             binding.tvStatusBadge.text = item.status
 
             val context = binding.root.context
@@ -46,7 +55,7 @@ class RecentQueueAdapter(private var items: List<QueueItem> = emptyList()) :
                 "done" -> context.getColor(R.color.status_done)
                 else -> context.getColor(R.color.status_cancelled)
             }
-            binding.tvStatusBadge.background = context.getDrawable(R.drawable.button_background_maroon)
+            binding.tvStatusBadge.background = context.getDrawable(R.drawable.bg_status_badge)
             binding.tvStatusBadge.backgroundTintList = ColorStateList.valueOf(statusColor)
         }
     }
