@@ -42,9 +42,7 @@
             android:name=".patient.confirmation.QueueConfirmationActivity"
             android:exported="false" />
 
-        <activity
-            android:name=".staff.home.StaffHomeActivity"
-            android:exported="false" />
+
 
     </application>
 

@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ripple xmlns:android="http://android.android.com/apk/res/android"
-    android:color="#40FFFFFF"> <item>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#30FFFFFF">
+    <item>
         <shape android:shape="rectangle">
-            <gradient
-                android:angle="315"
-                android:startColor="@color/brand_maroon_gradient_start"
-                android:endColor="@color/brand_maroon"
-                android:type="linear" />
-            <corners android:radius="50dp" />
+            <solid android:color="@color/maroon_primary" />
+            <corners android:radius="28dp" />
         </shape>
     </item>
 </ripple>

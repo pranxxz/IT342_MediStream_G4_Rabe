@@ -1,4 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-  
-</selector>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <!-- Rounded square background (white fill, maroon stroke) -->
+    <path
+        android:fillColor="#ffffff"
+        android:strokeColor="#44000d"
+        android:strokeWidth="2.2"
+        android:pathData="M10,4 L38,4 Q44,4 44,10 L44,38 Q44,44 38,44 L10,44 Q4,44 4,38 L4,10 Q4,4 10,4 Z" />
+
+    <!-- Heartbeat / pulse line -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#44000d"
+        android:strokeWidth="2.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M7,24 L14,24 L17,17 L21,31 L25,20 L28,27 L31,24 L41,24" />
+
+</vector>

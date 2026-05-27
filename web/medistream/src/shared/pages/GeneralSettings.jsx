@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { User, Edit2, Phone, Mail, Calendar, Users, Briefcase, Building2, BadgeCheck, Lock, Eye, EyeOff } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { User, Edit2, Phone, Mail, Calendar, Users, Briefcase, Building2, BadgeCheck, Lock, Eye, EyeOff, Camera, Check, X } from 'lucide-react';
 import { Box, Button, Typography, Container, CircularProgress, Alert, Snackbar } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useLocation } from 'react-router-dom';
@@ -7,6 +7,7 @@ import SettingsEditModal from '../components/general_settings/SettingsEditModal'
 import PageHeader from '../components/PageHeader';
 import { COLORS } from '../components/Sidebar';
 import SettingsIcon from '@mui/icons-material/Settings';
+import axios from 'axios';
 
 const M = COLORS.primary;
 const M_LIGHT = '#7a0017';
@@ -320,6 +321,106 @@ const GeneralSettings = () => {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const location = useLocation();
 
+  const fileInputRef = useRef(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState(null);
+  const [uploadSuccess, setUploadSuccess] = useState(null);
+  const [avatarTimestamp, setAvatarTimestamp] = useState(Date.now());
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      setUploadError('Only JPEG, PNG, and WEBP images are allowed.');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError('File size must be less than 5MB.');
+      return;
+    }
+
+    setUploadError(null);
+    setSelectedFile(file);
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile || !userData?.accountID) return;
+
+    setUploading(true);
+    setUploadError(null);
+    setUploadSuccess(null);
+
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/api/users/${userData.accountID}/profile-picture`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      const data = response.data;
+      const relativePath = data.path;
+      
+      const updatedUser = { ...userData, profilePicturePath: relativePath };
+      setUserData(updatedUser);
+      setAvatarTimestamp(Date.now());
+
+      const sessionKeys = ['user', 'currentUser'];
+      sessionKeys.forEach(key => {
+        const storedStr = localStorage.getItem(key) || sessionStorage.getItem(key);
+        if (storedStr) {
+          try {
+            const parsed = JSON.parse(storedStr);
+            parsed.profilePicturePath = relativePath;
+            parsed.profilePictureUrl = `/api/users/${userData.accountID}/profile-picture`;
+            localStorage.setItem(key, JSON.stringify(parsed));
+            sessionStorage.setItem(key, JSON.stringify(parsed));
+          } catch (e) {
+            console.error('Failed to update storage key', key, e);
+          }
+        }
+      });
+
+      setUploadSuccess('Profile picture updated successfully!');
+      setSelectedFile(null);
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        setPreviewUrl(null);
+      }
+
+      dispatchStorageEvent();
+
+    } catch (err) {
+      console.error('Upload failed', err);
+      const errMsg = err.response?.data?.error || err.message || 'Failed to upload profile picture.';
+      setUploadError(errMsg);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleCancelSelection = () => {
+    setSelectedFile(null);
+    setUploadError(null);
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+    }
+  };
+
   // ── Data Fetching (unchanged) ───────────────────────────────────────────────
   useEffect(() => {
     const fetchUserData = async () => {
@@ -364,7 +465,8 @@ const GeneralSettings = () => {
       if (value === null || value === undefined || value === '' || value === 'null' || (typeof value === 'string' && value.trim() === '')) return defaultValue;
       return value;
     };
-    let name = getValue(storedUser.name), role = getValue(storedUser.role), email = getValue(storedUser.email || storedUser.username), accountID = getValue(storedUser.accountID);
+    let name = getValue(storedUser.name), role = getValue(storedUser.role), email = getValue(storedUser.email || storedUser.username), accountID = getValue(storedUser.accountID || storedUser.id);
+    let profilePicturePath = storedUser.profilePicturePath || null;
     let specialization = 'N/A', contactNo = 'N/A', staffID = 'N/A', department = 'General Medicine', gender = 'N/A', age = 'N/A', availability = 'available';
     if (medicalStaffData) {
       const sv = (v) => getValue(v);
@@ -380,6 +482,9 @@ const GeneralSettings = () => {
       if (medicalStaffData.userAccount) {
         if (!accountID || accountID === 'N/A') accountID = getValue(medicalStaffData.userAccount.accountID);
         if (!email || email === 'N/A') email = getValue(medicalStaffData.userAccount.username);
+        if (medicalStaffData.userAccount.profilePicturePath) {
+          profilePicturePath = medicalStaffData.userAccount.profilePicturePath;
+        }
         if (!role || role === 'N/A') {
           const r = getValue(medicalStaffData.userAccount.role);
           if (r !== 'N/A') role = r.charAt(0).toUpperCase() + r.slice(1);
@@ -389,14 +494,14 @@ const GeneralSettings = () => {
     if ((!name || name === 'N/A') && email && email !== 'N/A') {
       name = email.split('@')[0].split(/[._]/).map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
     }
-    return { name, role, specialization, department, contactNo, gender, age, email, accountID, staffID, username: email, title: role, phone: contactNo, availability, hasMedicalStaffData: !!medicalStaffData, source: medicalStaffData ? 'Medical Staff Table' : 'User Storage' };
+    return { name, role, specialization, department, contactNo, gender, age, email, accountID, staffID, username: email, title: role, phone: contactNo, availability, hasMedicalStaffData: !!medicalStaffData, source: medicalStaffData ? 'Medical Staff Table' : 'User Storage', profilePicturePath };
   };
 
   const getEmptyUserData = () => ({
     name: 'N/A', role: 'N/A', specialization: 'N/A', department: 'General Medicine',
     contactNo: 'N/A', gender: 'N/A', age: 'N/A', email: 'N/A', accountID: 'N/A',
     staffID: 'N/A', username: 'N/A', title: 'N/A', phone: 'N/A', availability: 'available',
-    hasMedicalStaffData: false, source: 'No Data'
+    hasMedicalStaffData: false, source: 'No Data', profilePicturePath: null
   });
 
   const getAvatarInitials = (name) => {
@@ -525,8 +630,156 @@ const GeneralSettings = () => {
                 flexWrap: 'wrap', gap: 2,
               }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5 }}>
-                  {/* Generic MUI icon instead of image */}
-                  <AccountCircleIcon sx={{ fontSize: 72, color: M, background: '#f9fafb', borderRadius: '16px', border: `2px solid ${M}25` }} />
+                  {/* Interactive Premium Avatar Upload */}
+                  <Box sx={{ position: 'relative' }}>
+                    <Box
+                      onClick={() => !uploading && fileInputRef.current?.click()}
+                      sx={{
+                        width: 72,
+                        height: 72,
+                        borderRadius: '16px',
+                        border: `2px solid ${M}25`,
+                        background: '#f9fafb',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        overflow: 'hidden',
+                        position: 'relative',
+                        cursor: uploading ? 'not-allowed' : 'pointer',
+                        boxShadow: '0 4px 12px rgba(68,0,13,0.06)',
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                        '&:hover': {
+                          transform: uploading ? 'none' : 'scale(1.03)',
+                          boxShadow: '0 6px 16px rgba(68,0,13,0.12)',
+                          '& .avatar-overlay': { opacity: 1 },
+                        },
+                      }}
+                    >
+                      {previewUrl || (userData?.profilePicturePath ? `http://localhost:8080/api/users/${userData.accountID}/profile-picture?t=${avatarTimestamp}` : null) ? (
+                        <img
+                          src={previewUrl || (userData?.profilePicturePath ? `http://localhost:8080/api/users/${userData.accountID}/profile-picture?t=${avatarTimestamp}` : null)}
+                          alt="Profile"
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                          }}
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                          }}
+                        />
+                      ) : (
+                        <Typography sx={{ fontSize: '1.4rem', fontWeight: 800, color: M }}>
+                          {getAvatarInitials(userData?.name)}
+                        </Typography>
+                      )}
+
+                      {/* Hover Overlay */}
+                      {!uploading && (
+                        <Box
+                          className="avatar-overlay"
+                          sx={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            background: 'rgba(68, 0, 13, 0.65)',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            opacity: 0,
+                            transition: 'opacity 0.2s ease',
+                            color: 'white',
+                            gap: 0.5,
+                            zIndex: 3
+                          }}
+                        >
+                          <Camera size={16} color="white" />
+                          <Typography sx={{ fontSize: '0.55rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                            Upload
+                          </Typography>
+                        </Box>
+                      )}
+
+                      {/* Loading Overlay */}
+                      {uploading && (
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            background: 'rgba(255, 255, 255, 0.8)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: 4,
+                          }}
+                        >
+                          <CircularProgress size={20} sx={{ color: M }} />
+                        </Box>
+                      )}
+                    </Box>
+
+                    {/* Action buttons shown once preview is active */}
+                    {previewUrl && !uploading && (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: -6,
+                          right: -6,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 0.5,
+                          zIndex: 10,
+                        }}
+                      >
+                        <Button
+                          onClick={(e) => { e.stopPropagation(); handleUpload(); }}
+                          sx={{
+                            minWidth: 0,
+                            width: 22,
+                            height: 22,
+                            borderRadius: '50%',
+                            p: 0,
+                            background: '#10b981',
+                            color: 'white',
+                            boxShadow: '0 2px 6px rgba(16,185,129,0.4)',
+                            '&:hover': { background: '#059669' },
+                          }}
+                        >
+                          <Check size={12} />
+                        </Button>
+                        <Button
+                          onClick={(e) => { e.stopPropagation(); handleCancelSelection(); }}
+                          sx={{
+                            minWidth: 0,
+                            width: 22,
+                            height: 22,
+                            borderRadius: '50%',
+                            p: 0,
+                            background: '#ef4444',
+                            color: 'white',
+                            boxShadow: '0 2px 6px rgba(239,68,68,0.4)',
+                            '&:hover': { background: '#dc2626' },
+                          }}
+                        >
+                          <X size={12} />
+                        </Button>
+                      </Box>
+                    )}
+
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      style={{ display: 'none' }}
+                    />
+                  </Box>
                   <Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap', mb: 0.5 }}>
                       <Typography sx={{ fontWeight: 800, fontSize: '1.3rem', color: '#111827', lineHeight: 1.2 }}>
@@ -660,6 +913,22 @@ const GeneralSettings = () => {
       >
         <Alert onClose={() => setShowSnackbar(false)} severity="info" sx={{ width: '100%', borderRadius: '10px' }}>
           Please update your profile information first.
+        </Alert>
+      </Snackbar>
+
+      {/* Upload Toast */}
+      <Snackbar
+        open={!!uploadSuccess || !!uploadError}
+        autoHideDuration={4000}
+        onClose={() => { setUploadSuccess(null); setUploadError(null); }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert
+          onClose={() => { setUploadSuccess(null); setUploadError(null); }}
+          severity={uploadSuccess ? 'success' : 'error'}
+          sx={{ width: '100%', borderRadius: '10px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+        >
+          {uploadSuccess || uploadError}
         </Alert>
       </Snackbar>
     </Box>

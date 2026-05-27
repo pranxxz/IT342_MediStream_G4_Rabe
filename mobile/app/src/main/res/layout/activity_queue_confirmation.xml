@@ -1,177 +1,557 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_page">
+    android:background="#1a0008"
+    android:orientation="vertical">
 
-    <!-- Card container centered -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/queueCard"
+    <!-- Top Header with Logo + MediStream -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="32dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="6dp"
-        app:strokeWidth="0dp"
-        app:cardBackgroundColor="@color/pure_white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btnDone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.4">
+        android:background="#ffffff"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <!-- MediStream Logo -->
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_medistream_logo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="MediStream"
+            android:textColor="#1a0008"
+            android:textSize="22sp"
+            android:fontFamily="sans-serif-black" />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center"
-            android:padding="28dp">
+            android:background="@color/bg_light"
+            android:padding="16dp">
 
-            <!-- Green checkmark icon (✓) in circle -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                app:cardCornerRadius="32dp"
+            <!-- Your Number / Now Serving Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:strokeWidth="0dp"
-                app:cardBackgroundColor="@color/status_completed_bg"
-                android:layout_marginBottom="16dp">
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_gravity="center"
-                    app:srcCompat="@drawable/ic_success"
-                    app:tint="@color/status_completed" />
-            </com.google.android.material.card.MaterialCardView>
+                app:cardBackgroundColor="#44000d">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="You're in the queue!"
-                android:textSize="22sp"
-                android:textColor="@color/brand_primary"
-                android:fontFamily="@font/poppins_bold"
-                android:layout_marginBottom="12dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="YOUR QUEUE NUMBER"
-                android:textColor="@color/text_muted"
-                android:textSize="11sp"
-                android:fontFamily="@font/poppins_medium"
-                android:letterSpacing="0.05"
-                android:layout_marginBottom="2dp"/>
-
-            <TextView
-                android:id="@+id/tvQueueNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Q-001"
-                android:textSize="48sp"
-                android:textColor="@color/brand_primary"
-                android:fontFamily="@font/poppins_bold"
-                android:layout_marginBottom="16dp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/border_default"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Details -->
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:stretchColumns="1">
-
-                <TableRow android:layout_marginBottom="8dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_regular"
-                        android:text="Patient Name"
-                        android:textColor="@color/text_muted"
-                        android:textSize="13sp" />
-                    <TextView
-                        android:id="@+id/tvPatientName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:text="John Doe"
-                        android:textColor="@color/text_primary"
-                        android:textSize="13sp"
-                        android:gravity="end" />
-                </TableRow>
-
-                <TableRow android:layout_marginBottom="8dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_regular"
-                        android:text="Queue Status"
-                        android:textColor="@color/text_muted"
-                        android:textSize="13sp" />
+                    <!-- Your Number -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="end">
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="24dp">
+
                         <TextView
-                            android:id="@+id/tvQueueStatus"
+                            android:id="@+id/tvYourNumber"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_status_badge"
-                            android:backgroundTint="@color/status_waiting_bg"
-                            android:textColor="@color/status_waiting"
-                            android:fontFamily="@font/poppins_semibold"
-                            android:paddingLeft="10dp"
-                            android:paddingRight="10dp"
-                            android:paddingTop="3dp"
-                            android:paddingBottom="3dp"
-                            android:text="Waiting"
-                            android:textSize="11sp" />
-                    </LinearLayout>
-                </TableRow>
+                            android:text="3"
+                            android:textColor="#ffffff"
+                            android:textSize="56sp"
+                            android:fontFamily="sans-serif-black" />
 
-                <TableRow>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Your Number"
+                            android:textColor="#cc8899"
+                            android:textSize="13sp"
+                            android:fontFamily="sans-serif-medium"
+                            android:layout_marginTop="4dp" />
+                    </LinearLayout>
+
+                    <!-- Vertical Divider -->
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="#6b1a2a"
+                        android:layout_marginVertical="16dp" />
+
+                    <!-- Now Serving -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="24dp">
+
+                        <TextView
+                            android:id="@+id/tvNowServing"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="1"
+                            android:textColor="#ffffff"
+                            android:textSize="56sp"
+                            android:fontFamily="sans-serif-black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Now Serving"
+                            android:textColor="#cc8899"
+                            android:textSize="13sp"
+                            android:fontFamily="sans-serif-medium"
+                            android:layout_marginTop="4dp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Stats Row: Total Patients | Consulting | Waiting | Completed -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <!-- Left Column -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="vertical">
+
+                    <!-- Total Patients -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#ffffff">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="14dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_total_patients"
+                                android:layout_marginEnd="8dp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Total Patients"
+                                android:textColor="#1a0008"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-medium" />
+
+                            <TextView
+                                android:id="@+id/tvTotalPatients"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="3"
+                                android:textColor="#1a0008"
+                                android:textSize="18sp"
+                                android:fontFamily="sans-serif-black" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Waiting -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#ffffff">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="14dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_waiting"
+                                android:layout_marginEnd="8dp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Waiting"
+                                android:textColor="#1a0008"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-medium" />
+
+                            <TextView
+                                android:id="@+id/tvWaiting"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="2"
+                                android:textColor="#1a0008"
+                                android:textSize="18sp"
+                                android:fontFamily="sans-serif-black" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+                <!-- Right Column -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:orientation="vertical">
+
+                    <!-- Consulting -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#ffffff">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="14dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_consulting"
+                                android:layout_marginEnd="8dp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Consulting"
+                                android:textColor="#1a0008"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-medium" />
+
+                            <TextView
+                                android:id="@+id/tvConsulting"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="1"
+                                android:textColor="#1a0008"
+                                android:textSize="18sp"
+                                android:fontFamily="sans-serif-black" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Completed -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#ffffff">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="14dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_completed"
+                                android:layout_marginEnd="8dp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Completed"
+                                android:textColor="#1a0008"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-medium" />
+
+                            <TextView
+                                android:id="@+id/tvCompleted"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="1"
+                                android:textColor="#1a0008"
+                                android:textSize="18sp"
+                                android:fontFamily="sans-serif-black" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Patient Queue Dark Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#44000d">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Patient Queue Title -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_regular"
-                        android:text="Est. Waiting Time"
-                        android:textColor="@color/text_muted"
-                        android:textSize="13sp" />
-                    <TextView
-                        android:id="@+id/tvEstTime"
-                        android:layout_width="wrap_content"
+                        android:text="Patient Queue"
+                        android:textColor="#ffffff"
+                        android:textSize="18sp"
+                        android:fontFamily="sans-serif-black"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Patient 1 (Consulting) -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:text="15 mins"
-                        android:textColor="@color/brand_primary"
-                        android:textSize="13sp"
-                        android:gravity="end" />
-                </TableRow>
-            </TableLayout>
+                        android:layout_marginBottom="10dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#ffffff">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="14dp">
+
+                            <!-- Circle Number Avatar -->
+                            <TextView
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:text="1"
+                                android:textColor="#ffffff"
+                                android:textSize="15sp"
+                                android:fontFamily="sans-serif-black"
+                                android:gravity="center"
+                                android:background="@drawable/bg_circle_maroon"
+                                android:layout_marginEnd="14dp" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Patient Name"
+                                    android:textColor="#212529"
+                                    android:textSize="15sp"
+                                    android:fontFamily="sans-serif-medium" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="ID:"
+                                    android:textColor="#adb5bd"
+                                    android:textSize="12sp"
+                                    android:fontFamily="sans-serif"
+                                    android:layout_marginTop="2dp" />
+                            </LinearLayout>
+
+                            <!-- Consulting Badge -->
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_badge_outline"
+                                android:paddingHorizontal="14dp"
+                                android:paddingVertical="6dp"
+                                android:text="Consulting"
+                                android:textColor="#6c757d"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-medium" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Patient 2 (Waiting) -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#ffffff">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="14dp">
+
+                            <TextView
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:text="2"
+                                android:textColor="#ffffff"
+                                android:textSize="15sp"
+                                android:fontFamily="sans-serif-black"
+                                android:gravity="center"
+                                android:background="@drawable/bg_circle_maroon"
+                                android:layout_marginEnd="14dp" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Patient Name"
+                                    android:textColor="#212529"
+                                    android:textSize="15sp"
+                                    android:fontFamily="sans-serif-medium" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="ID:"
+                                    android:textColor="#adb5bd"
+                                    android:textSize="12sp"
+                                    android:fontFamily="sans-serif"
+                                    android:layout_marginTop="2dp" />
+                            </LinearLayout>
+
+                            <!-- Waiting Badge -->
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_badge_outline"
+                                android:paddingHorizontal="14dp"
+                                android:paddingVertical="6dp"
+                                android:text="Waiting"
+                                android:textColor="#6c757d"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-medium" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Patient 3 (Waiting) -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#ffffff">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="14dp">
+
+                            <TextView
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:text="3"
+                                android:textColor="#ffffff"
+                                android:textSize="15sp"
+                                android:fontFamily="sans-serif-black"
+                                android:gravity="center"
+                                android:background="@drawable/bg_circle_maroon"
+                                android:layout_marginEnd="14dp" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Patient Name"
+                                    android:textColor="#212529"
+                                    android:textSize="15sp"
+                                    android:fontFamily="sans-serif-medium" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="ID:"
+                                    android:textColor="#adb5bd"
+                                    android:textSize="12sp"
+                                    android:fontFamily="sans-serif"
+                                    android:layout_marginTop="2dp" />
+                            </LinearLayout>
+
+                            <!-- Waiting Badge -->
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_badge_outline"
+                                android:paddingHorizontal="14dp"
+                                android:paddingVertical="6dp"
+                                android:text="Waiting"
+                                android:textColor="#6c757d"
+                                android:textSize="12sp"
+                                android:fontFamily="sans-serif-medium" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+    </ScrollView>
 
-    <!-- Done button at bottom -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnDone"
-        style="@style/MediStream.Button"
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
-        android:text="Done"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

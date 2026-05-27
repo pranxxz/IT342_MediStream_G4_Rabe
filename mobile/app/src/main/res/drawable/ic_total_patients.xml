@@ -1,4 +1,38 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
 
-</selector>
+    <!-- Front person head -->
+    <path
+        android:fillColor="#44000d"
+        android:pathData="M12,4 A3.5,3.5 0 1,1 12,11 A3.5,3.5 0 0,1 12,4 Z" />
+    <!-- Front person body -->
+    <path
+        android:fillColor="#44000d"
+        android:pathData="M6,20.5 C6,16.9 8.7,14 12,14 C15.3,14 18,16.9 18,20.5 L6,20.5 Z" />
+
+    <!-- Back-left person head (smaller, offset) -->
+    <path
+        android:fillColor="#44000d"
+        android:pathData="M5.5,6 A2.8,2.8 0 1,1 5.5,11.6 A2.8,2.8 0 0,1 5.5,6 Z"
+        android:alpha="0.5"/>
+    <!-- Back-left person body -->
+    <path
+        android:fillColor="#44000d"
+        android:pathData="M1,20.5 C1,17.5 3,15 5.5,15 C6.5,15 7.4,15.4 8.1,16 C7,17.2 6.2,18.8 6,20.5 L1,20.5 Z"
+        android:alpha="0.5"/>
+
+    <!-- Back-right person head -->
+    <path
+        android:fillColor="#44000d"
+        android:pathData="M18.5,6 A2.8,2.8 0 1,1 18.5,11.6 A2.8,2.8 0 0,1 18.5,6 Z"
+        android:alpha="0.5"/>
+    <!-- Back-right person body -->
+    <path
+        android:fillColor="#44000d"
+        android:pathData="M23,20.5 L18,20.5 C17.8,18.8 17,17.2 15.9,16 C16.6,15.4 17.5,15 18.5,15 C21,15 23,17.5 23,20.5 Z"
+        android:alpha="0.5"/>
+
+</vector>
