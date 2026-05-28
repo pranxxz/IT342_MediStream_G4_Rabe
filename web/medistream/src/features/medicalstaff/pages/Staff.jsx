@@ -6,6 +6,7 @@ import { COLORS } from '../../../shared/components/Sidebar';
 import PageHeader, { HeaderSearch } from '../../../shared/components/PageHeader';
 import BadgeIcon from '@mui/icons-material/Badge';
 import staffService from '../service/staffService';
+import { FeedbackModal } from '../../../shared/components/FeedbackModal';
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────
 const M       = COLORS.primary;
@@ -118,6 +119,19 @@ const Staff = () => {
   const [showAddStaffModal, setShowAddStaffModal] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState(null);
 
+  const [modalState, setModalState] = useState({
+    open: false,
+    type: 'info',
+    title: '',
+    message: '',
+    onConfirm: undefined,
+    confirmText: 'Okay'
+  });
+
+  const handleCloseModal = () => {
+    setModalState(prev => ({ ...prev, open: false }));
+  };
+
   // Add Staff Form States
   const [newStaffData, setNewStaffData] = useState({
     firstName: '',
@@ -162,7 +176,8 @@ const Staff = () => {
         email: newStaffData.email.trim(),
         password: newStaffData.password,
         role: newStaffData.role.toLowerCase(),
-        idNumber: 'MS' + Date.now().toString().slice(-6),
+        idNumber: parseInt(Date.now().toString().slice(-6), 10),
+        contactNo: newStaffData.contactNo.trim(),
       };
 
       await staffService.addStaff(payload);
@@ -233,16 +248,33 @@ const Staff = () => {
   };
 
   // Handle Delete Staff Member (DELETE)
-  const handleDeleteStaff = async (id) => {
-    if (window.confirm("⚠️ WARNING: Are you sure you want to delete this staff member? This will permanently delete both their profile and their user login account credentials.")) {
-      try {
-        await staffService.deleteStaff(id);
-        setSelectedStaff(null);
-        refreshStaffData();
-      } catch (err) {
-        console.error('❌ Failed to delete staff:', err);
-        alert(err.response?.data?.message || err.message || 'Failed to delete staff member.');
-      }
+  const handleDeleteStaffClick = (id) => {
+    setModalState({
+      open: true,
+      type: 'warning',
+      title: 'Delete Staff Member?',
+      message: '⚠️ WARNING: Are you sure you want to delete this staff member? This will permanently delete both their profile and their user login account credentials.',
+      confirmText: 'Yes, Delete',
+      onConfirm: () => executeDeleteStaff(id)
+    });
+  };
+
+  const executeDeleteStaff = async (id) => {
+    try {
+      await staffService.deleteStaff(id);
+      setSelectedStaff(null);
+      refreshStaffData();
+      handleCloseModal();
+    } catch (err) {
+      console.error('❌ Failed to delete staff:', err);
+      setModalState({
+        open: true,
+        type: 'error',
+        title: 'Delete Failed',
+        message: err.response?.data?.message || err.message || 'Failed to delete staff member.',
+        confirmText: 'Close',
+        onConfirm: handleCloseModal
+      });
     }
   };
 
@@ -903,7 +935,7 @@ const Staff = () => {
                           Edit Profile
                         </button>
                         <button 
-                          onClick={() => handleDeleteStaff(selectedStaff.id)}
+                          onClick={() => handleDeleteStaffClick(selectedStaff.id)}
                           style={{
                             padding: '12px 16px',
                             borderRadius: 8,
@@ -1155,6 +1187,17 @@ const Staff = () => {
             </div>
           </div>
         )}
+        
+        {/* Feedback Modal for warnings and deletions */}
+        <FeedbackModal
+          open={modalState.open}
+          onClose={handleCloseModal}
+          title={modalState.title}
+          message={modalState.message}
+          type={modalState.type}
+          confirmText={modalState.confirmText}
+          onConfirm={modalState.onConfirm}
+        />
       </div>
     </div>
   );

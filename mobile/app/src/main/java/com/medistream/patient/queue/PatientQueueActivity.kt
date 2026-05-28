@@ -56,7 +56,7 @@ class PatientQueueActivity : BaseActivity() {
         val firstName = binding.etFirstName.text.toString().trim()
         val lastName = binding.etLastName.text.toString().trim()
         val ageStr = binding.etAge.text.toString().trim()
-        val gender = binding.spinnerGender.text.toString().trim()
+        val gender = binding.spinnerGender.selectedItem?.toString()?.trim() ?: ""
         val contactNo = binding.etContact.text.toString().trim()
         val address = binding.etAddress.text.toString().trim()
 

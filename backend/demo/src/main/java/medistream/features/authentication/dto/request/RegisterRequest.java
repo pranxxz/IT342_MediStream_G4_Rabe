@@ -7,6 +7,7 @@ public class RegisterRequest {
     private String password;
     private String role;
     private Integer idNumber;
+    private String contactNo;
     
     // No-args constructor
     public RegisterRequest() {
@@ -70,6 +71,14 @@ public class RegisterRequest {
     public void setIdNumber(Integer idNumber) {
         this.idNumber = idNumber;
     }
+
+    public String getContactNo() {
+        return contactNo;
+    }
+
+    public void setContactNo(String contactNo) {
+        this.contactNo = contactNo;
+    }
     
     // toString for debugging
     @Override
@@ -81,6 +90,7 @@ public class RegisterRequest {
                 ", password='[PROTECTED]'" +
                 ", role='" + role + '\'' +
                 ", idNumber=" + idNumber +
+                ", contactNo='" + contactNo + '\'' +
                 '}';
     }
 }

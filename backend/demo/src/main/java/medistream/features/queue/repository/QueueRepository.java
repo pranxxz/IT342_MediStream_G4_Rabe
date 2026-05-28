@@ -14,5 +14,9 @@ public interface QueueRepository extends JpaRepository<Queue, Long> {
 
     @Query("SELECT q FROM Queue q WHERE q.status IS NULL OR LOWER(q.status) NOT IN ('completed', 'done')")
     List<Queue> findAllActiveQueues();
+
+    @org.springframework.data.jpa.repository.Modifying
+    @Query("DELETE FROM Queue q WHERE q.patient.patientId = :patientId")
+    void deleteByPatientId(int patientId);
 }
 

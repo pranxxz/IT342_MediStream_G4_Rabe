@@ -14,6 +14,9 @@ public class PatientService {
     @Autowired
     private PatientRepository patientRepository;
 
+    @Autowired
+    private medistream.features.queue.repository.QueueRepository queueRepository;
+
     public PatientEntity createPatient(PatientEntity patient) {
         if (patient.getStatus() == null || patient.getStatus().trim().isEmpty()) {
             patient.setStatus("Waiting");
@@ -46,7 +49,9 @@ public class PatientService {
             .orElseThrow(() -> new RuntimeException("Patient not found"));
     }
 
+    @jakarta.transaction.Transactional
     public void deletePatient(int id) {
+        queueRepository.deleteByPatientId(id);
         patientRepository.deleteById(id);
     }
 

@@ -72,7 +72,7 @@ public class UserAccountService {
                 medicalStaff.setName(registerRequest.getFirstName() + " " + registerRequest.getLastName());
                 medicalStaff.setRole(registerRequest.getRole());
                 medicalStaff.setSpecialty(""); 
-                medicalStaff.setContactNo(""); 
+                medicalStaff.setContactNo(registerRequest.getContactNo() != null ? registerRequest.getContactNo().trim() : ""); 
                 medicalStaff.setUserAccount(savedUser);
                 
                 medicalStaffRepository.save(medicalStaff);

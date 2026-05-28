@@ -148,7 +148,7 @@ public class AuthController {
                 String lastName = request.getLastName() != null ? request.getLastName().trim() : "";
                 medicalStaff.setName((firstName + " " + lastName).trim());
                 medicalStaff.setRole(role);
-                medicalStaff.setContactNo("");
+                medicalStaff.setContactNo(request.getContactNo() != null ? request.getContactNo().trim() : "");
                 medicalStaff.setSpecialty("");
                 medicalStaff.setUserAccount(newUser);
                 newUser.setMedicalStaff(medicalStaff);

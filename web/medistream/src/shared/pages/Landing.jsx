@@ -83,7 +83,7 @@ export default function LandingPage() {
         </div>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           <Link to="/PatientHistory" style={{ textDecoration: "none" }}>
-            <span className="nav-records-link" style={{ fontWeight: 700, fontSize: '0.92rem', cursor: 'pointer', marginRight: '12px' }}>My Records</span>
+            <span className="nav-records-link" style={{ fontWeight: 700, fontSize: '0.92rem', cursor: 'pointer', marginRight: '12px' }}>Records</span>
           </Link>
           <Link to="/Login" style={{ textDecoration: "none" }}>
             <button className="nav-login-btn">Log in</button>
